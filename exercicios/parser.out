@@ -1,0 +1,149 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> FSGram
+Rule 1     FSGram -> Prods PYTHON IGNORED
+Rule 2     Prods -> Prod Prods
+Rule 3     Prods -> Prod
+Rule 4     Prod -> ID PP IDS PF
+Rule 5     IDS -> IDS VIR ID
+Rule 6     IDS -> ID
+
+Terminals, with rules where they appear
+
+ID                   : 4 5 6
+IGNORED              : 1
+PF                   : 4
+PP                   : 4
+PYTHON               : 1
+VIR                  : 5
+error                : 
+
+Nonterminals, with rules where they appear
+
+FSGram               : 0
+IDS                  : 4 5
+Prod                 : 2 3
+Prods                : 1 2
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . FSGram
+    (1) FSGram -> . Prods PYTHON IGNORED
+    (2) Prods -> . Prod Prods
+    (3) Prods -> . Prod
+    (4) Prod -> . ID PP IDS PF
+
+    ID              shift and go to state 4
+
+    FSGram                         shift and go to state 1
+    Prods                          shift and go to state 2
+    Prod                           shift and go to state 3
+
+state 1
+
+    (0) S' -> FSGram .
+
+
+
+state 2
+
+    (1) FSGram -> Prods . PYTHON IGNORED
+
+    PYTHON          shift and go to state 5
+
+
+state 3
+
+    (2) Prods -> Prod . Prods
+    (3) Prods -> Prod .
+    (2) Prods -> . Prod Prods
+    (3) Prods -> . Prod
+    (4) Prod -> . ID PP IDS PF
+
+    PYTHON          reduce using rule 3 (Prods -> Prod .)
+    ID              shift and go to state 4
+
+    Prod                           shift and go to state 3
+    Prods                          shift and go to state 6
+
+state 4
+
+    (4) Prod -> ID . PP IDS PF
+
+    PP              shift and go to state 7
+
+
+state 5
+
+    (1) FSGram -> Prods PYTHON . IGNORED
+
+    IGNORED         shift and go to state 8
+
+
+state 6
+
+    (2) Prods -> Prod Prods .
+
+    PYTHON          reduce using rule 2 (Prods -> Prod Prods .)
+
+
+state 7
+
+    (4) Prod -> ID PP . IDS PF
+    (5) IDS -> . IDS VIR ID
+    (6) IDS -> . ID
+
+    ID              shift and go to state 9
+
+    IDS                            shift and go to state 10
+
+state 8
+
+    (1) FSGram -> Prods PYTHON IGNORED .
+
+    $end            reduce using rule 1 (FSGram -> Prods PYTHON IGNORED .)
+
+
+state 9
+
+    (6) IDS -> ID .
+
+    PF              reduce using rule 6 (IDS -> ID .)
+    VIR             reduce using rule 6 (IDS -> ID .)
+
+
+state 10
+
+    (4) Prod -> ID PP IDS . PF
+    (5) IDS -> IDS . VIR ID
+
+    PF              shift and go to state 11
+    VIR             shift and go to state 12
+
+
+state 11
+
+    (4) Prod -> ID PP IDS PF .
+
+    ID              reduce using rule 4 (Prod -> ID PP IDS PF .)
+    PYTHON          reduce using rule 4 (Prod -> ID PP IDS PF .)
+
+
+state 12
+
+    (5) IDS -> IDS VIR . ID
+
+    ID              shift and go to state 13
+
+
+state 13
+
+    (5) IDS -> IDS VIR ID .
+
+    PF              reduce using rule 5 (IDS -> IDS VIR ID .)
+    VIR             reduce using rule 5 (IDS -> IDS VIR ID .)
+

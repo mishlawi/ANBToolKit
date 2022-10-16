@@ -1,0 +1,16 @@
+P : Hs , Bio, Foto .
+Hs : H. 
+Hs : H, Hs.
+
+%%
+
+def main():
+    print("Hello")
+
+main()
+%%
+
+IGNORE
+.py 
+.out
+.fsgram

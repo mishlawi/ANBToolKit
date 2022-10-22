@@ -3,7 +3,7 @@ import ply.lex as lex
 
 #reserved = {}
 
-tokens = ['PP','PF','PYTHON','VIR','ID','IGNORED']
+tokens = ['PP','PF','PYTHON','VIR','ID','IGNORED','REGEX','IDM','IDV']
 
 t_PP = r'\:'
 
@@ -12,10 +12,24 @@ t_PF = r'\.'
 t_VIR = r'\,'
 
 
+def t_REGEX(t):
+    r'r\'.+\''
+    t.value = str(t.value)
+    return t
 
 def t_IGNORED(t):
     r'IGNORE\n(.|\n)+'
     t.value = str(t.value)
+    return t
+
+def t_IDM(t):
+    r'[a-zA-Z]+\+'
+    t.value=str(t.value)
+    return t
+
+def t_IDV(t):
+    r'[a-zA-Z]+\*'
+    t.value=str(t.value)
     return t
 
 def t_ID(t):

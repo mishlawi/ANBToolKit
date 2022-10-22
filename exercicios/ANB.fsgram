@@ -1,7 +1,8 @@
-P : Hs , Bio, Foto .
-Hs : H. 
-Hs : H, Hs.
-
+P : H* , Bio, Foto .
+H : r'h[0-9]+\-\w+\.\w+'
+        Bio : r'b[0-9]+\-\w+\.\w+'
+        Foto : r'p[0-9]+\-\w+\.\w+'
+        
 %%
 
 def main():

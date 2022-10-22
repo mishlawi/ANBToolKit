@@ -39,15 +39,6 @@ f.close()
 
 def fileList():
     files = [f for f in os.listdir(os.getcwd()) if os.path.isfile(os.getcwd()+'/'+f)]
-    story = r's[0-9]+\-[a-zA-Z]+\.[a-z]+'
-    bio = r'b[0-9]+\-[a-zA-Z]+\.[a-z]+'
-    pic = r'p[0-9]+\-[a-zA-Z]+\.[a-z]+'
-    order = [story,bio,pic]
-
-    ordem = {key: i for i, key in enumerate(order)}
-
-    ficheiros = sorted(files, key=lambda d: ordem[d])
-    return ficheiros
 
 fileList()
 

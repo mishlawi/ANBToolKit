@@ -7,23 +7,29 @@ Rule 1     FSGram -> Prods PYTHON IGNORED
 Rule 2     Prods -> Prod Prods
 Rule 3     Prods -> Prod
 Rule 4     Prod -> ID PP IDS PF
-Rule 5     IDS -> IDS VIR ID
-Rule 6     IDS -> ID
+Rule 5     Prod -> ID PP REGEX
+Rule 6     IDS -> IDS VIR ID
+Rule 7     IDS -> ID
+Rule 8     IDS -> IDM
+Rule 9     IDS -> IDV
 
 Terminals, with rules where they appear
 
-ID                   : 4 5 6
+ID                   : 4 5 6 7
+IDM                  : 8
+IDV                  : 9
 IGNORED              : 1
 PF                   : 4
-PP                   : 4
+PP                   : 4 5
 PYTHON               : 1
-VIR                  : 5
+REGEX                : 5
+VIR                  : 6
 error                : 
 
 Nonterminals, with rules where they appear
 
 FSGram               : 0
-IDS                  : 4 5
+IDS                  : 4 6
 Prod                 : 2 3
 Prods                : 1 2
 
@@ -36,6 +42,7 @@ state 0
     (2) Prods -> . Prod Prods
     (3) Prods -> . Prod
     (4) Prod -> . ID PP IDS PF
+    (5) Prod -> . ID PP REGEX
 
     ID              shift and go to state 4
 
@@ -63,6 +70,7 @@ state 3
     (2) Prods -> . Prod Prods
     (3) Prods -> . Prod
     (4) Prod -> . ID PP IDS PF
+    (5) Prod -> . ID PP REGEX
 
     PYTHON          reduce using rule 3 (Prods -> Prod .)
     ID              shift and go to state 4
@@ -73,6 +81,7 @@ state 3
 state 4
 
     (4) Prod -> ID . PP IDS PF
+    (5) Prod -> ID . PP REGEX
 
     PP              shift and go to state 7
 
@@ -94,10 +103,16 @@ state 6
 state 7
 
     (4) Prod -> ID PP . IDS PF
-    (5) IDS -> . IDS VIR ID
-    (6) IDS -> . ID
+    (5) Prod -> ID PP . REGEX
+    (6) IDS -> . IDS VIR ID
+    (7) IDS -> . ID
+    (8) IDS -> . IDM
+    (9) IDS -> . IDV
 
+    REGEX           shift and go to state 11
     ID              shift and go to state 9
+    IDM             shift and go to state 12
+    IDV             shift and go to state 13
 
     IDS                            shift and go to state 10
 
@@ -110,22 +125,46 @@ state 8
 
 state 9
 
-    (6) IDS -> ID .
+    (7) IDS -> ID .
 
-    PF              reduce using rule 6 (IDS -> ID .)
-    VIR             reduce using rule 6 (IDS -> ID .)
+    PF              reduce using rule 7 (IDS -> ID .)
+    VIR             reduce using rule 7 (IDS -> ID .)
 
 
 state 10
 
     (4) Prod -> ID PP IDS . PF
-    (5) IDS -> IDS . VIR ID
+    (6) IDS -> IDS . VIR ID
 
-    PF              shift and go to state 11
-    VIR             shift and go to state 12
+    PF              shift and go to state 14
+    VIR             shift and go to state 15
 
 
 state 11
+
+    (5) Prod -> ID PP REGEX .
+
+    ID              reduce using rule 5 (Prod -> ID PP REGEX .)
+    PYTHON          reduce using rule 5 (Prod -> ID PP REGEX .)
+
+
+state 12
+
+    (8) IDS -> IDM .
+
+    PF              reduce using rule 8 (IDS -> IDM .)
+    VIR             reduce using rule 8 (IDS -> IDM .)
+
+
+state 13
+
+    (9) IDS -> IDV .
+
+    PF              reduce using rule 9 (IDS -> IDV .)
+    VIR             reduce using rule 9 (IDS -> IDV .)
+
+
+state 14
 
     (4) Prod -> ID PP IDS PF .
 
@@ -133,17 +172,17 @@ state 11
     PYTHON          reduce using rule 4 (Prod -> ID PP IDS PF .)
 
 
-state 12
+state 15
 
-    (5) IDS -> IDS VIR . ID
+    (6) IDS -> IDS VIR . ID
 
-    ID              shift and go to state 13
+    ID              shift and go to state 16
 
 
-state 13
+state 16
 
-    (5) IDS -> IDS VIR ID .
+    (6) IDS -> IDS VIR ID .
 
-    PF              reduce using rule 5 (IDS -> IDS VIR ID .)
-    VIR             reduce using rule 5 (IDS -> IDS VIR ID .)
+    PF              reduce using rule 6 (IDS -> IDS VIR ID .)
+    VIR             reduce using rule 6 (IDS -> IDS VIR ID .)
 

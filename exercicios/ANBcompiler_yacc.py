@@ -1,6 +1,7 @@
-from operator import invert
 import ply.yacc as yacc
 import sys
+import imghdr
+import shutil
 import re
 import os
 from ANBcompiler_lex import tokens
@@ -17,11 +18,13 @@ def p_FSGram(p):
     top = list(grammar.values())[0]
     verifyGrammar(top,grammar)
     ignored = re.sub('IGNORE','',p[3]).strip().split('\n')    
+    
     for elem in ignored:
         ignoredFiles.append(elem)
+    
     travessia(grammar,dirin,dirout)        
-    executable = re.sub('%%','',p[2]).strip()
     print("\n\n*******\nPYTHON\n*******")
+    executable = re.sub('%%','',p[2]).strip()
     exec(executable)
 
 
@@ -54,11 +57,10 @@ def p_ProdSimple(p):
             grammar[p[1]] = aux
         else:
             grammar[p[1]] = [p[3]]
+
     except re.error:
         print("Regex inválido")
         exit()
-
-
 
 def p_IDS(p):
     "IDS : IDS VIR ID"
@@ -80,47 +82,49 @@ def p_error(p):
     print("erro")
     print(p)
 
+
+
 def verifyGrammar(lista,grammar):
     for producao in lista:
-        print(producao)
         for id in producao:
             if id[-1] == '*' or id[-1] == "+":
                 id = id[:-1]
-            print(id)
 
             if id not in grammar.keys():
                 print("Gramatica mal formulada")
 
-def invertedSuper(id,grammar):
-    if len(grammar[id])==1:
-        print("regex",grammar[id])
-        return grammar[id]
+# def invertedSuper(id,grammar):
+#     if len(grammar[id])==1:
+#         print("regex",grammar[id])
+#         return grammar[id]
 
 
-def travessia(grammar,DirIn,DirOut):
-
-    # for subdir, dirs, files in os.walk(DirIn):
-    #     ficheiros=[]
-    #     for file in files:
-    #         ficheiros.append(file)
-    #         #print(os.path.join(subdir, file))
+def travessia(grammar,dirIn,dirOut):
+    
+    # gets files
     ficheiros = []
-    for file in os.listdir(DirIn):
-        if os.path.isfile(os.path.join(DirIn, file)):
+    for file in os.listdir(dirIn):
+        if os.path.isfile(os.path.join(dirIn, file)):
             ficheiros.append(file)
             print(file)
 
+    # gets top production that defines the grammar
     top = list(grammar.values())[0]
     disposal = []
+    
+    # iterates through the productions that compose the top production
     for elem in top:
         for id in elem:
+    
+            # verifies types if productions have different elements
+
             if id[-1]=='*': # 0 or plus elements
                 id = id[:-1]
                 regex = re.sub("r\'",'',grammar[id][0])
                 regex = re.sub("\'",'',regex)
-                print(regex)
+                
                 for elem in ficheiros:
-                    if re.match(regex,elem):    
+                    if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:    
                         disposal.append(elem)
             
             elif id[-1]=='+': # 1 or plus elements
@@ -129,9 +133,10 @@ def travessia(grammar,DirIn,DirOut):
                 regex = grammar[id]
                 regex = re.sub("r\'",'',grammar[id][0])
                 regex = re.sub("\'",'',regex)
+                
                 for elem in ficheiros:
                     print(elem)
-                    if re.match(regex,elem):
+                    if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:
                         disposal.append(elem)
                         count+=1
                 if count==0: 
@@ -142,15 +147,39 @@ def travessia(grammar,DirIn,DirOut):
                 regex = grammar[id]
                 regex = re.sub("r\'",'',grammar[id][0])
                 regex = re.sub("\'",'',regex)
+                
                 for elem in ficheiros:
-                    if re.match(regex,elem):
+                    if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:
                         disposal.append(elem)
                         count+=1
-                if count!=1:
-                    print("existem ficheiros a mais ou a menos")
+                if count > 1:
+                    print("existem ficheiros a mais")
+
+                elif count < 1:
+                    print("existem ficheiros a menos")
     print(disposal)
+    genHtml(ficheiros,dirOut,dirIn)
 
 
+def genHtml(files,dirOut,dirIn):
+
+    #? maybe understand how should the html public folder creation should be organized
+
+    directory = "public"
+    path = os.path.join(dirOut,directory)
+    if not os.path.exists(path):
+        os.mkdir(path)
+    for file in files:
+        considered = os.path.join(dirIn,file)
+
+        # image
+        if imghdr.what(considered):
+            img = os.path.join(dirIn,file)
+            shutil.copy(img,path)
+
+    #! it might be important to define case by case for each format the equivalent converter, unless a more simple aproach can be pursued      
+
+        
 
 dirin = '/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/exercicios/DuarteVilar'
 dirout = '/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/exercicios/OUT'

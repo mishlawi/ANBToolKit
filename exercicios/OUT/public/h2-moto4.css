@@ -1,7 +1,7 @@
  
 /* start css.sty */
-.cmr-17{font-size:170%;}
-.cmr-12{font-size:120%;}
+.rm-lmr-17{font-size:170%;}
+.rm-lmr-12{font-size:120%;}
 p{margin-top:0;margin-bottom:0}
 p.indent{text-indent:0;}
 p + p{margin-top:1em;}

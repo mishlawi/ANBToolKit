@@ -137,6 +137,7 @@ def travessia(grammar,dirIn,dirOut):
                         count+=1
                 if count==0: 
                     print("não existem um ou mais ficheiros do tipo enunciado na gramática")
+                    exit()
             
             else: # 1 one element only
                 count=0
@@ -150,9 +151,12 @@ def travessia(grammar,dirIn,dirOut):
                         count+=1
                 if count > 1:
                     print("existem ficheiros a mais")
+                    exit()
 
                 elif count < 1:
                     print("existem ficheiros a menos")
+                    exit()
+    
     genHtml(disposal,dirOut,dirIn)
 
 
@@ -169,8 +173,7 @@ def genHtml(files,dirOut,dirIn):
     fo = open(indexFile,'w')
     fo.write(value)
     fo.write(str(os.path.basename(dirIn) + '</h1>\n'))
-    print(files)
-    print("alskgjalskgj")
+
     for file in files:
         consideredFile = os.path.join(dirIn,file)
         fileName = re.split(r'\.',file)[0]
@@ -185,7 +188,7 @@ def genHtml(files,dirOut,dirIn):
             fo.write('\n<hr>')
     
         elif ('.' + format) == ".tex":
-            os.system(f"make4ht -u -d {os.path.basename(dirOut)}/public {os.path.basename(dirIn)}/{file}") #! Cannot be OUT/public because its specific
+            os.system(f"make4ht -l -u -d {os.path.basename(dirOut)}/public {os.path.basename(dirIn)}/{file}") #! Cannot be OUT/public because its specific
             os.system("rm h*.*") #! this should be changed
             newHtml = fileName + '.html'
             htmlInfo = value1 + f"public/{newHtml}" + value2

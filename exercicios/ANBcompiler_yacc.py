@@ -93,10 +93,6 @@ def verifyGrammar(lista,grammar):
             if id not in grammar.keys():
                 print("Gramatica mal formulada")
 
-# def invertedSuper(id,grammar):
-#     if len(grammar[id])==1:
-#         print("regex",grammar[id])
-#         return grammar[id]
 
 
 def travessia(grammar,dirIn,dirOut):
@@ -157,37 +153,71 @@ def travessia(grammar,dirIn,dirOut):
 
                 elif count < 1:
                     print("existem ficheiros a menos")
-    print(disposal)
-    genHtml(ficheiros,dirOut,dirIn)
+    genHtml(disposal,dirOut,dirIn)
 
 
 def genHtml(files,dirOut,dirIn):
-
-    #? maybe understand how should the html public folder creation should be organized
 
     directory = "public"
     path = os.path.join(dirOut,directory)
     if not os.path.exists(path):
         os.mkdir(path)
+    
+    #? it might be important to define case by case for each format the equivalent converter, unless a more simple aproach can be pursued      
+    
+    indexFile = os.path.join(dirOut,'index.html') # index.html
+    fo = open(indexFile,'w')
+    fo.write(value)
+    fo.write(str(os.path.basename(dirIn) + '</h1>\n'))
+    print(files)
+    print("alskgjalskgj")
     for file in files:
-        considered = os.path.join(dirIn,file)
-
-        # image
-        if imghdr.what(considered):
-            img = os.path.join(dirIn,file)
-            shutil.copy(img,path)
-
-    #! it might be important to define case by case for each format the equivalent converter, unless a more simple aproach can be pursued      
-
+        consideredFile = os.path.join(dirIn,file)
+        fileName = re.split(r'\.',file)[0]
+        format = re.split(r'\.',file)[1]
+    
+        if imghdr.what(consideredFile): # verifies if it is an image file
+            imageOriginalPath = os.path.join(dirIn,file) # original image path
+            newImagePath = 'public/' + file
+            shutil.copy(imageOriginalPath,path) # copies image to the specified path
+            fo.write(f'<img src="{newImagePath}"')   
+            fo.write(f'width="200"\nheight="250"/>')
+            fo.write('\n<hr>')
+    
+        elif ('.' + format) == ".tex":
+            os.system(f"make4ht -u -d {os.path.basename(dirOut)}/public {os.path.basename(dirIn)}/{file}") #! Cannot be OUT/public because its specific
+            os.system("rm h*.*") #! this should be changed
+            newHtml = fileName + '.html'
+            htmlInfo = value1 + f"public/{newHtml}" + value2
+            fo.write(htmlInfo + '<hr>')
         
+        elif ('.' + format) == ".md":
+            newHtml = fileName + '.html'
+            os.system(f"pandoc -o  {os.path.basename(dirOut)}/public/{newHtml} {os.path.basename(dirIn)}/{file} ")
+            htmlInfo = value1 + f"public/{newHtml}" + value2
+            fo.write(htmlInfo + '<hr>')
 
-dirin = '/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/exercicios/DuarteVilar'
-dirout = '/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/exercicios/OUT'
 
 
+    fo.write(endHtml)
+    fo.close()        
 
-#directory_path = os.getcwd()
-#print(directory_path)
+dirin = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/exercicios/DuarteVilar"
+dirout = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/exercicios/OUT"
+
+value ="""<!DOCTYPE html>
+<html>
+<body>
+
+<h1>"""
+value1 = """<iframe src='"""
+value2 = """'>
+  <p> display</p>
+</iframe>"""
+endHtml = """
+</body>
+</html>
+"""
 
 parser = yacc.yacc() 
 

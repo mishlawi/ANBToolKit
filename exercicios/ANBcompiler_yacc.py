@@ -5,7 +5,10 @@ from handlers.grammar.fsGrammar import *
 from ANBcompiler_lex import tokens
 
 
+# nao ir ao topo da produção
 grammar = {}
+terminals = {}
+nonterminals = {}
 
 def p_FSGram(p):
     "FSGram : Prods PYTHON IGNORED"
@@ -19,11 +22,14 @@ def p_FSGram(p):
     
     for elem in ignored:
         ignoredFiles.append(elem)
-    
-    travessia(grammar,dirin,dirout,ignoredFiles)        
+    interpreter(terminals,nonterminals)
+    #travessia(grammar,dirin,dirout,ignoredFiles)        
     print("\n\n*******\nPYTHON\n*******")
     executable = re.sub('%%','',p[2]).strip()
     exec(executable)
+    print("\n\n\n")
+    print("Nao terminais",nonterminals)
+    print("Terminais",terminals)
 
 
 def p_Prods(p):
@@ -33,10 +39,10 @@ def p_Prods(p):
 def p_Prodsingle(p):
     "Prods : Prod"
 
-
+# basically non terminal
 def p_Prod(p):
     "Prod : ID PP IDS PF"
-    
+    nonterminals[p[1]] = p[3]
     if p[1] in grammar.keys():
         aux = grammar[p[1]]
         aux.append(p[3])
@@ -44,17 +50,13 @@ def p_Prod(p):
     else:
         grammar[p[1]] = [p[3]]
 
-
+# basically terminal
 def p_ProdSimple(p):
     "Prod : ID PP REGEX"
     try:
         re.compile(p[3])
-        if p[1] in grammar.keys():
-            aux = grammar[p[1]]
-            aux.append(p[3])
-            grammar[p[1]] = aux
-        else:
-            grammar[p[1]] = [p[3]]
+        terminals[p[1]] = p[3]
+        grammar[p[1]] = [p[3]]
 
     except re.error:
         print("Regex inválido")
@@ -69,11 +71,15 @@ def p_IDSingle(p):
     p[0] = [p[1]]
 
 def p_IDPLUS(p):
-    "IDS : IDM"
+    "IDS : IDm"
     p[0] = [p[1]]
 
 def p_IDTIMES(p):
-    "IDS : IDV"
+    "IDS : IDv"
+    p[0] = [p[1]]
+
+def p_IDOPTN(p):
+    "IDS : IDo"
     p[0] = [p[1]]
 
 def p_error(p):

@@ -10,14 +10,16 @@ Rule 4     Prod -> ID PP IDS PF
 Rule 5     Prod -> ID PP REGEX
 Rule 6     IDS -> IDS VIR ID
 Rule 7     IDS -> ID
-Rule 8     IDS -> IDM
-Rule 9     IDS -> IDV
+Rule 8     IDS -> IDm
+Rule 9     IDS -> IDv
+Rule 10    IDS -> IDo
 
 Terminals, with rules where they appear
 
 ID                   : 4 5 6 7
-IDM                  : 8
-IDV                  : 9
+IDm                  : 8
+IDo                  : 10
+IDv                  : 9
 IGNORED              : 1
 PF                   : 4
 PP                   : 4 5
@@ -106,13 +108,15 @@ state 7
     (5) Prod -> ID PP . REGEX
     (6) IDS -> . IDS VIR ID
     (7) IDS -> . ID
-    (8) IDS -> . IDM
-    (9) IDS -> . IDV
+    (8) IDS -> . IDm
+    (9) IDS -> . IDv
+    (10) IDS -> . IDo
 
     REGEX           shift and go to state 11
     ID              shift and go to state 9
-    IDM             shift and go to state 12
-    IDV             shift and go to state 13
+    IDm             shift and go to state 12
+    IDv             shift and go to state 13
+    IDo             shift and go to state 14
 
     IDS                            shift and go to state 10
 
@@ -136,8 +140,8 @@ state 10
     (4) Prod -> ID PP IDS . PF
     (6) IDS -> IDS . VIR ID
 
-    PF              shift and go to state 14
-    VIR             shift and go to state 15
+    PF              shift and go to state 15
+    VIR             shift and go to state 16
 
 
 state 11
@@ -150,21 +154,29 @@ state 11
 
 state 12
 
-    (8) IDS -> IDM .
+    (8) IDS -> IDm .
 
-    PF              reduce using rule 8 (IDS -> IDM .)
-    VIR             reduce using rule 8 (IDS -> IDM .)
+    PF              reduce using rule 8 (IDS -> IDm .)
+    VIR             reduce using rule 8 (IDS -> IDm .)
 
 
 state 13
 
-    (9) IDS -> IDV .
+    (9) IDS -> IDv .
 
-    PF              reduce using rule 9 (IDS -> IDV .)
-    VIR             reduce using rule 9 (IDS -> IDV .)
+    PF              reduce using rule 9 (IDS -> IDv .)
+    VIR             reduce using rule 9 (IDS -> IDv .)
 
 
 state 14
+
+    (10) IDS -> IDo .
+
+    PF              reduce using rule 10 (IDS -> IDo .)
+    VIR             reduce using rule 10 (IDS -> IDo .)
+
+
+state 15
 
     (4) Prod -> ID PP IDS PF .
 
@@ -172,14 +184,14 @@ state 14
     PYTHON          reduce using rule 4 (Prod -> ID PP IDS PF .)
 
 
-state 15
+state 16
 
     (6) IDS -> IDS VIR . ID
 
-    ID              shift and go to state 16
+    ID              shift and go to state 17
 
 
-state 16
+state 17
 
     (6) IDS -> IDS VIR ID .
 

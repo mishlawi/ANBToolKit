@@ -3,7 +3,8 @@ import ply.lex as lex
 
 #reserved = {}
 
-tokens = ['PP','PF','PYTHON','VIR','ID','IGNORED','REGEX','IDM','IDV']
+# terminais
+tokens = ['PP','PF','PYTHON','VIR','ID','IGNORED','REGEX','IDm','IDv','IDo']
 
 t_PP = r'\:'
 
@@ -22,12 +23,20 @@ def t_IGNORED(t):
     t.value = str(t.value)
     return t
 
-def t_IDM(t):
+# id with symbol "?"
+def t_IDo(t):
+    r'[a-zA-Z]+\?'
+    t.value=str(t.value)
+    return t
+
+# id with symbol "+"
+def t_IDm(t):
     r'[a-zA-Z]+\+'
     t.value=str(t.value)
     return t
 
-def t_IDV(t):
+# id with symbol "*"
+def t_IDv(t):
     r'[a-zA-Z]+\*'
     t.value=str(t.value)
     return t

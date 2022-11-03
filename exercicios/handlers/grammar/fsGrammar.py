@@ -1,5 +1,3 @@
-
-
 def verifyGrammar(lista,grammar):
     for producao in lista:
         for id in producao:

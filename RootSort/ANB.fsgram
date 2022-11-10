@@ -1,4 +1,4 @@
-Disposal : P , Album .
+Disposal : P, Album* .
 P : H* , Bio, Foto .
 Album : Foto*.
 H : r'h[0-9]+\-\w+\.\w+'

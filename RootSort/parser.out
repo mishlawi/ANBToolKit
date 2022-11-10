@@ -8,18 +8,19 @@ Rule 2     Prods -> Prod Prods
 Rule 3     Prods -> Prod
 Rule 4     Prod -> ID PP IDS PF
 Rule 5     Prod -> ID PP REGEX
-Rule 6     IDS -> IDS VIR ID
-Rule 7     IDS -> ID
-Rule 8     IDS -> IDm
-Rule 9     IDS -> IDv
-Rule 10    IDS -> IDo
+Rule 6     IDS -> IDS VIR IDgen
+Rule 7     IDS -> IDgen
+Rule 8     IDgen -> ID
+Rule 9     IDgen -> IDm
+Rule 10    IDgen -> IDv
+Rule 11    IDS -> IDo
 
 Terminals, with rules where they appear
 
-ID                   : 4 5 6 7
-IDm                  : 8
-IDo                  : 10
-IDv                  : 9
+ID                   : 4 5 8
+IDm                  : 9
+IDo                  : 11
+IDv                  : 10
 IGNORED              : 1
 PF                   : 4
 PP                   : 4 5
@@ -32,6 +33,7 @@ Nonterminals, with rules where they appear
 
 FSGram               : 0
 IDS                  : 4 6
+IDgen                : 6 7
 Prod                 : 2 3
 Prods                : 1 2
 
@@ -106,19 +108,21 @@ state 7
 
     (4) Prod -> ID PP . IDS PF
     (5) Prod -> ID PP . REGEX
-    (6) IDS -> . IDS VIR ID
-    (7) IDS -> . ID
-    (8) IDS -> . IDm
-    (9) IDS -> . IDv
-    (10) IDS -> . IDo
+    (6) IDS -> . IDS VIR IDgen
+    (7) IDS -> . IDgen
+    (11) IDS -> . IDo
+    (8) IDgen -> . ID
+    (9) IDgen -> . IDm
+    (10) IDgen -> . IDv
 
     REGEX           shift and go to state 11
+    IDo             shift and go to state 13
     ID              shift and go to state 9
-    IDm             shift and go to state 12
-    IDv             shift and go to state 13
-    IDo             shift and go to state 14
+    IDm             shift and go to state 14
+    IDv             shift and go to state 15
 
     IDS                            shift and go to state 10
+    IDgen                          shift and go to state 12
 
 state 8
 
@@ -129,19 +133,19 @@ state 8
 
 state 9
 
-    (7) IDS -> ID .
+    (8) IDgen -> ID .
 
-    PF              reduce using rule 7 (IDS -> ID .)
-    VIR             reduce using rule 7 (IDS -> ID .)
+    PF              reduce using rule 8 (IDgen -> ID .)
+    VIR             reduce using rule 8 (IDgen -> ID .)
 
 
 state 10
 
     (4) Prod -> ID PP IDS . PF
-    (6) IDS -> IDS . VIR ID
+    (6) IDS -> IDS . VIR IDgen
 
-    PF              shift and go to state 15
-    VIR             shift and go to state 16
+    PF              shift and go to state 16
+    VIR             shift and go to state 17
 
 
 state 11
@@ -154,29 +158,37 @@ state 11
 
 state 12
 
-    (8) IDS -> IDm .
+    (7) IDS -> IDgen .
 
-    PF              reduce using rule 8 (IDS -> IDm .)
-    VIR             reduce using rule 8 (IDS -> IDm .)
+    PF              reduce using rule 7 (IDS -> IDgen .)
+    VIR             reduce using rule 7 (IDS -> IDgen .)
 
 
 state 13
 
-    (9) IDS -> IDv .
+    (11) IDS -> IDo .
 
-    PF              reduce using rule 9 (IDS -> IDv .)
-    VIR             reduce using rule 9 (IDS -> IDv .)
+    PF              reduce using rule 11 (IDS -> IDo .)
+    VIR             reduce using rule 11 (IDS -> IDo .)
 
 
 state 14
 
-    (10) IDS -> IDo .
+    (9) IDgen -> IDm .
 
-    PF              reduce using rule 10 (IDS -> IDo .)
-    VIR             reduce using rule 10 (IDS -> IDo .)
+    PF              reduce using rule 9 (IDgen -> IDm .)
+    VIR             reduce using rule 9 (IDgen -> IDm .)
 
 
 state 15
+
+    (10) IDgen -> IDv .
+
+    PF              reduce using rule 10 (IDgen -> IDv .)
+    VIR             reduce using rule 10 (IDgen -> IDv .)
+
+
+state 16
 
     (4) Prod -> ID PP IDS PF .
 
@@ -184,17 +196,23 @@ state 15
     PYTHON          reduce using rule 4 (Prod -> ID PP IDS PF .)
 
 
-state 16
-
-    (6) IDS -> IDS VIR . ID
-
-    ID              shift and go to state 17
-
-
 state 17
 
-    (6) IDS -> IDS VIR ID .
+    (6) IDS -> IDS VIR . IDgen
+    (8) IDgen -> . ID
+    (9) IDgen -> . IDm
+    (10) IDgen -> . IDv
 
-    PF              reduce using rule 6 (IDS -> IDS VIR ID .)
-    VIR             reduce using rule 6 (IDS -> IDS VIR ID .)
+    ID              shift and go to state 9
+    IDm             shift and go to state 14
+    IDv             shift and go to state 15
+
+    IDgen                          shift and go to state 18
+
+state 18
+
+    (6) IDS -> IDS VIR IDgen .
+
+    PF              reduce using rule 6 (IDS -> IDS VIR IDgen .)
+    VIR             reduce using rule 6 (IDS -> IDS VIR IDgen .)
 

@@ -63,19 +63,23 @@ def p_ProdSimple(p):
         exit()
 
 def p_IDS(p):
-    "IDS : IDS VIR ID"
-    p[0] = p[1] + [p[3]]
+    "IDS : IDS VIR IDgen"
+    p[0] = p[1] + p[3]
+
+def p_IDgen(p):
+    "IDS : IDgen"
+    p[0] = p[1]
         
 def p_IDSingle(p):
-    "IDS : ID"
+    "IDgen : ID"
     p[0] = [p[1]]
 
 def p_IDPLUS(p):
-    "IDS : IDm"
+    "IDgen : IDm"
     p[0] = [p[1]]
 
 def p_IDTIMES(p):
-    "IDS : IDv"
+    "IDgen : IDv"
     p[0] = [p[1]]
 
 def p_IDOPTN(p):

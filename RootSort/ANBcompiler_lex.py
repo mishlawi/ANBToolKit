@@ -4,7 +4,7 @@ import ply.lex as lex
 #reserved = {}
 
 # terminais
-tokens = ['PP','PF','PYTHON','VIR','ID','IGNORED','REGEX','IDm','IDv','IDo']
+tokens = ['PP','PF','PYTHON','VIR','IGNORED','REGEX','ID','IDm','IDv','IDo']
 
 t_PP = r'\:'
 

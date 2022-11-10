@@ -10,34 +10,38 @@ def interpreter(terminals,nonterminals):
     for producao in nonterminals.keys():
         racional = []
         for id in nonterminals[producao]:
+            collector = []            
+            zoom(id,terminals,nonterminals,collector)
             if id[-1] == '*' or id[-1] == '+' or id[-1] == '?':
-                elem = id[:-1]
+                racional.append((collector,id[-1]))
             else:
-                elem = id
-            zoom(elem,terminals,nonterminals,racional)
-
+                racional.append((collector,''))
         if producao in interpretation.keys():
             aux = interpretation[producao]    
             interpretation[producao] = aux.append(racional)
         elif producao not in interpretation.keys():
-            interpretation[producao] = [racional] 
+            interpretation[producao] = racional 
     print(interpretation)
     
 
 def zoom(value, terminals, nonterminals,buff):
-    
+    # Disposal : P, Album* .
+    # P : H* , Bio, Foto .
+    # Album : Foto*.
+
     if value[-1] == '*' or value[-1] == '+' or value[-1] == '?':
-                elem = value[:-1]
+        elem = value[:-1]
     else:
         elem = value
     if elem in terminals.keys():
-        buff.append(terminals[elem])
+        if value[-1] == '*' or value[-1] == '+' or value[-1] == '?':
+            buff.append((terminals[elem],value[-1]))
+        else:
+            buff.append((terminals[elem],''))
     elif elem in nonterminals.keys():
-        for elem in nonterminals[elem]:
-            zoom(elem,terminals,terminals,buff)
-                    
-                
-        
+        for id in nonterminals[elem]:
+            zoom(id,terminals,nonterminals,buff)
+
 
 
 def travessia(grammar,dirIn,dirOut,ignoredFiles):

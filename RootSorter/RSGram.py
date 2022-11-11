@@ -1,8 +1,10 @@
 import ply.yacc as yacc
 import re
-from handlers.html.fsgramHtml import *
-from handlers.grammar.fsGrammar import *
-from ANBcompiler_lex import tokens
+from handlers.html.htmlLogic import *
+from handlers.grammar.gramLogic import *
+from RSGTokens import tokens
+
+
 
 
 # nao ir ao topo da produção
@@ -23,7 +25,10 @@ def p_FSGram(p):
     for elem in ignored:
         ignoredFiles.append(elem)
     interpreter(terminals,nonterminals)
-    #travessia(grammar,dirin,dirout,ignoredFiles)        
+    
+    #disposal = travessia(grammar,dirin,dirout,ignoredFiles)
+    #genHtml(disposal,dirout,dirin)
+    
     print("\n\n*******\nPYTHON\n*******")
     executable = re.sub('%%','',p[2]).strip()
     exec(executable)
@@ -91,11 +96,11 @@ def p_error(p):
     print(p)
 
 
-dirin = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/exercicios/DuarteVilar"
-dirout = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/exercicios/OUT"
+dirin = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/RootSorter/DuarteVilar"
+dirout = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/RootSorter/OUT"
 
 parser = yacc.yacc() 
 
-fo = open("ANB.fsgram").read()
+fo = open("RS.fsgram").read()
 
 result = parser.parse(fo)

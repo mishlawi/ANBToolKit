@@ -3,8 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 anb/
-/RootSorter/parser.out
-/RootSorter/parsetab.py
+/ANBToolKit/parser.out
+/ANBToolKit/parsetab.py
 
 # C extensions
 *.so

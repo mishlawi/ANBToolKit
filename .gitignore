@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 *$py.class
+anb/
+/RootSorter/parser.out
+/RootSorter/parsetab.py
 
 # C extensions
 *.so

@@ -2,12 +2,10 @@ import ply.yacc as yacc
 import re
 from handlers.html.htmlLogic import *
 from handlers.grammar.gramLogic import *
-from RSGTokens import tokens
+from FSGramTokens import tokens
 
 
-
-
-# nao ir ao topo da produção
+#todo nao ir ao topo da produção
 grammar = {}
 terminals = {}
 nonterminals = {}
@@ -26,6 +24,8 @@ def p_FSGram(p):
         ignoredFiles.append(elem)
     interpreter(terminals,nonterminals)
     
+
+    #! keep tagged, needs maintance
     #disposal = travessia(grammar,dirin,dirout,ignoredFiles)
     #genHtml(disposal,dirout,dirin)
     

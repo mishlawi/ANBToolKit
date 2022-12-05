@@ -2,6 +2,8 @@ import re
 import os
 import subprocess
 import json
+import yaml 
+
 
 def genNote(file,dirIn):
     name = re.split("\.",file)[0]

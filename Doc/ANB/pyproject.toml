@@ -10,5 +10,8 @@ classifiers = ["License :: OSI Approved :: MIT License"]
 dynamic = ["version", "description"]
 
 [project.urls]
-Home = "https://natura.di.uminho.pt/anbtk"
+Source = "https://github.com/mishlawi/ANBToolKit"
+
+
+
 

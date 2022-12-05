@@ -3,7 +3,7 @@ import re
 from handlers.html.htmlLogic import *
 from handlers.grammar.gramLogic import *
 from FSGramTokens import tokens
-
+from DGUhand import *
 
 #todo nao ir ao topo da produção
 grammar = {}
@@ -11,14 +11,17 @@ terminals = {}
 nonterminals = {}
 
 def p_FSGram(p):
-    "FSGram : Prods PYTHON IGNORED"
-    
+    "FSGram : Prods PYTHON UNIVERSE FORMATS IGNORED"
     ignoredFiles = []
     executable = ''
     print(grammar)
     top = list(grammar.values())[0]
     verifyGrammar(top,grammar)
-    ignored = re.sub('IGNORE','',p[3]).strip().split('\n')    
+    universe = re.sub('UNIVERSE','',p[3]).strip()
+    formats = re.sub('FORMATS','',p[4]).strip()
+    ignored = re.sub('IGNORE','',p[5]).strip().split('\n')    
+
+    bigbang(universe,formats)
     
     for elem in ignored:
         ignoredFiles.append(elem)
@@ -30,12 +33,12 @@ def p_FSGram(p):
     #genHtml(disposal,dirout,dirin)
     
     print("\n\n*******\nPYTHON\n*******")
-    executable = re.sub('%%','',p[2]).strip()
+    executable = re.sub('EXECUTABLE','',p[2]).strip()
+    executable = re.sub('%%','',executable).strip()
     exec(executable)
     print("\n\n\n")
     print("Nao terminais",nonterminals)
     print("Terminais",terminals)
-
 
 def p_Prods(p):
     "Prods : Prod Prods"

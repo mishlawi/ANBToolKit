@@ -4,6 +4,7 @@ Anbnotes →
 ===
 
 Dgu → --- meta --- doc
+
 Dgu → --- meta --- doc ("===" doc)*
 
 
@@ -11,7 +12,7 @@ id ∈ meta
 type ... classe conceptual
 format  (def: md)
 
-=== COnstiração conteudo da FSgram
+=== Conspiração conteudo da FSgram
 
 =Yacc
 

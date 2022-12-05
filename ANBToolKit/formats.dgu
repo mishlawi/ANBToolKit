@@ -1,0 +1,12 @@
+---
+id: Formats
+format: free?
+type: formats?
+about:
+- Accepted types file formats
+---
+
+* markdown
+* latex
+* text
+* yaml

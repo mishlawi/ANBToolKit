@@ -146,3 +146,8 @@ def travessia(grammar,dirIn,dirOut,ignoredFiles):
                             exit()
     return disposal
     
+
+
+
+
+    

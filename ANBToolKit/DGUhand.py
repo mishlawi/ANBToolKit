@@ -29,19 +29,21 @@ def tex2dgu(path,dirout=""):
         dgufile.write("---\n")
         format = getFormat('tex')
         type = docType(filename)
-        abouts = re.findall(r"\\ind\{(.+)\}",file)
+        abouts = re.findall(r'\\ind\{(.+?| )\}',file)
         yaml.dump(dgu(id = id,format = format,type=type,about=abouts),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
         yaml.dump(adgu,dgufile)
         dgufile.write("---\n")
         dgufile.write(text)
         subprocess.check_call(['rm',filename[:-4]+'.md'])
+        if dirout!="":
+            subprocess.check_call(['mv',filename+'.dgu',dirout])
     else:
         raise TypeError("Not a latex file")
 
 
 
 
-#maybe add a way to personalize different types of docs
+#maybe add a way to personalize different types of docs 
 def docType(file):
     if file.startswith("h"):
         return 'Story'
@@ -74,7 +76,7 @@ def dgus2pdf(dirout=""):
     args = ['pandoc', '-f','markdown','dgu2pdf.md','-o','doc.pdf']
     cwd = os.getcwd()
     print(cwd)
-    for (dirpath,dirname,filenames) in os.walk(cwd):
+    for (dirpath,_,filenames) in os.walk(cwd):
         for filename in filenames:
             if filename.endswith('.dgu'):
                 temp = open(dirpath+'/'+filename,'r').read()
@@ -84,15 +86,6 @@ def dgus2pdf(dirout=""):
     tempdgu.close()
     subprocess.check_call(args)
 
-    # for dgu in dgus:
-    #     os.chdir(os.path.dirname(dgu))
-    #     name = os.path.basename(dgu)
-    #     args.append(name)
-    #     # tempdgu.write("<space><space>")
-    #subprocess.check_call(['rm',"dgu2pdf.tempdgu"])
-
-    
-# pandoc -f markdown universoConceptual.dgu -o _.pdf
     
 def handletex(text,dgu,id,format,ftype,titulo):
     print(text)
@@ -152,8 +145,6 @@ def bigbang(stringUniverse,stringFormats):
 dirin= "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/ANBToolKit/ClaraVilar"
 dirout = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/ANBToolKit/ClaraVilar"
 test ="/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/ANBToolKit/h2-moto4.dgu"
-#tex2dgu(test)
-dgus2pdf([test])
-
-#generate(dirin,dirout,'h2-moto4.tex') 
-#parseAbstractDgu('formatos.dgu',dirout)
+test2="/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/ANBToolKit/h1-viagemCaboVerde.tex"
+#tex2dgu(test2)
+dgus2pdf()

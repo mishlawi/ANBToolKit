@@ -1,9 +1,9 @@
 ---
 id: Formats
-format: free?
+format: dgu
 type: formats?
 about:
-- Accepted types file formats
+- Accepted types of file formats
 ---
 
 * markdown

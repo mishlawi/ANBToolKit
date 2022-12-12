@@ -12,8 +12,8 @@ dynamic = ["version", "description"]
 [project.urls]
 Source = "https://github.com/mishlawi/ANBToolKit"
 
-[project.scripts]
 
+[project.scripts]
 anbtex = "anbtk:mainDgu2tex"
 
 

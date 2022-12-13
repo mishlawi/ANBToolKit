@@ -16,3 +16,19 @@ neste momento existem bastantes coisas desorganizadas
 * notas a serem definidas
 * falta integrar com o flit
 * pré tese a ser iniciada..........
+
+
+# 12/12
+```
+flit build
+flit install -s
+```
+
+* adicionei mais comandos por via do *flit* 
+* necessario *organizar codigo*
+* necessario definir as notas e o seu respetivo parser
+* necessario entender comodiferentes tipos de entidades (biografias, albuns....) derivam relativamente às dgus (há que haver uma correlação... certo?)
+* adicionar o que recolhi ao git para ter um caso de estudo mais profundo
+* argparse e flit
+
+

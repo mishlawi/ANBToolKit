@@ -221,6 +221,6 @@ test2="/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Th
 
 #tex2dgu(test2)
 dgubook()
-dgu2texbook()
+# dgu2texbook()
 #dgu2tex(test)~
 #mainDgu2tex()

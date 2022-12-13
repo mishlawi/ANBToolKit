@@ -38,7 +38,10 @@ def aboutism(abouts):
 
 def texSkeleton(texadgu):
     string = f"""\\section{{{texadgu.get('title',"missing title")}}}
-{aboutism(texadgu.get('about',[]))}   
+{aboutism(texadgu.get('about',[]))}
+\\\hline
+ & 
+\\   
     \\begin{{center}}
         $\\ast$~$\\ast$~$\\ast$
     \\end{{center}}
@@ -46,17 +49,16 @@ def texSkeleton(texadgu):
     """
     return string
 
-# ver como adicionar body a adgu
-def dgu2tex(file):
+def dgu2texbuilder(file):
     adgu = parseAbstractDgu(file)
     if adgu['format'] == 'latex':
         return texSkeleton(adgu)
     else:
         return ""
 
-def mainDgu2tex():
+def dgu2tex():
     for file in sys.argv[1:]:
-        print(dgu2tex(file))
+        print(dgu2texbuilder(file))
 
 ############################################
 

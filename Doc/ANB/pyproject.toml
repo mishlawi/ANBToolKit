@@ -13,11 +13,13 @@ dynamic = ["version", "description"]
 Source = "https://github.com/mishlawi/ANBToolKit"
 
 
+
 [project.scripts]
 dgu2tex = "anbtk:dgu2tex"
 dgu2texbook = "anbtk:dgu2texbook"
 tex2dgu = "anbtk:tex2dgu"
 dgubook = "anbtk:dgubook"
+
 
 
 

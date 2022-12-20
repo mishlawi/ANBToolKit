@@ -8,9 +8,8 @@ import sys
 import subprocess
 import yaml
 import datetime
-from .DGU import DGU as dgu
+from DGU import DGU as dgu
 import argparse
-
 
 # Gets header and body of dgu and turns it in a dictionary
 def parseAbstractDgu(filename):
@@ -309,5 +308,4 @@ date: {date}
 
 
 
-
-
+dgu2texbook()

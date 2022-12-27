@@ -1,4 +1,4 @@
-""" ANB toolkit module for """
+""" ANB toolkit module for sorting and managing documents and material from different family branches"""
 
 __version__ = "0.0.1"
 
@@ -8,9 +8,10 @@ import sys
 import subprocess
 import yaml
 import datetime
-from .DGU import DGU as dgu
-import argparse
 
+from .DGU import DGU as dgu
+from .FSGram import initializer
+import argparse
 
 # Gets header and body of dgu and turns it in a dictionary
 def parseAbstractDgu(filename):
@@ -69,7 +70,7 @@ def dgu2texbook():
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
     #parser.add_argument('-o','--out',help="output destination",nargs=1)
-    group.add_argument('-t','--tree',help="Iterates through the entire tree of document of the present directory.",action='store_true')
+    group.add_argument('-t','--tree',help="Iterates through the entire tree of document of the present directory.",action='store_true',default=False)
     arguments = parser.parse_args()
     
     fo = open("texbook.tex",'w')
@@ -198,7 +199,8 @@ def dgubook():
         epilog = 'Results in a pdf file containing generic universal documents aglutinated.')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
-    group.add_argument('-t','--tree',help="Iterates through the entire tree of documents of the present directory.",action='store_true')
+    group.add_argument('-t','--tree',help="Iterates through the entire tree of documents of the present directory.",action='store_true',default=False)
+    parser.add_argument('-o','--output',help="Selects an output folder",nargs=1)
     arguments = parser.parse_args()
     time = datetime.datetime.now()
     x = str(time)
@@ -308,6 +310,44 @@ date: {date}
     return skeleton
 
 
+def initanb(path=""):
+    cwd = os.getcwd()
+    if os.path.exists(cwd + '/.anbtk'):
+        raise Exception("This folder was already initialized as an ancestors notebook.")
+        
+    else:
+        os.mkdir(filepath := (cwd + '/.anbtk'))
+        os.chdir(filepath)
+        if path=="":
+            initializer()
+        else:
+            file = os.path.basename(path)
+            if os.path.dirname(path)!='':
+                os.chdir(os.path.dirname(os.path.abspath(path)))
+            print(path)
+            temp = open(path,'r').read()
+            os.chdir(filepath)
+            initializer(temp)
+            
+def anb():
+
+    import argparse
+
+    parser = argparse.ArgumentParser(prog='ancestors notebook')
+
+    parser.add_argument('anb')
+    subparsers = parser.add_subparsers(dest='subcommand',required=True,help='List of subcommands accepted')
+    init_parser = subparsers.add_parser('init')
+    init_parser.add_argument('-s','--source',help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)
+    args = parser.parse_args()
+
+    if args.subcommand == 'init':
+        if args.source:
+            file = args.source[0]
+            initanb(os.path.abspath(file))
+    
+        else:
+            initanb()
 
 
 

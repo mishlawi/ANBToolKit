@@ -1,4 +1,4 @@
-""" ANB toolkit module for """
+""" ANB toolkit module for sorting and managing documents and material from different family branches"""
 
 __version__ = "0.0.1"
 
@@ -8,6 +8,7 @@ import sys
 import subprocess
 import yaml
 import datetime
+
 from DGU import DGU as dgu
 from FSGram import initializer
 import argparse
@@ -309,40 +310,44 @@ date: {date}
     return skeleton
 
 
-def initanb():
+def initanb(path=""):
     cwd = os.getcwd()
     if os.path.exists(cwd + '/.anbtk'):
         raise Exception("This folder was already initialized as an ancestors notebook.")
         
     else:
-        os.mkdir(cwd + '/.anbtk')
-
-    # group = parser.add_mutually_exclusive_group()
-    # group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
-    # group.add_argument('-t','--tree',help="Iterates through the entire tree of documents of the present directory.",action='store_true',default=False)
-    # parser.add_argument('-o','--output',help="Selects an output folder",nargs=1)
-
+        os.mkdir(filepath := (cwd + '/.anbtk'))
+        os.chdir(filepath)
+        if path=="":
+            initializer()
+        else:
+            file = os.path.basename(path)
+            if os.path.dirname(path)!='':
+                os.chdir(os.path.dirname(os.path.abspath(path)))
+            print(path)
+            temp = open(path,'r').read()
+            os.chdir(filepath)
+            initializer(temp)
+            
 def anb():
-    parser = argparse.ArgumentParser(prog='anbtk')
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('init',action='store_true')
 
-    #subparsers = parser.add_subparsers(title='init',required=False)
-    # parser.add_argument('init',action='store_true',help="initialize a ancestors notebook")
-    #parser_a = subparsers.add_parser(name = 'init' ,help='init help')
-    # parser_a.add_argument('-s','--source', help='select source file', nargs=1)
-    
-    
+    import argparse
 
-    
-    
-    args =
-    print(args)
-    if args is None:
-        print("asjglaksgjslakjg") 
-    else:
-        print("a.sgkjalskg")
+    parser = argparse.ArgumentParser(prog='ancestors notebook')
 
+    parser.add_argument('anb')
+    subparsers = parser.add_subparsers(dest='subcommand',required=True,help='List of subcommands accepted')
+    init_parser = subparsers.add_parser('init')
+    init_parser.add_argument('-s','--source',help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)
+    args = parser.parse_args()
+
+    if args.subcommand == 'init':
+        if args.source:
+            file = args.source[0]
+            initanb(os.path.abspath(file))
+    
+        else:
+            initanb()
 
 
 

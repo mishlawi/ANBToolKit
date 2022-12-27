@@ -1,4 +1,4 @@
-P : H* , Bio, Foto .
+defaultFsgram= """P : H* , Bio, Foto .
 Album : Foto*.
 H : r'h[0-9]+\-\w+\.\w+'
 Bio : r'b[0-9]+\-\w+\.\w+'
@@ -21,6 +21,7 @@ Album
 Ramo Familiar
 Instituição
 Casa
+Arquivo
 Genealogia
 Notas
 
@@ -36,3 +37,4 @@ IGNORE
 .py 
 .out
 .fsgram
+"""

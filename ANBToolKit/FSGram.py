@@ -4,6 +4,7 @@ from handlers.html.htmlLogic import *
 from handlers.grammar.gramLogic import *
 from FSGramTokens import tokens
 from DGUhand import *
+from cons import defaultFsgram
 
 #todo nao ir ao topo da produção
 grammar = {}
@@ -103,9 +104,11 @@ dirin = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/
 dirout = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/RootSorter/OUT"
 
 
-def initializer(file="RS.fsgram"):
-    parser = yacc.yacc() 
-    fo = open(file).read()
-    result = parser.parse(fo)
+def initializer(res=''):
+    parser = yacc.yacc()
+    if res=='' :
+        result = parser.parse(defaultFsgram)
+    else:
+        result = parser.parse(res) 
 
     return result

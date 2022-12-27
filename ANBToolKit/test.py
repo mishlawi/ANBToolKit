@@ -9,6 +9,7 @@ import subprocess
 import yaml
 import datetime
 from DGU import DGU as dgu
+from FSGram import initializer
 import argparse
 
 # Gets header and body of dgu and turns it in a dictionary
@@ -68,7 +69,7 @@ def dgu2texbook():
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
     #parser.add_argument('-o','--out',help="output destination",nargs=1)
-    group.add_argument('-t','--tree',help="Iterates through the entire tree of document of the present directory.",action='store_true')
+    group.add_argument('-t','--tree',help="Iterates through the entire tree of document of the present directory.",action='store_true',default=False)
     arguments = parser.parse_args()
     
     fo = open("texbook.tex",'w')
@@ -197,7 +198,8 @@ def dgubook():
         epilog = 'Results in a pdf file containing generic universal documents aglutinated.')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
-    group.add_argument('-t','--tree',help="Iterates through the entire tree of documents of the present directory.",action='store_true')
+    group.add_argument('-t','--tree',help="Iterates through the entire tree of documents of the present directory.",action='store_true',default=False)
+    parser.add_argument('-o','--output',help="Selects an output folder",nargs=1)
     arguments = parser.parse_args()
     time = datetime.datetime.now()
     x = str(time)
@@ -307,5 +309,41 @@ date: {date}
     return skeleton
 
 
+def initanb():
+    cwd = os.getcwd()
+    if os.path.exists(cwd + '/.anbtk'):
+        raise Exception("This folder was already initialized as an ancestors notebook.")
+        
+    else:
+        os.mkdir(cwd + '/.anbtk')
 
-dgu2texbook()
+    # group = parser.add_mutually_exclusive_group()
+    # group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
+    # group.add_argument('-t','--tree',help="Iterates through the entire tree of documents of the present directory.",action='store_true',default=False)
+    # parser.add_argument('-o','--output',help="Selects an output folder",nargs=1)
+
+def anb():
+    parser = argparse.ArgumentParser(prog='anbtk')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('init',action='store_true')
+
+    #subparsers = parser.add_subparsers(title='init',required=False)
+    # parser.add_argument('init',action='store_true',help="initialize a ancestors notebook")
+    #parser_a = subparsers.add_parser(name = 'init' ,help='init help')
+    # parser_a.add_argument('-s','--source', help='select source file', nargs=1)
+    
+    
+
+    
+    
+    args =
+    print(args)
+    if args is None:
+        print("asjglaksgjslakjg") 
+    else:
+        print("a.sgkjalskg")
+
+
+
+
+anb()

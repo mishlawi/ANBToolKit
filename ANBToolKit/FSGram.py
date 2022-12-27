@@ -20,7 +20,6 @@ def p_FSGram(p):
     universe = re.sub('UNIVERSE','',p[3]).strip()
     formats = re.sub('FORMATS','',p[4]).strip()
     ignored = re.sub('IGNORE','',p[5]).strip().split('\n')    
-
     bigbang(universe,formats)
     
     for elem in ignored:
@@ -99,11 +98,14 @@ def p_error(p):
     print(p)
 
 
+
 dirin = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/RootSorter/DuarteVilar"
 dirout = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/RootSorter/OUT"
 
-parser = yacc.yacc() 
 
-fo = open("RS.fsgram").read()
+def initializer(file="RS.fsgram"):
+    parser = yacc.yacc() 
+    fo = open(file).read()
+    result = parser.parse(fo)
 
-result = parser.parse(fo)
+    return result

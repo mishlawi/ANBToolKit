@@ -4,7 +4,7 @@ from handlers.html.htmlLogic import *
 from handlers.grammar.gramLogic import *
 from FSGramTokens import tokens
 from DGUhand import *
-from cons import defaultFsgram
+from Constants import defaultFsgram
 
 #todo nao ir ao topo da produção
 grammar = {}
@@ -15,7 +15,6 @@ def p_FSGram(p):
     "FSGram : Prods PYTHON UNIVERSE FORMATS IGNORED"
     ignoredFiles = []
     executable = ''
-    print(grammar)
     top = list(grammar.values())[0]
     verifyGrammar(top,grammar)
     universe = re.sub('UNIVERSE','',p[3]).strip()
@@ -23,20 +22,27 @@ def p_FSGram(p):
     ignored = re.sub('IGNORE','',p[5]).strip().split('\n')    
     bigbang(universe,formats)
     
+    if is_well_defined(nonterminals,terminals):
+        print("yes")
+    else:
+        print("no")
+    
     for elem in ignored:
         ignoredFiles.append(elem)
-    interpreter(terminals,nonterminals)
+    
+    # print(terminals)
+    # interpreter(terminals,nonterminals)
     
 
-    #! keep tagged, needs maintance
-    #disposal = travessia(grammar,dirin,dirout,ignoredFiles)
-    #genHtml(disposal,dirout,dirin)
+    # #! keep tagged, needs maintance
+    # #disposal = travessia(grammar,dirin,ignoredFiles)
+    # #genHtml(disposal,dirout,dirin)
     
-    print("\n\n*******\nPYTHON\n*******")
-    executable = re.sub('EXECUTABLE','',p[2]).strip()
-    executable = re.sub('%%','',executable).strip()
-    exec(executable)
-    print("\n\n\n")
+    # print("\n\n*******\nPYTHON\n*******")
+    # executable = re.sub('EXECUTABLE','',p[2]).strip()
+    # executable = re.sub('%%','',executable).strip()
+    # exec(executable)
+    # print("\n\n\n")
     print("Nao terminais",nonterminals)
     print("Terminais",terminals)
 
@@ -99,9 +105,6 @@ def p_error(p):
     print(p)
 
 
-
-dirin = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/RootSorter/DuarteVilar"
-dirout = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/RootSorter/OUT"
 
 
 def initializer(res=''):

@@ -31,4 +31,20 @@ flit install -s
 * adicionar o que recolhi ao git para ter um caso de estudo mais profundo
 * argparse e flit
 
+# 28/12
 
+* estive a rever a forma de processamento da DSL, essa parte mantém-se funcional mas ainda nao consegui encontrar um use case convincente para poder fazer o processamento de entidades em documentos. De que forma poderia isto ser feito? Algo como `comando Pessoa Album ` ?  leva à geração de algum tipo de ficheiro (conforme tinhamos feito ao inicio com html). Mas como verifico entidades?
+* Como dar uso à gramatica ? 
+  * Definicao de nomenclatura de ficheiros
+  * definicao de formatos aglutinadores (Pessoa por exemplo)
+* Como verificar se a gramatica está correta? 
+* Algum caminho para tornar a gramatica user friendly? Parece me demasiado formal
+* Integração flit com argparse está decente, abre caminho para muita coisa
+* De que me servem os formatos aceites? Informativo só?
+
+### TODO
+1. Ja deu para perceber a forma como valores da gramatica tem que ir como default, mas é preciso ter controlo sobre as entidades, não só instanciá-las.
+2. *Beautificar* os geradores de livros
+3. Pensar em adicionar geracao html
+  1. Que esta geracao possa ser feita com dgus e com entidades
+4.  

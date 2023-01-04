@@ -8,10 +8,16 @@ import sys
 import subprocess
 import yaml
 import datetime
-
-from .DGU import DGU as dgu
-from .FSGram import initializer
 import argparse
+import yaml
+import markdown2
+import weasyprint
+import time
+
+from .FSGram import initializer
+from .Constants import frontdgubook
+from .DGU import DGU as dgu
+from .skeletons import *
 
 # Gets header and body of dgu and turns it in a dictionary
 def parseAbstractDgu(filename):
@@ -60,7 +66,7 @@ def dgu2tex():
     for file in sys.argv[1:]:
         print(dgu2texbuilder(file))
 
-############################################
+#################### latex book ########################
 
 def dgu2texbook():
     parser = argparse.ArgumentParser(
@@ -129,7 +135,7 @@ def defaultConversion(text):
     subprocess.check_call(['rm','temp.tex'])
     return temptext
 
-############################################
+################### dgu generation ######################
 
 def tex2dgu(dirout=""):
     parser = argparse.ArgumentParser(
@@ -191,8 +197,10 @@ def getFormat(string):
     else:
         return string
 
-#################################################
+#################### pdf books#############################
+
 def dgubook():
+
     parser = argparse.ArgumentParser(
         prog = 'dgubook',
         description = 'Aglomerates a number of .dgu files in a book - pdf format.',
@@ -200,7 +208,57 @@ def dgubook():
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
     group.add_argument('-t','--tree',help="Iterates through the entire tree of documents of the present directory.",action='store_true',default=False)
-    parser.add_argument('-o','--output',help="Selects an output folder",nargs=1)
+    parser.add_argument('-o','--output',help="Selects an output folder",nargs=1) #! is not being used
+    arguments = parser.parse_args()
+    time = datetime.datetime.now()
+    x = str(time)
+
+    tempdgu =  open('dgu2pdf.md','w') 
+    tempdgu.write("# PDF COMPILATION\n\n\n")
+    tempdgu.write("### Compilation made via AnbToolKit\n\n")
+    tempdgu.write(f"Processed and generated on {x[:10]}.\n\n\n")
+
+    
+    cwd = os.getcwd()
+
+    if arguments.file:            
+        for elem in arguments.file:
+            if elem.endswith('.dgu'):
+                if os.path.dirname(elem)!='':
+                    os.chdir(os.path.dirname(os.path.abspath(elem)))
+                temp = open(os.path.basename(elem),'r').read()
+                heading2markdown(temp,tempdgu)
+                os.chdir(cwd)
+                subprocess.run(['pandoc', 'dgu2pdf.md', '-o', 'dgu2pdf.pdf']) # maybe have a personalized name
+                
+
+            else:
+                raise Exception(elem + " is not a dgu file")
+                
+    if arguments.tree:
+        
+        for (dirpath,_,filenames) in os.walk(cwd):
+            for filename in filenames:
+              if filename.endswith('.dgu'):
+                temp = open(dirpath+'/'+filename,'r').read()
+                heading2markdown(temp,tempdgu)
+                os.chdir(cwd)
+                subprocess.run(['pandoc', 'dgu2pdf.md', '-o', 'dgu2pdf.pdf']) # maybe have a personalized name
+    
+    tempdgu.close()
+
+
+
+def dgubooktex():
+
+    parser = argparse.ArgumentParser(
+        prog = 'dgubook',
+        description = 'Aglomerates a number of .dgu files in a book - pdf format.',
+        epilog = 'Results in a pdf file containing generic universal documents aglutinated.')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
+    group.add_argument('-t','--tree',help="Iterates through the entire tree of documents of the present directory.",action='store_true',default=False)
+    parser.add_argument('-o','--output',help="Selects an output folder",nargs=1) #! is not being used
     arguments = parser.parse_args()
     time = datetime.datetime.now()
     x = str(time)
@@ -217,7 +275,7 @@ def dgubook():
                 if os.path.dirname(elem)!='':
                     os.chdir(os.path.dirname(os.path.abspath(elem)))
                 temp = open(os.path.basename(elem),'r').read()
-                textInserter(temp,tempdgu)
+                heading2Latex(temp,tempdgu)
                 os.chdir(cwd)
                 
                 subprocess.check_call(args)
@@ -231,14 +289,41 @@ def dgubook():
             for filename in filenames:
               if filename.endswith('.dgu'):
                 temp = open(dirpath+'/'+filename,'r').read()
-                textInserter(temp,tempdgu)
+                heading2Latex(temp,tempdgu)
                 os.chdir(cwd)
                 subprocess.check_call(args)
     
     tempdgu.close()
 
+#################### headings ##########################
 
-def textInserter(temp,tempdgu):
+
+def heading2markdown(temp,tempdgu):
+    headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",temp).group()
+    adgu = yaml.full_load(headers)
+    
+    if adgu['type'] == 'Story':
+        tempdgu.write(f"# {{{adgu['title']}}}\n")
+        tempdgu.write(f"### A story written or falling back to _{{{adgu['date']}}}_\n")
+
+    elif adgu['type'] == 'Biography':
+        tempdgu.write(f"## _A suscint Biography regarding:_\n")
+    else:
+        tempdgu.write(f"### {{{adgu['id']}}}\n")
+    tempdgu.write("---\n")
+    for elem in adgu.get('about',''):
+        if elem == '':
+            pass
+        else:
+            tempdgu.write(f"* {elem}\n")
+    tempdgu.write("---\n")
+    text = re.split(r'\-\-\-',temp)[2]
+    tempdgu.write(text)
+    tempdgu.write('\n<div class="page-break"></div>\n')
+    
+
+
+def heading2Latex(temp,tempdgu):
     headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",temp).group()
     adgu = yaml.full_load(headers)
     for elem in adgu['about']:
@@ -259,7 +344,7 @@ $\\ast$~$\\ast$~$\\ast$
     tempdgu.write("\pagebreak\n\n")
 
 
-########################################################
+######################## notes #######################
 def genNote():
     parser = argparse.ArgumentParser(
         prog = 'genNote',
@@ -287,29 +372,47 @@ def genNote():
                             adgu = yaml.full_load(headers)
                             subprocess.check_call(['rm',f"{name}.md"])
                             notename = "note" + '-' + re.split("-",name)[1] 
-                            body = noteSkeleton(notename,adgu.get('title',' '),adgu.get('author',' '),adgu.get('date',' '))
+                            body = note(notename,adgu.get('title',' '),adgu.get('author',' '),adgu.get('date',' '))
                             foNote = open(f"{identifier}.anbnote",'w')
                             foNote.write(body)
                             foNote.close()
                         # more formats to be added
-                            
-
-def noteSkeleton(notename,title,author,date):
-    skeleton=f"""---
-name: {notename}
-title: {title}
-author: {author}
-date: {date}
----
-
-# Relevant info
 
 
-===
-#""" + """{}"""
-    return skeleton
 
 
+
+def genStory():
+    parser = argparse.ArgumentParser(
+        prog = 'genStory',
+        description = 'Generates a Story in the accepted format for Ancestors Notebook',
+        epilog = 'Composes a story to be filled by the user.')
+
+    # Optional flags '-t', '-a', '-d'
+    parser.add_argument('-t', '--title',required=True, help='Title of the story')
+    parser.add_argument('-a', '--author', help='Author of the story')
+    parser.add_argument('-d', '--date', default=time.strftime('%Y-%m-%d'), help='the date of the story')
+
+    args = parser.parse_args()
+    title = args.title
+    date = args.date
+
+    if author := args.author is None:
+        author = os.path.split(os.getcwd())[-1]
+    
+    with open('test.tex','w') as texfo:
+        texfo.write(story(title,author,date))
+
+
+def genBio():
+    print()
+
+def genBio():
+
+
+
+
+############################## commands ##############################
 def initanb(path=""):
     cwd = os.getcwd()
     if os.path.exists(cwd + '/.anbtk'):
@@ -321,10 +424,9 @@ def initanb(path=""):
         if path=="":
             initializer()
         else:
-            file = os.path.basename(path)
+
             if os.path.dirname(path)!='':
                 os.chdir(os.path.dirname(os.path.abspath(path)))
-            print(path)
             temp = open(path,'r').read()
             os.chdir(filepath)
             initializer(temp)
@@ -335,7 +437,6 @@ def anb():
 
     parser = argparse.ArgumentParser(prog='ancestors notebook')
 
-    parser.add_argument('anb')
     subparsers = parser.add_subparsers(dest='subcommand',required=True,help='List of subcommands accepted')
     init_parser = subparsers.add_parser('init')
     init_parser.add_argument('-s','--source',help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)
@@ -348,6 +449,3 @@ def anb():
     
         else:
             initanb()
-
-
-

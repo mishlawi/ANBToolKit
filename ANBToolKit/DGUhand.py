@@ -1,11 +1,7 @@
-import os
 import re 
 import yaml
-import subprocess
-import datetime
-import sys
 from pathlib import Path
-import argparse
+
 
 from DGU import DGU as dgu
 
@@ -20,7 +16,6 @@ def bigbang(stringUniverse,stringFormats):
     formatformats = re.findall(r'\w+',stringFormats)
     universeAbout = "Universe of entities currently being used in this ancestors notebook"
     formatsAabout = "Accepted types of file formats"
-    print(uniformats)
     with open(r'universe.dgu', 'w') as file:
         file.write("---\n")
         yaml.dump(dgu(id = "Universe",format = "dgu",type="universe?",about=[universeAbout]),file,default_flow_style=False, sort_keys=False)
@@ -37,9 +32,3 @@ def bigbang(stringUniverse,stringFormats):
             file.write(f"* {elem}\n")
 
 
-
-
-dirin = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/ANBToolKit/ClaraVilar"
-dirout = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/ANBToolKit/ClaraVilar"
-test = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/ANBToolKit/h2-moto4.dgu"
-test2 = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/ANBToolKit/h1-viagemCaboVerde.tex"

@@ -45,6 +45,35 @@ def zoom(value, terminals, nonterminals,buff):
             zoom(id,terminals,nonterminals,buff)
 
 
+def is_well_defined(non_terminals, terminals):
+    
+    # CNF check
+    for leftHandSide, rightHandSide in non_terminals.items():
+        for production in rightHandSide:
+            if len(production) != 2:
+                
+                return False
+
+            for symbol in production:
+                if symbol[-1] in ["+", "*"]:
+                    symbol = symbol[:-1]
+                if symbol not in non_terminals and symbol not in terminals:
+                    print(non_terminals,terminals)
+                    print(symbol)
+                    print("aqui2")
+                    return False
+                if symbol[-1] == "?":
+                    symbol = symbol[:-1]
+                    if symbol not in non_terminals and symbol not in terminals:
+                        print("aqui1")
+                        return False
+
+    # Check if the grammar is context-free
+    for leftHandSide, rightHandSide in non_terminals.items():
+        for production in rightHandSide:
+            if len(leftHandSide) != 1:
+                return False
+
 
 def verifyGrammar(lista,grammar):
     for producao in lista:
@@ -58,7 +87,7 @@ def verifyGrammar(lista,grammar):
 
 
 # instead of receiving the whole grammar, choose a production aka a Universal element
-def travessia(grammar,dirIn,dirOut,ignoredFiles):
+def travessia(grammar,dirIn,ignoredFiles):
     
     # gets files
     ficheiros = []

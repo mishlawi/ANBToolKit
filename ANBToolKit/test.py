@@ -8,9 +8,9 @@ import sys
 import subprocess
 import yaml
 import datetime
-
 from DGU import DGU as dgu
 from FSGram import initializer
+from Constants import *
 import argparse
 
 # Gets header and body of dgu and turns it in a dictionary
@@ -193,6 +193,7 @@ def getFormat(string):
 
 #################################################
 def dgubook():
+    print("askglaksjg")
     parser = argparse.ArgumentParser(
         prog = 'dgubook',
         description = 'Aglomerates a number of .dgu files in a book - pdf format.',
@@ -207,6 +208,7 @@ def dgubook():
     tempdgu = open('dgu2pdf.md','w')
     tempdgu.write("# PDF COMPILATION\n\n\n")
     tempdgu.write("### Compilation made via AnbToolKit\n\n")
+    tempdgu.write(frontdgubook)
     tempdgu.write(f"Processed and generated on {x[:10]}.\n\n\n")
     tempdgu.write('\pagebreak\n\n')
     args = ['pandoc', '-f','markdown','dgu2pdf.md','-o','dgu2pdf.pdf']
@@ -321,10 +323,9 @@ def initanb(path=""):
         if path=="":
             initializer()
         else:
-            file = os.path.basename(path)
+
             if os.path.dirname(path)!='':
                 os.chdir(os.path.dirname(os.path.abspath(path)))
-            print(path)
             temp = open(path,'r').read()
             os.chdir(filepath)
             initializer(temp)
@@ -335,7 +336,6 @@ def anb():
 
     parser = argparse.ArgumentParser(prog='ancestors notebook')
 
-    parser.add_argument('anb')
     subparsers = parser.add_subparsers(dest='subcommand',required=True,help='List of subcommands accepted')
     init_parser = subparsers.add_parser('init')
     init_parser.add_argument('-s','--source',help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)
@@ -349,6 +349,4 @@ def anb():
         else:
             initanb()
 
-
-
-anb()
+dgubook()

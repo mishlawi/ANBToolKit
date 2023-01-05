@@ -18,5 +18,6 @@ dgu2texbook = "anbtk:dgu2texbook"
 tex2dgu = "anbtk:tex2dgu"
 dgubook = "anbtk:dgubook"
 genStory = "anbtk:genStory"
+genBio = "anbtk:genBio"
 anb = "anbtk:anb"
 

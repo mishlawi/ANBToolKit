@@ -4,6 +4,7 @@ __version__ = "0.0.1"
 
 import re
 import os
+import json
 import sys
 import subprocess
 import yaml
@@ -19,7 +20,23 @@ from .Constants import frontdgubook
 from .DGU import DGU as dgu
 from .skeletons import *
 
+#*TODO
+## code
+# Distribute all aux functions in specific files
+# try to remove verbose to another file brought by the argparse module
+# reactoring of functions, some things are repeated a lot and could be easily represented by a function
+# templates are trash atm
+## ideias
+#
+#! dsl for notes
+#! generate 
+#! start to consider images
+
+
+
+
 # Gets header and body of dgu and turns it in a dictionary
+#NEEDS MAINTANCE
 def parseAbstractDgu(filename):
     if re.split(r'\.',filename)[1] == 'dgu':
         fo = open(filename).read()
@@ -198,8 +215,8 @@ def getFormat(string):
         return string
 
 #################### pdf books#############################
-
-def dgubook():
+#! THIS ONE IS NOT FINISHED, I NEED A DIFFERENT APPROACH
+def dgubookmd():
 
     parser = argparse.ArgumentParser(
         prog = 'dgubook',
@@ -249,7 +266,7 @@ def dgubook():
 
 
 
-def dgubooktex():
+def dgubook():
 
     parser = argparse.ArgumentParser(
         prog = 'dgubook',
@@ -379,10 +396,17 @@ def genNote():
                         # more formats to be added
 
 
-
+# aux of genStory
+def simplify(title):
+    words = title.split()
+    words = [word.capitalize() for word in words]
+    simplified_title = "".join(words)
+    simplified_title = re.sub(r'[^\w\s]', '', simplified_title)
+    return simplified_title
 
 
 def genStory():
+    cd = os.getcwd()
     parser = argparse.ArgumentParser(
         prog = 'genStory',
         description = 'Generates a Story in the accepted format for Ancestors Notebook',
@@ -398,29 +422,132 @@ def genStory():
     date = args.date
 
     if author := args.author is None:
+        print("It is assumed that the author is the current folder") # this should be changed
         author = os.path.split(os.getcwd())[-1]
     
-    with open('test.tex','w') as texfo:
+    denomination = simplify(title)
+
+    if find_anb is None:
+        print("No guarantee of a unique name\n")
+        filename = "hx-{denomination}"
+    else:
+        os.chdir(find_anb())
+        filename = dataUpdate('Story',denomination)
+    os.chdir(cd)
+    
+    with open(f'{filename}.tex','w') as texfo:
         texfo.write(story(title,author,date))
 
 
 def genBio():
-    print()
+    cd = os.getcwd()
+    parser = argparse.ArgumentParser(
+        prog = 'genBio',
+        description = 'Generates a Biography in the accepted format for Ancestors Notebook',
+        epilog = 'Composes a Biography to be filled by the user.')
 
-def genBio():
+    parser.add_argument('-n', '--name',required=True, help='Name of the individual')
+    parser.add_argument('-b', '--birth',default="", help='Date of Birth')
+    parser.add_argument('-d', '--death',default="", help='Date of Death')
+    parser.add_argument('-bp', '--birthplace',default="", help='BirthPlace')
+    parser.add_argument('-o', '--occupation',default="", help="Individual's Job or Occupation")
+
+    args = parser.parse_args()
+    name = args.name
+    birth= args.birth
+    death = args.death
+    bp = args.birthplace
+    o = args.occupation
+    
+    if find_anb() is None:
+        print("No guarantee of a unique name since you haven't initialized an Ancestors Notebook\n")
+        denomination = simplify(name)
+        filename = f"bx-{denomination}"
+    else:
+        os.chdir(find_anb())
+        filename = dataUpdate('Biography',simplify(name))
+        os.chdir(cd)
+    
+    with open(f'{filename}.md','w') as mdfileobject:
+        mdfileobject.write(biography(name,birth,death,bp,o))
 
 
+
+############################## .anb ################################
+
+def initData():
+    data = {}
+    
+    data['Biography'] = 0
+    data['Story'] = 0
+
+    # > more formats tba
+    with open('anbtk.json','w') as anbtkfo:
+        json.dump(data,anbtkfo)
+
+def dataUpdate(file_type, name):
+    
+    with open('anbtk.json', 'r') as f:
+        data = json.load(f)
+    
+    if file_type not in data:
+        data[file_type] = 0
+    
+    data[file_type] += 1
+    
+    if file_type =='Biography':
+        id = f"b{data[file_type]}-{name}"
+    
+    elif file_type == 'Story':
+        id = f"h{data[file_type]}-{name}"
+    
+    # > more formats tba
+
+    with open('anbtk.json', 'w') as f:
+        json.dump(data, f)
+
+    return id
+
+
+def find_anb():
+    current_dir = os.getcwd()
+    while True:
+        if os.path.isdir(os.path.join(current_dir, '.anbtk')):
+            # .anb folder found
+            return os.path.abspath(os.path.join(current_dir, '.anbtk'))
+        new_dir = os.path.dirname(current_dir)
+        if new_dir == current_dir:
+            # reached root directory without finding .anb folder
+            return None
+        current_dir = new_dir
+
+# def find_anb():
+#     current_dir = os.getcwd()
+#     while True:
+#         if os.path.isdir(os.path.join(current_dir, '.anbtk')):
+#             # .anb folder found
+#             return os.path.abspath(current_dir)
+#         new_dir = os.path.dirname(current_dir)
+#         if new_dir == current_dir:
+#             # reached root directory without finding .anb folder
+#             return None
+#         current_dir = new_dir
 
 
 ############################## commands ##############################
+
+
+
 def initanb(path=""):
     cwd = os.getcwd()
     if os.path.exists(cwd + '/.anbtk'):
-        raise Exception("This folder was already initialized as an ancestors notebook.")
-        
+        raise Exception("This folder was already initialized as an Ancestors Notebook.")
+    elif find_anb() is not None:
+        raise Exception("You are already in an Ancestors Notebook")  
     else:
         os.mkdir(filepath := (cwd + '/.anbtk'))
         os.chdir(filepath)
+        initData()
         if path=="":
             initializer()
         else:

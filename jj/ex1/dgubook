@@ -1,0 +1,17 @@
+#!/usr/bin/python3
+from jjcli import * 
+# import jinja2 as jj2
+from jinja2 import Environment, FileSystemLoader
+
+environment = Environment(loader=FileSystemLoader("templates/"))
+
+c=clfilter(opt="do:")     ## option values in c.opt dictionary
+
+dgus2md = environment.get_template("anb1.j2")
+
+h2=[]
+for t in c.text():    ## process one line at the time
+    h2.append(t)
+
+print(dgus2md.render(tit="Livro dos antepassados", hs=h2))
+    

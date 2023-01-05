@@ -235,7 +235,6 @@ def dgubookmd():
     tempdgu.write("### Compilation made via AnbToolKit\n\n")
     tempdgu.write(f"Processed and generated on {x[:10]}.\n\n\n")
 
-    
     cwd = os.getcwd()
 
     if arguments.file:            
@@ -327,6 +326,7 @@ def heading2markdown(temp,tempdgu):
         tempdgu.write(f"## _A suscint Biography regarding:_\n")
     else:
         tempdgu.write(f"### {{{adgu['id']}}}\n")
+        
     tempdgu.write("---\n")
     for elem in adgu.get('about',''):
         if elem == '':
@@ -520,22 +520,6 @@ def find_anb():
             # reached root directory without finding .anb folder
             return None
         current_dir = new_dir
-
-# def find_anb():
-#     current_dir = os.getcwd()
-#     while True:
-#         if os.path.isdir(os.path.join(current_dir, '.anbtk')):
-#             # .anb folder found
-#             return os.path.abspath(current_dir)
-#         new_dir = os.path.dirname(current_dir)
-#         if new_dir == current_dir:
-#             # reached root directory without finding .anb folder
-#             return None
-#         current_dir = new_dir
-
-
-############################## commands ##############################
-
 
 
 def initanb(path=""):

@@ -15,10 +15,10 @@ import markdown2
 import weasyprint
 import time
 
-from .FSGram import initializer
-from .Constants import frontdgubook
-from .DGU import DGU as dgu
-from .skeletons import *
+from . import Constants
+from . import FSGram
+from . import dguObject as dgu
+from . import skeletons
 
 #*TODO
 ## code
@@ -231,9 +231,8 @@ def dgubookmd():
     x = str(time)
 
     tempdgu =  open('dgu2pdf.md','w') 
-    tempdgu.write("# PDF COMPILATION\n\n\n")
-    tempdgu.write("### Compilation made via AnbToolKit\n\n")
-    tempdgu.write(f"Processed and generated on {x[:10]}.\n\n\n")
+    tempdgu.write(Constants.markdownbook)
+    tempdgu.write(f"<sup>Processed and generated on {x[:10]}</sup>.\n\n\n")
 
     cwd = os.getcwd()
 
@@ -389,7 +388,7 @@ def genNote():
                             adgu = yaml.full_load(headers)
                             subprocess.check_call(['rm',f"{name}.md"])
                             notename = "note" + '-' + re.split("-",name)[1] 
-                            body = note(notename,adgu.get('title',' '),adgu.get('author',' '),adgu.get('date',' '))
+                            body = skeletons.note(notename,adgu.get('title',' '),adgu.get('author',' '),adgu.get('date',' '))
                             foNote = open(f"{identifier}.anbnote",'w')
                             foNote.write(body)
                             foNote.close()
@@ -414,15 +413,16 @@ def genStory():
 
     # Optional flags '-t', '-a', '-d'
     parser.add_argument('-t', '--title',required=True, help='Title of the story')
-    parser.add_argument('-a', '--author', help='Author of the story')
+    parser.add_argument('-a', '--author', default="", help='Author of the story',nargs='+')
     parser.add_argument('-d', '--date', default=time.strftime('%Y-%m-%d'), help='the date of the story')
+    parser.add_argument('-dgu',action='store_true',help='generates a Story dgu in Latex format')
 
     args = parser.parse_args()
     title = args.title
     date = args.date
 
     if author := args.author is None:
-        print("It is assumed that the author is the current folder") # this should be changed
+        print("It is assumed that the author is the current folder denomination") # this should be changed
         author = os.path.split(os.getcwd())[-1]
     
     denomination = simplify(title)
@@ -435,8 +435,12 @@ def genStory():
         filename = dataUpdate('Story',denomination)
     os.chdir(cd)
     
-    with open(f'{filename}.tex','w') as texfo:
-        texfo.write(story(title,author,date))
+    if args.dgu:
+        with open(f'{filename}.dgu','w') as dgufo:
+            dgufo.write(skeletons.dguStory(title,author,date,denomination))
+    else:
+        with open(f'{filename}.tex','w') as texfo:
+            texfo.write(skeletons.story(title,author,date))
 
 
 def genBio():
@@ -468,8 +472,13 @@ def genBio():
         filename = dataUpdate('Biography',simplify(name))
         os.chdir(cd)
     
-    with open(f'{filename}.md','w') as mdfileobject:
-        mdfileobject.write(biography(name,birth,death,bp,o))
+    if args.dgu:
+        with open(f'{filename}.dgu','w') as dgufo:
+            print()
+           # dgufo.write(dguBio(title,author,date,denomination))
+    else:
+        with open(f'{filename}.md','w') as mdfileobject:
+            mdfileobject.write(skeletons.biography(name,birth,death,bp,o))
 
 
 
@@ -533,14 +542,14 @@ def initanb(path=""):
         os.chdir(filepath)
         initData()
         if path=="":
-            initializer()
+            FSGram.initializer()
         else:
 
             if os.path.dirname(path)!='':
                 os.chdir(os.path.dirname(os.path.abspath(path)))
             temp = open(path,'r').read()
             os.chdir(filepath)
-            initializer(temp)
+            FSGram.initializer(temp)
             
 def anb():
 

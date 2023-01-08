@@ -13,7 +13,7 @@ main()
 
 UNIVERSE
 
-Pessoa
+Pessoa -> x ::  y :: z
 História/Story
 Biografia/Biography
 Foto

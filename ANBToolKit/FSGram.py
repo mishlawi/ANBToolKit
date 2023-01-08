@@ -19,6 +19,7 @@ def p_FSGram(p):
     verifyGrammar(top,grammar)
     universe = re.sub('UNIVERSE','',p[3]).strip()
     formats = re.sub('FORMATS','',p[4]).strip()
+    print(universe)
     ignored = re.sub('IGNORE','',p[5]).strip().split('\n')    
     bigbang(universe,formats)
     
@@ -115,3 +116,5 @@ def initializer(res=''):
         result = parser.parse(res) 
 
     return result
+
+initializer()

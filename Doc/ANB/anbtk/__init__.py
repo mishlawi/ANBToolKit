@@ -32,7 +32,7 @@ from . import DGUhand
 #! dsl for notes
 #! generate 
 #! start to consider images
-#* i want that story and bio (and others) are default
+#* i want it so that story and bio (and others) are default formats but the users can create their ones 
 
 
 
@@ -160,8 +160,8 @@ def defaultConversion(text):
 def tex2dgu(dirout=""):
     parser = argparse.ArgumentParser(
         prog = 'dgubook',
-        description = 'Aglomerates a number of .dgu files in a book - pdf format.',
-        epilog = 'Results in a pdf file containing generic universal documents aglutinated.')
+        description = 'Converts tex file to dgu.',
+        epilog = '')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
     arguments = parser.parse_args()
@@ -181,11 +181,12 @@ def tex2dgu(dirout=""):
                 dgufile = open(filename[:-4]+'.dgu','w')
                 id = re.search(r'(?<=\-).+(?=\.)',filename).group()
                 text = re.split(r'\-\-\-',fo)[2]
+                print(text)
                 dgufile.write("---\n")
                 format = getFormat('tex')
                 type = docType(filename)
                 abouts = re.findall(r'\\ind\{(.+?| )\}',file)
-                yaml.dump(dgu(id = id,format = format,type=type,about=abouts),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
+                yaml.dump(dgu.DGU(id = id,format = format,type=type,about=abouts),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
                 yaml.dump(adgu,dgufile)
                 dgufile.write("---\n")
                 dgufile.write(text)
@@ -282,7 +283,8 @@ def dgubook():
         time = datetime.datetime.now()
         x = str(time)
         tempdgu = open('dgu2pdf.md','w')
-        tempdgu.write("# A Book of special stories\n\n\n")
+        tempdgu.write("# Ancestors Notebook\n")
+        tempdgu.write("### _A Book of special stories_\n\n\n")
         tempdgu.write(f"Processed and generated on {x[:10]}.\n\n\n")
         tempdgu.write('\pagebreak\n\n')
         args = ['pandoc', '-f','markdown','dgu2pdf.md','-o','dgu2pdf.pdf']
@@ -304,10 +306,18 @@ def dgubook():
                     
         if arguments.tree:
             
-            for (dirpath,_,filenames) in os.walk(cwd):
+            visited = set()
+            for dirpath, _, filenames in os.walk(cwd, followlinks=True):
+                realpath = os.path.realpath(dirpath)
+                if realpath in visited:
+                    continue
+                visited.add(realpath)
+                
+                if os.path.basename(dirpath) == '.anbtk':
+                    continue
                 for filename in filenames:
                     if filename.endswith('.dgu'):
-                        temp = open(dirpath+'/'+filename,'r').read()
+                        temp = open(os.path.join(dirpath, filename),'r').read()
                         heading2Latex(temp,tempdgu)
                         os.chdir(cwd)
             tempdgu.close()
@@ -427,9 +437,11 @@ def genStory():
     title = args.title
     date = args.date
 
-    if author := args.author is None:
+    if args.author is None:
         print("It is assumed that the author is the current folder denomination") # this should be changed
         author = os.path.split(os.getcwd())[-1]
+    else:
+        author = args.author[0]
     
     denomination = simplify(title)
 
@@ -477,14 +489,14 @@ def genBio():
         os.chdir(find_anb())
         filename = dataUpdate('Biography',simplify(name))
         os.chdir(cd)
+    with open(f'{filename}.md','w') as mdfileobject:
+        mdfileobject.write(skeletons.biography(name,birth,death,bp,o))
     
-    if args.dgu:
-        with open(f'{filename}.dgu','w') as dgufo:
-            print()
-           # dgufo.write(dguBio(title,author,date,denomination))
-    else:
-        with open(f'{filename}.md','w') as mdfileobject:
-            mdfileobject.write(skeletons.biography(name,birth,death,bp,o))
+    # if args.dgu:
+    #     with open(f'{filename}.dgu','w') as dgufo:
+    #         print()
+    #        # dgufo.write(dguBio(title,author,date,denomination))
+    # else:
 ####################################################################
 
 
@@ -567,7 +579,6 @@ def handleCommand(name,attributes, args):
 
 
 
-       
 def genCommands(subparser):
     with open('universe.dgu','r') as universe:
         content = universe.read()
@@ -587,16 +598,11 @@ def genCommands(subparser):
             sub.add_argument('--name', help='Name of file',nargs=1)
 
             
-
-    
-    
-            
 def anb():
     
     parser = argparse.ArgumentParser(prog='ancestors notebook')
 
     subparsers = parser.add_subparsers(dest='subcommand',required=True,help='List of subcommands accepted')
-    genCommands(subparsers)
     init_parser = subparsers.add_parser('init')
     init_parser.add_argument('-s','--source',help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)
     args = parser.parse_args()
@@ -609,4 +615,5 @@ def anb():
     
         else:
             initanb()
+        genCommands(subparsers)
 

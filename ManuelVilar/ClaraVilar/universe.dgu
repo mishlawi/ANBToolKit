@@ -6,15 +6,5 @@ about:
 - Universe of entities currently being used in this ancestors notebook
 ---
 
-*Story 
-	*Title
-	*Author
-	*Date
-
-*Biography 
-	*Name
-	*Birthday
-	*Birthplace
-	*Occupation
-	*Death
-
+* Story  -> ['Title', 'Author', 'Date']
+* Biography  -> ['Name', 'Birthday', 'Birthplace', 'Occupation', 'Death']

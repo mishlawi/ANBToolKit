@@ -1,7 +1,7 @@
 ---
-id: Formats
+id: formats
 format: dgu
-type: formats?
+type: Format
 about:
 - Accepted types of file formats
 ---

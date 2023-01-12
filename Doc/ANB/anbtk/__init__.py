@@ -19,6 +19,7 @@ from . import Constants
 from . import FSGram
 from . import dguObject as dgu
 from . import skeletons
+from . import DGUhand
 
 #*TODO
 ## code
@@ -31,6 +32,8 @@ from . import skeletons
 #! dsl for notes
 #! generate 
 #! start to consider images
+#* i want that story and bio (and others) are default
+
 
 
 
@@ -275,40 +278,43 @@ def dgubook():
     group.add_argument('-t','--tree',help="Iterates through the entire tree of documents of the present directory.",action='store_true',default=False)
     parser.add_argument('-o','--output',help="Selects an output folder",nargs=1) #! is not being used
     arguments = parser.parse_args()
-    time = datetime.datetime.now()
-    x = str(time)
-    tempdgu = open('dgu2pdf.md','w')
-    tempdgu.write("# PDF COMPILATION\n\n\n")
-    tempdgu.write("### Compilation made via AnbToolKit\n\n")
-    tempdgu.write(f"Processed and generated on {x[:10]}.\n\n\n")
-    tempdgu.write('\pagebreak\n\n')
-    args = ['pandoc', '-f','markdown','dgu2pdf.md','-o','dgu2pdf.pdf']
-    cwd = os.getcwd()
-    if arguments.file:            
-        for elem in arguments.file:
-            if elem.endswith('.dgu'):
-                if os.path.dirname(elem)!='':
-                    os.chdir(os.path.dirname(os.path.abspath(elem)))
-                temp = open(os.path.basename(elem),'r').read()
-                heading2Latex(temp,tempdgu)
-                os.chdir(cwd)
-                
-                subprocess.check_call(args)
+    if arguments is not None:
+        time = datetime.datetime.now()
+        x = str(time)
+        tempdgu = open('dgu2pdf.md','w')
+        tempdgu.write("# A Book of special stories\n\n\n")
+        tempdgu.write(f"Processed and generated on {x[:10]}.\n\n\n")
+        tempdgu.write('\pagebreak\n\n')
+        args = ['pandoc', '-f','markdown','dgu2pdf.md','-o','dgu2pdf.pdf']
+        cwd = os.getcwd()
+        if arguments.file:            
+            for elem in arguments.file:
+                if elem.endswith('.dgu'):
+                    if os.path.dirname(elem)!='':
+                        os.chdir(os.path.dirname(os.path.abspath(elem)))
+                    temp = open(os.path.basename(elem),'r').read()
+                    heading2Latex(temp,tempdgu)
+                    os.chdir(cwd)
 
-            else:
-                raise Exception(elem + " is not a dgu file")
-                
-    if arguments.tree:
-        
-        for (dirpath,_,filenames) in os.walk(cwd):
-            for filename in filenames:
-              if filename.endswith('.dgu'):
-                temp = open(dirpath+'/'+filename,'r').read()
-                heading2Latex(temp,tempdgu)
-                os.chdir(cwd)
-                subprocess.check_call(args)
-    
-    tempdgu.close()
+                else:
+                    tempdgu.close()        
+                    raise Exception(elem + " is not a dgu file")
+            tempdgu.close()
+            subprocess.check_call(args)
+                    
+        if arguments.tree:
+            
+            for (dirpath,_,filenames) in os.walk(cwd):
+                for filename in filenames:
+                    if filename.endswith('.dgu'):
+                        temp = open(dirpath+'/'+filename,'r').read()
+                        heading2Latex(temp,tempdgu)
+                        os.chdir(cwd)
+            tempdgu.close()
+            subprocess.check_call(args)
+            
+    else:
+        print("You need to specify a flag. Use dguBook -h")
 
 #################### headings ##########################
 
@@ -479,6 +485,8 @@ def genBio():
     else:
         with open(f'{filename}.md','w') as mdfileobject:
             mdfileobject.write(skeletons.biography(name,birth,death,bp,o))
+####################################################################
+
 
 
 
@@ -544,23 +552,55 @@ def initanb(path=""):
         if path=="":
             FSGram.initializer()
         else:
-
             if os.path.dirname(path)!='':
                 os.chdir(os.path.dirname(os.path.abspath(path)))
+            
             temp = open(path,'r').read()
             os.chdir(filepath)
             FSGram.initializer(temp)
+
+def handleCommand(name,attributes, args):
+    id = dataUpdate(name, args.name[0])
+    subclass = DGUhand.dgu_subclass(name,attributes)
+    newDgu = subclass(None,None,None,None,*[None for _ in attributes])
+    yaml.dump(newDgu,f"{id}.dgu")
+
+
+
+       
+def genCommands(subparser):
+    with open('universe.dgu','r') as universe:
+        content = universe.read()
+        titles_match = re.findall(r"^\*\s([A-Za-z]+)", content, re.MULTILINE)
+        attributes_match = re.findall(r"^\s{4}\*\s([A-Za-z]+)", content, re.MULTILINE)
+        correspondence = {}
+        
+        for title, attribute in zip(titles_match, attributes_match):
+            if title in correspondence:
+                correspondence[title].append(attribute)
+            else:
+                correspondence[title] = [attribute]
+
+        for title, attributes in correspondence.items():
+            sub = subparser.add_parser(f"gen{title}")
+            sub.set_defaults(func=handleCommand,name=title,attributes=attributes)
+            sub.add_argument('--name', help='Name of file',nargs=1)
+
+            
+
+    
+    
             
 def anb():
-
-    import argparse
-
+    
     parser = argparse.ArgumentParser(prog='ancestors notebook')
 
     subparsers = parser.add_subparsers(dest='subcommand',required=True,help='List of subcommands accepted')
+    genCommands(subparsers)
     init_parser = subparsers.add_parser('init')
     init_parser.add_argument('-s','--source',help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)
     args = parser.parse_args()
+
 
     if args.subcommand == 'init':
         if args.source:
@@ -569,3 +609,4 @@ def anb():
     
         else:
             initanb()
+

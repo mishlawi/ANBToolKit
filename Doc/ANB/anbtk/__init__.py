@@ -377,6 +377,8 @@ $\\ast$~$\\ast$~$\\ast$
 
 
 ######################## notes #######################
+
+# needs to be checked
 def genNote():
     parser = argparse.ArgumentParser(
         prog = 'genNote',

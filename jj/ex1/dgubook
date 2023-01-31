@@ -2,16 +2,24 @@
 from jjcli import * 
 # import jinja2 as jj2
 from jinja2 import Environment, FileSystemLoader
-
+import yaml
 environment = Environment(loader=FileSystemLoader("templates/"))
 
-c=clfilter(opt="do:")     ## option values in c.opt dictionary
+c=clfilter(opt="do:i:")     ## option values in c.opt dictionary
 
 dgus2md = environment.get_template("anb1.j2")
 
 h2=[]
 for t in c.text():    ## process one line at the time
-    h2.append(t)
+    if aux:= re.split('---',t):
+        (_,cabecalho,corpo) = aux
+        meta = yaml.safe_load(cabecalho)
+        h2.append({"corpo":corpo,"titulo":meta['title']})
 
-print(dgus2md.render(tit="Livro dos antepassados", hs=h2))
+if "-i" in c.opt :
+    img = c.opt['-i']
+else:
+    img = None
+print(dgus2md.render(tit="Livro dos antepassados", hs=h2,img=img))
+
     

@@ -8,7 +8,7 @@ environment = Environment(loader=FileSystemLoader("templates/"))
 c=clfilter(opt="do:i:")     ## option values in c.opt dictionary
 
 dgus2md = environment.get_template("anb1.j2")
-
+cover = 'templates/cover.png'
 h2=[]
 for t in c.text():    ## process one line at the time
     if aux:= re.split('---',t):
@@ -20,6 +20,6 @@ if "-i" in c.opt :
     img = c.opt['-i']
 else:
     img = None
-print(dgus2md.render(tit="Livro dos antepassados", hs=h2,img=img))
+print(dgus2md.render(tit="Livro dos antepassados",cover=cover,hs=h2,img=img))
 
     

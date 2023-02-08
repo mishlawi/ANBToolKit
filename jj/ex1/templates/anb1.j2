@@ -7,16 +7,21 @@ variables:
     section-titles: false
 #    header-includes: \usepackage{natslides}
 
-toc: true
 
+toc: true
 number-sections: true
 
 ---
-
+\newpage
 # Livro dos antepassados
 
-[Foto]({{img}})
+![]({{cover}})
+
+\newpage
 {% for  h in hs %}
 ## {{h.titulo}}
    {{ h.corpo }}
+\newpage    
 {% endfor %}
+
+![Foto]({{img}})

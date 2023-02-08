@@ -11,15 +11,14 @@ import yaml
 import datetime
 import argparse
 import yaml
-import markdown2
-import weasyprint
 import time
 
+from . import argsConfig
 from . import Constants
-from . import FSGram
 from . import dguObject as dgu
-from . import skeletons
 from . import DGUhand
+from . import FSGram
+from . import skeletons
 
 #*TODO
 ## code
@@ -89,15 +88,8 @@ def dgu2tex():
 #################### latex book ########################
 
 def dgu2texbook():
-    parser = argparse.ArgumentParser(
-        prog = 'dgu2texbook',
-        description = 'Aglomerates a number of .dgu files in a latex book.',
-        epilog = 'In a latex file with diferent latex files aglutinated in one')
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
-    #parser.add_argument('-o','--out',help="output destination",nargs=1)
-    group.add_argument('-t','--tree',help="Iterates through the entire tree of document of the present directory.",action='store_true',default=False)
-    arguments = parser.parse_args()
+    
+    arguments = argsConfig.a_dgu2texbook()
     
     fo = open("texbook.tex",'w')
     fo.write(f"""\\documentclass{{article}}
@@ -157,15 +149,31 @@ def defaultConversion(text):
 
 ################### dgu generation ######################
 
+
+#maybe add a way to personalize different types of docs 
+def docType(file):
+    if file.startswith("h"):
+        return 'Story'
+    elif file.startswith("p"):
+        return 'Picture'
+    elif file.startswith("b"):
+        return 'Biography'
+
+
+def getFormat(string):
+    if string == 'tex':
+        return 'latex'
+    elif string == 'txt':
+        return 'text'
+    elif string == 'md':
+        return 'markdown'
+    else:
+        return string
+
+#################### pdf books#############################
+# usage: -file+
 def tex2dgu(dirout=""):
-    parser = argparse.ArgumentParser(
-        prog = 'dgubook',
-        description = 'Converts tex file to dgu.',
-        epilog = '')
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
-    arguments = parser.parse_args()
-    
+    arguments = argsConfig.a_tex2dgu()
     if arguments.file:
         for elem in arguments.file:
             filename = os.path.basename(elem)
@@ -198,39 +206,11 @@ def tex2dgu(dirout=""):
 
 
 
-#maybe add a way to personalize different types of docs 
-def docType(file):
-    if file.startswith("h"):
-        return 'Story'
-    elif file.startswith("p"):
-        return 'Picture'
-    elif file.startswith("b"):
-        return 'Biography'
 
-
-def getFormat(string):
-    if string == 'tex':
-        return 'latex'
-    elif string == 'txt':
-        return 'text'
-    elif string == 'md':
-        return 'markdown'
-    else:
-        return string
-
-#################### pdf books#############################
 #! THIS ONE IS NOT FINISHED, I NEED A DIFFERENT APPROACH
+# usage: -file+ | -tree{1} 
 def dgubookmd():
-
-    parser = argparse.ArgumentParser(
-        prog = 'dgubook',
-        description = 'Aglomerates a number of .dgu files in a book - pdf format.',
-        epilog = 'Results in a pdf file containing generic universal documents aglutinated.')
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
-    group.add_argument('-t','--tree',help="Iterates through the entire tree of documents of the present directory.",action='store_true',default=False)
-    parser.add_argument('-o','--output',help="Selects an output folder",nargs=1) #! is not being used
-    arguments = parser.parse_args()
+    arguments = argsConfig.a_dgubookmd()
     time = datetime.datetime.now()
     x = str(time)
 
@@ -267,18 +247,10 @@ def dgubookmd():
     tempdgu.close()
 
 
-
+# usage: -file+ | -tree{1} 
 def dgubook():
-
-    parser = argparse.ArgumentParser(
-        prog = 'dgubook',
-        description = 'Aglomerates a number of .dgu files in a book - pdf format.',
-        epilog = 'Results in a pdf file containing generic universal documents aglutinated.')
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
-    group.add_argument('-t','--tree',help="Iterates through the entire tree of documents of the present directory.",action='store_true',default=False)
-    parser.add_argument('-o','--output',help="Selects an output folder",nargs=1) #! is not being used
-    arguments = parser.parse_args()
+ 
+    arguments = argsConfig.a_dgubook()
     if arguments is not None:
         time = datetime.datetime.now()
         x = str(time)
@@ -378,15 +350,10 @@ $\\ast$~$\\ast$~$\\ast$
 
 ######################## notes #######################
 
-# needs to be checked
+#? needs to be checked
+# usage : --f+
 def genNote():
-    parser = argparse.ArgumentParser(
-        prog = 'genNote',
-        description = 'Generates a note for a specific Ancestors Notebook Element',
-        epilog = 'Composes a note to be filled by the user.')
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
-    arguments = parser.parse_args()
+    arguments = argsConfig.a_notes()
     if arguments.file:            
         for elem in arguments.file:
                 if os.path.dirname(elem)!='':
@@ -421,21 +388,10 @@ def simplify(title):
     simplified_title = re.sub(r'[^\w\s]', '', simplified_title)
     return simplified_title
 
-
+# usage : -title -author? -date -dgu
 def genStory():
     cd = os.getcwd()
-    parser = argparse.ArgumentParser(
-        prog = 'genStory',
-        description = 'Generates a Story in the accepted format for Ancestors Notebook',
-        epilog = 'Composes a story to be filled by the user.')
-
-    # Optional flags '-t', '-a', '-d'
-    parser.add_argument('-t', '--title',required=True, help='Title of the story')
-    parser.add_argument('-a', '--author', default="", help='Author of the story',nargs='+')
-    parser.add_argument('-d', '--date', default=time.strftime('%Y-%m-%d'), help='the date of the story')
-    parser.add_argument('-dgu',action='store_true',help='generates a Story dgu in Latex format')
-
-    args = parser.parse_args()
+    args = argsConfig.a_genStory
     title = args.title
     date = args.date
 
@@ -465,18 +421,7 @@ def genStory():
 
 def genBio():
     cd = os.getcwd()
-    parser = argparse.ArgumentParser(
-        prog = 'genBio',
-        description = 'Generates a Biography in the accepted format for Ancestors Notebook',
-        epilog = 'Composes a Biography to be filled by the user.')
-
-    parser.add_argument('-n', '--name',required=True, help='Name of the individual')
-    parser.add_argument('-b', '--birth',default="", help='Date of Birth')
-    parser.add_argument('-d', '--death',default="", help='Date of Death')
-    parser.add_argument('-bp', '--birthplace',default="", help='BirthPlace')
-    parser.add_argument('-o', '--occupation',default="", help="Individual's Job or Occupation")
-
-    args = parser.parse_args()
+    args = argsConfig.a_genBio()
     name = args.name
     birth= args.birth
     death = args.death
@@ -499,8 +444,6 @@ def genBio():
     #         print()
     #        # dgufo.write(dguBio(title,author,date,denomination))
     # else:
-####################################################################
-
 
 
 
@@ -552,10 +495,28 @@ def find_anb():
             return None
         current_dir = new_dir
 
+def template_generator():
+    os.mkdir('templates')
+    os.chdir('templates')
+
+
+
+
+def handleCommand(title, attributes, nameofthefile):
+    id = dataUpdate(title,nameofthefile)
+    subclass = DGUhand.dgu_subclass(title, attributes)
+    newDgu = subclass(None, None, None, None, *[None for _ in attributes])
+    yaml.dump(newDgu, f"{id}.dgu")
+
+
+
+
+        
 
 def initanb(path=""):
     cwd = os.getcwd()
     if os.path.exists(cwd + '/.anbtk'):
+        
         raise Exception("This folder was already initialized as an Ancestors Notebook.")
     elif find_anb() is not None:
         raise Exception("You are already in an Ancestors Notebook")  
@@ -571,35 +532,7 @@ def initanb(path=""):
             
             temp = open(path,'r').read()
             os.chdir(filepath)
-            FSGram.initializer(temp)
-
-def handleCommand(name,attributes, args):
-    id = dataUpdate(name, args.name[0])
-    subclass = DGUhand.dgu_subclass(name,attributes)
-    newDgu = subclass(None,None,None,None,*[None for _ in attributes])
-    yaml.dump(newDgu,f"{id}.dgu")
-
-
-
-def genCommands(subparser):
-    with open('universe.dgu','r') as universe:
-        content = universe.read()
-        titles_match = re.findall(r"^\*\s([A-Za-z]+)", content, re.MULTILINE)
-        attributes_match = re.findall(r"^\s{4}\*\s([A-Za-z]+)", content, re.MULTILINE)
-        correspondence = {}
-        
-        for title, attribute in zip(titles_match, attributes_match):
-            if title in correspondence:
-                correspondence[title].append(attribute)
-            else:
-                correspondence[title] = [attribute]
-
-        for title, attributes in correspondence.items():
-            sub = subparser.add_parser(f"gen{title}")
-            sub.set_defaults(func=handleCommand,name=title,attributes=attributes)
-            sub.add_argument('--name', help='Name of file',nargs=1)
-
-            
+            FSGram.initializer(temp)            
 def anb():
     
     parser = argparse.ArgumentParser(prog='ancestors notebook')
@@ -611,11 +544,16 @@ def anb():
 
 
     if args.subcommand == 'init':
+    
         if args.source:
             file = args.source[0]
             initanb(os.path.abspath(file))
     
         else:
             initanb()
-        genCommands(subparsers)
+        #genCommands()
+
+    else:
+        args.func(args.name, args.attributes, args)
+
 

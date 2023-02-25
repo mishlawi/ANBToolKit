@@ -23,7 +23,6 @@ from . import skeletons
 #*TODO
 ## code
 # Distribute all aux functions in specific files
-# try to remove verbose to another file brought by the argparse module
 # reactoring of functions, some things are repeated a lot and could be easily represented by a function
 # templates are trash atm
 ## ideias
@@ -511,6 +510,10 @@ def handleCommand(title, attributes, nameofthefile):
 
 
 
+    
+
+
+
         
 
 def initanb(path=""):
@@ -532,7 +535,48 @@ def initanb(path=""):
             
             temp = open(path,'r').read()
             os.chdir(filepath)
-            FSGram.initializer(temp)            
+            FSGram.initializer(temp)       
+
+
+
+def search_anbtk():
+    save = os.getcwd()
+    current_dir = os.getcwd()
+    while current_dir != '/':
+        folder_path = os.path.join(current_dir, '.anbtk')
+        if os.path.isdir(folder_path):
+            os.chdir(folder_path)
+            return True
+        current_dir = os.path.dirname(current_dir)
+    os.chdir(save)
+    return False
+
+def parse_text(input):
+
+    lines = input.strip().split('\n')
+    
+    result = {}
+    
+    i = 0
+    while i < len(lines):
+        if lines[i].startswith('*'):
+            name = lines[i][1:].strip().split()[0]            
+            items = []
+            i += 1
+            while i < len(lines) and lines[i].startswith('\t*'):
+                item = lines[i][2:].strip()
+                
+                items.append(item)
+                
+                i += 1
+            
+            result[name] = items
+        i += 1
+    
+    return result
+
+
+
 def anb():
     
     parser = argparse.ArgumentParser(prog='ancestors notebook')
@@ -540,6 +584,13 @@ def anb():
     subparsers = parser.add_subparsers(dest='subcommand',required=True,help='List of subcommands accepted')
     init_parser = subparsers.add_parser('init')
     init_parser.add_argument('-s','--source',help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)
+    dguCommands_parser = subparsers.add_parser('dgu',help='Creates a default dgu or a')
+    dguCommands_parser.add_argument('-e','--entity',help='Specify a entity as described in your FSGram file or the default file',nargs=1)
+    dguCommands_parser.add_argument('-f','--filename',help='Name of the dgu',type=str,dest='filename',required=True,nargs=1)
+    dguCommands_parser.set_defaults(func=lambda args: dgu_default_action())
+
+    def dgu_default_action():
+        print("Please specify an entity using the '-e' flag or use '-h' for help.")
     args = parser.parse_args()
 
 
@@ -551,7 +602,31 @@ def anb():
     
         else:
             initanb()
-        #genCommands()
+    
+    elif args.subcommand == 'dgu':
+        if search_anbtk():
+
+            if args.entity:
+            
+                with open('universe.dgu') as universe:
+                    entities = parse_text(universe.read())
+                    if args.entity[0] in entities.keys():
+                        handleCommand(args.entity[0], entities[args.entity], args.filename)
+                    else:
+                        print("No entity exists with that name")
+            if not args.entity:
+                empty_dgu = dgu.DGU("", "", "", "")
+                with open(args.filename+'.dgu',"w") as f:
+                    yaml.dump(empty_dgu,f)
+
+
+
+        else:
+            print("You need to initialize an ancestors notebook")
+        
+            
+        
+
 
     else:
         args.func(args.name, args.attributes, args)

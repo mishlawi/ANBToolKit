@@ -592,7 +592,7 @@ def anb():
     def dgu_default_action():
         print("Please specify an entity using the '-e' flag or use '-h' for help.")
     args = parser.parse_args()
-
+    currentdir = os.getcwd()
 
     if args.subcommand == 'init':
     
@@ -611,13 +611,17 @@ def anb():
                 with open('universe.dgu') as universe:
                     entities = parse_text(universe.read())
                     if args.entity[0] in entities.keys():
+                        os.chdir(currentdir)
                         handleCommand(args.entity[0], entities[args.entity], args.filename[0])
                     else:
                         print("No entity exists with that name")
             if not args.entity:
-                empty_dgu = dgu.DGU("", "", "", "")
+                os.chdir(currentdir)
+                empty_dgu = dgu.DGU("","","","")
                 with open(args.filename[0]+'.dgu',"w") as f:
-                    yaml.dump(empty_dgu,f)
+                    f.write("---\n")
+                    yaml.dump(empty_dgu,f,default_flow_style=False, sort_keys=False,allow_unicode=True)
+                    f.write("---\n")
 
 
 

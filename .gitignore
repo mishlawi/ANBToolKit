@@ -2,7 +2,6 @@
 ANBToolKit/__pycache__/
 *.py[cod]
 *$py.class
-anb/
 /ANBToolKit/parser.out
 /ANBToolKit/parsetab.py
 

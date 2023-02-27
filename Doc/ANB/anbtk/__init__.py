@@ -499,13 +499,21 @@ def template_generator():
     os.chdir('templates')
 
 
+def dguheadercomposer(newDgu,fileObject):
+    fileObject.write("---\n")
+    yaml.dump(newDgu,fileObject,default_flow_style=False, sort_keys=False,allow_unicode=True)
+    fileObject.write("---\n")
+    fileObject.write
 
 
-def handleCommand(title, attributes, nameofthefile):
+def handleCommand(title, attributes, nameofthefile,dir):
     id = dataUpdate(title,nameofthefile)
     subclass = DGUhand.dgu_subclass(title, attributes)
-    newDgu = subclass(None, None, None, None, *[None for _ in attributes])
-    yaml.dump(newDgu, f"{id}.dgu")
+    newDgu = subclass(nameofthefile, "", "", "", * ["" for _ in attributes])
+    os.chdir(dir)
+    with open(f"{id}.dgu", "w") as f:
+        dguheadercomposer(newDgu,f)
+
 
 
 
@@ -552,11 +560,8 @@ def search_anbtk():
     return False
 
 def parse_text(input):
-
     lines = input.strip().split('\n')
-    
-    result = {}
-    
+    result = {}   
     i = 0
     while i < len(lines):
         if lines[i].startswith('*'):
@@ -564,12 +569,9 @@ def parse_text(input):
             items = []
             i += 1
             while i < len(lines) and lines[i].startswith('\t*'):
-                item = lines[i][2:].strip()
-                
-                items.append(item)
-                
-                i += 1
-            
+                item = lines[i][2:].strip()               
+                items.append(item)       
+                i += 1       
             result[name] = items
         i += 1
     
@@ -587,10 +589,7 @@ def anb():
     dguCommands_parser = subparsers.add_parser('dgu',help='Creates a default dgu or a')
     dguCommands_parser.add_argument('-e','--entity',help='Specify a entity as described in your FSGram file or the default file',nargs=1)
     dguCommands_parser.add_argument('-f','--filename',help='Name of the dgu',type=str,dest='filename',required=True,nargs=1)
-    dguCommands_parser.set_defaults(func=lambda args: dgu_default_action())
 
-    def dgu_default_action():
-        print("Please specify an entity using the '-e' flag or use '-h' for help.")
     args = parser.parse_args()
     currentdir = os.getcwd()
 
@@ -611,17 +610,14 @@ def anb():
                 with open('universe.dgu') as universe:
                     entities = parse_text(universe.read())
                     if args.entity[0] in entities.keys():
-                        os.chdir(currentdir)
-                        handleCommand(args.entity[0], entities[args.entity], args.filename[0])
+                        handleCommand(args.entity[0], entities[args.entity[0]], args.filename[0],currentdir)
                     else:
                         print("No entity exists with that name")
             if not args.entity:
                 os.chdir(currentdir)
                 empty_dgu = dgu.DGU("","","","")
                 with open(args.filename[0]+'.dgu',"w") as f:
-                    f.write("---\n")
-                    yaml.dump(empty_dgu,f,default_flow_style=False, sort_keys=False,allow_unicode=True)
-                    f.write("---\n")
+                    dguheadercomposer(empty_dgu,f)
 
 
 

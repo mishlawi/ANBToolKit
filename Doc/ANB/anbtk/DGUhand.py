@@ -55,4 +55,3 @@ def dgu_subclass(name, attributes, base_class=dgu):
 
 
 
-

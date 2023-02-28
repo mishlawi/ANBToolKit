@@ -60,3 +60,34 @@ defaultdgu = """
 id:
 
 ---"""
+
+
+
+template1 = r"""
+---
+title: {{tit}}
+author:
+ - Duarte
+ - jj
+variables:
+    section-titles: false
+#    header-includes: \usepackage{natslides}
+
+
+toc: true
+number-sections: true
+
+---
+\newpage
+# Ancestors Notebook
+
+![]({{cover}})
+
+\newpage
+{% for  h in hs %}
+## {{h.titulo}}
+   {{ h.corpo }}
+\newpage    
+{% endfor %}
+
+![Foto]({{img}})"""

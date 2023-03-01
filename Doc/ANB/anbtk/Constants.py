@@ -67,8 +67,7 @@ template1 = r"""
 ---
 title: {{tit}}
 author:
- - Duarte
- - jj
+ - remider that i need to pass the author
 variables:
     section-titles: false
 #    header-includes: \usepackage{natslides}

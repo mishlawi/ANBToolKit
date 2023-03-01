@@ -239,7 +239,7 @@ def dgubookmd():
 
 
 from jinja2 import Environment, FileSystemLoader
-from jjcli import * 
+
 
 
 
@@ -250,9 +250,9 @@ def dgubook():
         print("You need to specify a flag. Use dguBook -h")
         exit(1)
 
-    tempdgu = open('dgu2pdf.md', 'w')
+    tempdgu = open('AncestorsNotebook.md', 'w')
 
-    args = ['pandoc', '-f', 'markdown', 'dgu2pdf.md', '-o', 'dgu2pdf.pdf']
+    args = ['pandoc', '-f', 'markdown', 'AncestorsNotebook.md', '-o', 'AncestorsNotebook.pdf']
     cwd = os.getcwd()
 
     if not find_anb():
@@ -281,7 +281,10 @@ def dgubook():
                 if aux:= re.split('---',temp):
                     (_,cabecalho,corpo) = aux
                     meta = yaml.safe_load(cabecalho)
-                    h2.append({"corpo":corpo,"titulo":meta['title']})
+                    if not "title" in meta.keys():
+                        h2.append({h2.append({"corpo":corpo,"titulo":meta['id']})})
+                    else:
+                        h2.append({"corpo":corpo,"titulo":meta['title']})
 
         tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2))            
         os.chdir(cwd)
@@ -304,12 +307,18 @@ def dgubook():
                         if aux:= re.split('---',temp):
                             (_,cabecalho,corpo) = aux
                             meta = yaml.safe_load(cabecalho)
-                            h2.append({"corpo":corpo,"titulo":meta['title']})
+                            if not "title" in meta.keys():
+                                h2.append({h2.append({"corpo":corpo,"titulo":meta['id']})})
+                            else:
+                                h2.append({"corpo":corpo,"titulo":meta['title']})
         tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2))            
         os.chdir(cwd)
 
     tempdgu.close()
-    subprocess.check_call(args)
+    if not arguments.markdown:
+        subprocess.check_call(args)
+        os.remove("AncestorsNotebook.md")
+        
 
 
 
@@ -507,7 +516,6 @@ def genBio():
 
 
 ############################## .anb ################################
-
 
 
 def find_anb():

@@ -465,7 +465,7 @@ def simplify(title):
 # usage : -title -author? -date -dgu
 def genStory():
     cd = os.getcwd()
-    args = argsConfig.a_genStory
+    args = argsConfig.a_genStory()
     title = args.title
     date = args.date
 

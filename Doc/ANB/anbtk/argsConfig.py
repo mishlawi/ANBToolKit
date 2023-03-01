@@ -58,6 +58,7 @@ def a_genStory():
     parser.add_argument('-a', '--author', default="", help='Author of the story',nargs='+')
     parser.add_argument('-d', '--date', default=time.strftime('%Y-%m-%d'), help='the date of the story')
     parser.add_argument('-dgu',action='store_true',help='generates a Story dgu in Latex format')
+    
     return parser.parse_args()
 
 

@@ -7,9 +7,9 @@ Foto : r'p[0-9]+\-\w+\.\w+'
 
 UNIVERSE
 
-Story -> Title,Author,Date
-Biography -> Name,Birthday,Birthplace,Occupation,Death
-Pessoa -> Name,Age
+Story -> title,author,date
+Biography -> name,birthday,birthplace,occupation,death
+Pessoa -> name,age
 
 FORMATS
 

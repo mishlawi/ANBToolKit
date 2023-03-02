@@ -28,13 +28,13 @@ def bigbang(stringUniverse,stringFormats):
                 file.write('\t* ' + elem + '\n')
             file.write('\n')
 
-    # usar o objeto dgu para inserir coisas
-    with open(r'formats.dgu', 'w') as file:
-        file.write("---\n")
-        yaml.dump(dgu(id = "formats",format = "dgu",type="Format",about=[formatsAabout]),file,default_flow_style=False, sort_keys=False)
-        file.write("---\n\n")
-        for elem in formatformats:
-            file.write(f"* {elem}\n")
+    # # usar o objeto dgu para inserir coisas
+    # with open(r'formats.dgu', 'w') as file:
+    #     file.write("---\n")
+    #     yaml.dump(dgu(id = "formats",format = "dgu",type="Format",about=[formatsAabout]),file,default_flow_style=False, sort_keys=False)
+    #     file.write("---\n\n")
+    #     for elem in formatformats:
+    #         file.write(f"* {elem}\n")
 
 
 

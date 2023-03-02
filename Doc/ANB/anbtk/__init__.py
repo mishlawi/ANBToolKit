@@ -247,7 +247,7 @@ from jinja2 import Environment, FileSystemLoader
 def dgubook():
     arguments = argsConfig.a_dgubookmd()
     if arguments is None:
-        print("You need to specify a flag. Use dguBook -h")
+        print("You need to specify a flag. Use dguBook -h for more info.")
         exit(1)
 
     tempdgu = open('AncestorsNotebook.md', 'w')
@@ -534,16 +534,16 @@ def dguheadercomposer(newDgu,fileObject):
     fileObject.write("---\n")
     yaml.dump(newDgu,fileObject,default_flow_style=False, sort_keys=False,allow_unicode=True)
     fileObject.write("---\n")
-    fileObject.write
 
 
-def handleCommand(title, attributes, nameofthefile,dir):
-    id = dataControl.dataUpdate(title,nameofthefile)
+
+def genDgu(title, attributes, nameofthefile, dir):
+    id = dataControl.dataUpdate(title, nameofthefile)
     subclass = DGUhand.dgu_subclass(title, attributes)
-    newDgu = subclass(nameofthefile, "", "", "", * ["" for _ in attributes])
+    newDgu = subclass(nameofthefile, "", title, "", *[None for _ in attributes])
     os.chdir(dir)
     with open(f"{id}.dgu", "w") as f:
-        dguheadercomposer(newDgu,f)
+        dguheadercomposer(newDgu, f)
 
         
 
@@ -570,7 +570,6 @@ def initanb(path=""):
             os.chdir(filepath)
             FSGram.initializer(temp)
         dataControl.templateGen()
-
 
 
 
@@ -613,7 +612,7 @@ def anb():
     subparsers = parser.add_subparsers(dest='subcommand',required=True,help='List of subcommands accepted')
     init_parser = subparsers.add_parser('init')
     init_parser.add_argument('-s','--source',help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)
-    dguCommands_parser = subparsers.add_parser('dgu',help='Creates a default dgu or a')
+    dguCommands_parser = subparsers.add_parser('dgu',help='Creates a default dgu or a entity based dgu')
     dguCommands_parser.add_argument('-e','--entity',help='Specify a entity as described in your FSGram file or the default file',nargs=1)
     dguCommands_parser.add_argument('-f','--filename',help='Name of the dgu',type=str,dest='filename',required=True,nargs=1)
 
@@ -637,7 +636,7 @@ def anb():
                 with open('universe.dgu') as universe:
                     entities = parse_text(universe.read())
                     if args.entity[0] in entities.keys():
-                        handleCommand(args.entity[0], entities[args.entity[0]], args.filename[0],currentdir)
+                        genDgu(args.entity[0], entities[args.entity[0]], args.filename[0],currentdir)
                     else:
                         print("No entity exists with that name")
             if not args.entity:

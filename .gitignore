@@ -1,9 +1,7 @@
 # Byte-compiled / optimized / DLL files
-ANBToolKit/__pycache__/
+ANBToolKit/
 *.py[cod]
 *$py.class
-/ANBToolKit/parser.out
-/ANBToolKit/parsetab.py
 
 # C extensions
 *.so

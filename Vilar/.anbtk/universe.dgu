@@ -1,0 +1,24 @@
+---
+id: universe
+format: dgu
+type: Universe
+about:
+- Universe of entities currently being used in this ancestors notebook
+---
+
+* Story 
+	* title
+	* author
+	* date
+
+* Biography 
+	* name
+	* birthday
+	* birthplace
+	* occupation
+	* death
+
+* Pessoa 
+	* name
+	* age
+

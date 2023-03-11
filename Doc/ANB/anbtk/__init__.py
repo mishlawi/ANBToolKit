@@ -37,17 +37,19 @@ from . import dataControl
 
 # Gets header and body of dgu and turns it in a dictionary
 #NEEDS MAINTANCE
+
 def parseAbstractDgu(filename):
-    if re.split(r'\.',filename)[1] == 'dgu':
-        fo = open(filename).read()
-        headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",fo).group()
+    base, ext = os.path.splitext(filename)
+    if ext == '.dgu':
+        with open(filename) as f:
+            data = f.read()
+        headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)", data).group()
         adgu = yaml.full_load(headers)
-        text = re.split(r'\-\-\-',fo)[2]
+        text = re.split(r'\-\-\-', data)[2]
         adgu['body'] = text
-        return adgu            
-    
+        return adgu
     else:
-        ValueError("File Format is invalid")
+        raise ValueError("File format is invalid")
 
 
 def aboutism(abouts):
@@ -241,11 +243,8 @@ def dgubookmd():
 from jinja2 import Environment, FileSystemLoader
 
 
-
-
-
 def dgubook():
-    arguments = argsConfig.a_dgubookmd()
+    arguments = argsConfig.a_dgubook()
     if arguments is None:
         print("You need to specify a flag. Use dguBook -h for more info.")
         exit(1)
@@ -275,20 +274,22 @@ def dgubook():
             
             if elem_dirname:
                 os.chdir(elem_dirname)
-
+            adgu = parseAbstractDgu(elem)
+            print(adgu)
             with open(os.path.basename(elem_path)) as elem_file:
+                
                 temp = elem_file.read()
                 if aux:= re.split('---',temp):
                     (_,cabecalho,corpo) = aux
-                    meta = yaml.safe_load(cabecalho)
-                    if not "title" in meta.keys():
-                        h2.append({h2.append({"corpo":corpo,"titulo":meta['id']})})
-                    else:
-                        h2.append({"corpo":corpo,"titulo":meta['title']})
+                    meta = yaml.safe_load(cabecalho)  # moved inside the loop
+                    #print(meta)
+                    meta['corpo'] = corpo
+                    if not "title" in meta.keys() or meta['title'] == '':
+                        meta['title'] = meta['id']
+                    h2.append(meta)
 
         tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2))            
         os.chdir(cwd)
-
     if arguments.tree:
         h2=[]
         visited = set()
@@ -296,9 +297,8 @@ def dgubook():
             realpath = os.path.realpath(dirpath)
             if realpath in visited or os.path.basename(dirpath) == '.anbtk':
                 continue
-            
-            visited.add(realpath)
 
+            visited.add(realpath)
             for filename in filenames:
                 if filename.endswith('.dgu'):
                     elem_path = os.path.join(dirpath, filename)
@@ -306,12 +306,14 @@ def dgubook():
                         temp = elem_file.read()
                         if aux:= re.split('---',temp):
                             (_,cabecalho,corpo) = aux
-                            meta = yaml.safe_load(cabecalho)
-                            if not "title" in meta.keys():
-                                h2.append({h2.append({"corpo":corpo,"titulo":meta['id']})})
-                            else:
-                                h2.append({"corpo":corpo,"titulo":meta['title']})
-        tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2))            
+                            meta = yaml.safe_load(cabecalho)  # moved inside the loop
+                            #print(meta)
+                            meta['corpo'] = corpo
+                            if not "title" in meta.keys() or meta['title'] =='':
+                                meta['title'] = meta['id']
+                            h2.append(meta)
+        tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2)) 
+            
         os.chdir(cwd)
 
     tempdgu.close()
@@ -320,57 +322,6 @@ def dgubook():
         os.remove("AncestorsNotebook.md")
         
 
-
-
-# usage: -file+ | -tree{1} 
-# def dgubook():
-#     arguments = argsConfig.a_dgubook()
-#     if arguments is not None:
-#         time = datetime.datetime.now()
-#         x = str(time)
-#         tempdgu = open('dgu2pdf.md','w')
-#         tempdgu.write("# Ancestors Notebook\n")
-#         tempdgu.write("### _A Book of special stories_\n\n\n")
-#         tempdgu.write(f"Processed and generated on {x[:10]}.\n\n\n")
-#         tempdgu.write('\pagebreak\n\n')
-#         args = ['pandoc', '-f','markdown','dgu2pdf.md','-o','dgu2pdf.pdf']
-#         cwd = os.getcwd()
-#         if arguments.file:            
-#             for elem in arguments.file:
-#                 if elem.endswith('.dgu'):
-#                     if os.path.dirname(elem)!='':
-#                         os.chdir(os.path.dirname(os.path.abspath(elem)))
-#                     temp = open(os.path.basename(elem),'r').read()
-#                     heading2Latex(temp,tempdgu)
-#                     os.chdir(cwd)
-
-#                 else:
-#                     tempdgu.close()        
-#                     raise Exception(elem + " is not a dgu file")
-#             tempdgu.close()
-#             subprocess.check_call(args)
-                    
-#         if arguments.tree:
-            
-#             visited = set()
-#             for dirpath, _, filenames in os.walk(cwd, followlinks=True):
-#                 realpath = os.path.realpath(dirpath)
-#                 if realpath in visited:
-#                     continue
-#                 visited.add(realpath)
-                
-#                 if os.path.basename(dirpath) == '.anbtk':
-#                     continue
-#                 for filename in filenames:
-#                     if filename.endswith('.dgu'):
-#                         temp = open(os.path.join(dirpath, filename),'r').read()
-#                         heading2Latex(temp,tempdgu)
-#                         os.chdir(cwd)
-#             tempdgu.close()
-#             subprocess.check_call(args)
-            
-#     else:
-#         print("You need to specify a flag. Use dguBook -h")
 
 #################### headings ##########################
 
@@ -453,7 +404,6 @@ def genNote():
                             foNote.close()
                         # more formats to be added
 
-
 # aux of genStory
 def simplify(title):
     words = title.split()
@@ -534,13 +484,14 @@ def dguheadercomposer(newDgu,fileObject):
     fileObject.write("---\n")
     yaml.dump(newDgu,fileObject,default_flow_style=False, sort_keys=False,allow_unicode=True)
     fileObject.write("---\n")
+    fileObject.close()
 
 
 
 def genDgu(title, attributes, nameofthefile, dir):
     id = dataControl.dataUpdate(title, nameofthefile)
     subclass = DGUhand.dgu_subclass(title, attributes)
-    newDgu = subclass(nameofthefile, "", title, "", *[None for _ in attributes])
+    newDgu = subclass(nameofthefile, "", title, "", *["" for _ in attributes])
     os.chdir(dir)
     with open(f"{id}.dgu", "w") as f:
         dguheadercomposer(newDgu, f)
@@ -608,7 +559,6 @@ def parse_text(input):
 def anb():
     
     parser = argparse.ArgumentParser(prog='ancestors notebook')
-
     subparsers = parser.add_subparsers(dest='subcommand',required=True,help='List of subcommands accepted')
     init_parser = subparsers.add_parser('init')
     init_parser.add_argument('-s','--source',help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)

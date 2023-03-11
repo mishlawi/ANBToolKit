@@ -2,26 +2,61 @@
 ---
 title: {{tit}}
 author:
- - remider that i need to pass the author
+- {{autor}}
 variables:
     section-titles: false
-#    header-includes: \usepackage{natslides}
-
+    header-includes:
+      - \usepackage{graphicx}
+      - \usepackage{xcolor}
 
 toc: true
 number-sections: true
 
 ---
-\newpage
-# Ancestors Notebook
-
-![]({{cover}})
+This text is \textcolor{red}{red}.
 
 \newpage
-{% for  h in hs %}
-## {{h.titulo}}
-   {{ h.corpo }}
+{% for h in hs %}
+\begin{center}
+
+    \fbox{\begin{minipage}{0.9\textwidth}
+       \textbf{\large{\textit{ {{h.title}} }}}{% raw %}
+       \addcontentsline{toc}{section}{{% endraw %} {{h.title}} {% raw %}}{% endraw %} 
+
+        \vspace{0.2cm}
+        \begin{flushright}
+        {% if h.author is defined and h.author != '' %}
+            {% if h.author|length > 1 %}
+                \textit{by}
+                {% for a in h.author[:-1] %}
+                    {{ a }},
+                {% endfor %}
+                {{ h.author[-1] }}
+            {% else %}
+                \textit{by} {{ h.author[0] }}
+            {% endif %}
+        {% else %}
+            \textit{no author}
+        {% endif %}
+        \end{flushright}
+        \vspace{0.2cm}
+        \textbf{\textit{About}}
+        \begin{itemize}
+        {% for about in h.about %}
+            \item \textit{ {{about}} }
+        {% endfor %}
+        \end{itemize}
+    \end{minipage}}
+\end{center}
+\vspace{0.5cm}
+\begin{center}
+    \begin{minipage}{0.9\textwidth}
+        \setlength{\parskip}{0.2cm}
+        \setlength{\parindent}{0cm}
+        \fontsize{12pt}{14pt}\selectfont
+        {{h.corpo}}
+    \end{minipage}
+\end{center}
+   
 \newpage    
 {% endfor %}
-
-![Foto]({{img}})

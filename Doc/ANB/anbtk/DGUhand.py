@@ -5,10 +5,6 @@ from pathlib import Path
 from .dguObject import DGU as dgu
 
 
-#pandoc -s h2-moto4.tex -o h2-moto4.md
-#pandoc -f markdown universoConceptual.dgu -o _.pdf
-
-
 # generates universe.dgu and formats.dgu
 def bigbang(stringUniverse,stringFormats):
     uniformats = re.findall(r"^[^-]+",stringUniverse,re.MULTILINE)

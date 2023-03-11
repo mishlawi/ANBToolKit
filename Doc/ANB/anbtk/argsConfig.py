@@ -18,7 +18,7 @@ def a_tex2dgu():
 ################## dgubooks ##################
 
 
-def a_dgubookmd():  
+def a_dgubook():  
     parser = argparse.ArgumentParser(
         prog = 'dgubook',
         description = 'Aglomerates a number of .dgu files in a book - pdf format.',

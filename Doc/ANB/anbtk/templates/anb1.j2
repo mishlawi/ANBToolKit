@@ -15,11 +15,8 @@ number-sections: true
 \newpage
 {% for h in hs %}
 \begin{center}
-
+    \section{  {{h.title}}  }
     \fbox{\begin{minipage}{0.9\textwidth}
-       \textbf{\large{\textit{ {{h.title}} }}}{% raw %}
-       \addcontentsline{toc}{section}{{% endraw %} {{h.title}} {% raw %}}{% endraw %} 
-
         \vspace{0.2cm}
         \begin{flushright}
         {% if h.author is defined and h.author != '' %}

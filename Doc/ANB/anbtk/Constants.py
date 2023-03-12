@@ -70,27 +70,21 @@ author:
 - {{autor}}
 variables:
     section-titles: false
-    header-includes:
-      - \usepackage{graphicx}
-      - \usepackage{xcolor}
+#    header-includes: \usepackage{natslides}
+
 
 toc: true
 number-sections: true
 
 ---
-This text is \textcolor{red}{red}.
 
 \newpage
 {% for h in hs %}
 \begin{center}
 
-    \fbox{\begin{minipage}{0.9\textwidth}
-       \textbf{\large{\textit{ {{h.title}} }}}{% raw %}
-       \addcontentsline{toc}{section}{{% endraw %} {{h.title}} {% raw %}}{% endraw %} 
+    \section{  {{h.title}}  }
 
-        \vspace{0.2cm}
-        \begin{flushright}
-        {% if h.author is defined and h.author != '' %}
+    {% if h.author is defined and h.author != '' %}
             {% if h.author|length > 1 %}
                 \textit{by}
                 {% for a in h.author[:-1] %}
@@ -100,10 +94,11 @@ This text is \textcolor{red}{red}.
             {% else %}
                 \textit{by} {{ h.author[0] }}
             {% endif %}
-        {% else %}
-            \textit{no author}
         {% endif %}
-        \end{flushright}
+
+     
+
+    \fbox{\begin{minipage}{0.9\textwidth}
         \vspace{0.2cm}
         \textbf{\textit{About}}
         \begin{itemize}
@@ -112,8 +107,14 @@ This text is \textcolor{red}{red}.
         {% endfor %}
         \end{itemize}
     \end{minipage}}
+    
+
+$\ast$~$\ast$~$\ast$
+
 \end{center}
+
 \vspace{0.5cm}
+
 \begin{center}
     \begin{minipage}{0.9\textwidth}
         \setlength{\parskip}{0.2cm}

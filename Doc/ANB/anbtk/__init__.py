@@ -252,6 +252,7 @@ def dgubook():
     tempdgu = open('AncestorsNotebook.md', 'w')
 
     args = ['pandoc', '-f', 'markdown', 'AncestorsNotebook.md', '-o', 'AncestorsNotebook.pdf']
+
     cwd = os.getcwd()
 
     if not find_anb():

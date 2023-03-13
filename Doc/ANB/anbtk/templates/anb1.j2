@@ -1,4 +1,3 @@
----
 title: {{tit}}
 author:
 - {{autor}}
@@ -15,11 +14,10 @@ number-sections: true
 \newpage
 {% for h in hs %}
 \begin{center}
+
     \section{  {{h.title}}  }
-    \fbox{\begin{minipage}{0.9\textwidth}
-        \vspace{0.2cm}
-        \begin{flushright}
-        {% if h.author is defined and h.author != '' %}
+
+    {% if h.author is defined and h.author != '' %}
             {% if h.author|length > 1 %}
                 \textit{by}
                 {% for a in h.author[:-1] %}
@@ -29,10 +27,11 @@ number-sections: true
             {% else %}
                 \textit{by} {{ h.author[0] }}
             {% endif %}
-        {% else %}
-            \textit{no author}
         {% endif %}
-        \end{flushright}
+
+     
+
+    \fbox{\begin{minipage}{0.9\textwidth}
         \vspace{0.2cm}
         \textbf{\textit{About}}
         \begin{itemize}
@@ -41,8 +40,14 @@ number-sections: true
         {% endfor %}
         \end{itemize}
     \end{minipage}}
+    
+
+$\ast$~$\ast$~$\ast$
+
 \end{center}
+
 \vspace{0.5cm}
+
 \begin{center}
     \begin{minipage}{0.9\textwidth}
         \setlength{\parskip}{0.2cm}

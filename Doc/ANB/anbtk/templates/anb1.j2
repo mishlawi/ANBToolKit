@@ -1,3 +1,4 @@
+---
 title: {{tit}}
 author:
 - {{autor}}
@@ -30,7 +31,7 @@ number-sections: true
         {% endif %}
 
      
-
+    {% if h.about is defined and h.about|length > 0 %}
     \fbox{\begin{minipage}{0.9\textwidth}
         \vspace{0.2cm}
         \textbf{\textit{About}}
@@ -40,7 +41,7 @@ number-sections: true
         {% endfor %}
         \end{itemize}
     \end{minipage}}
-    
+    {% endif %}
 
 $\ast$~$\ast$~$\ast$
 
@@ -56,6 +57,22 @@ $\ast$~$\ast$~$\ast$
         {{h.corpo}}
     \end{minipage}
 \end{center}
+
+{% if h|length > 3 %}
+\hypertarget{table-{{ loop.index }}}{}
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        {% for k, v in h.items() if k not in ['title', 'author', 'corpo', 'about'] %}
+            \textbf{ {{ k }} } & \textit{ {{ v }} } \\
+            \hline
+        {% endfor %}
+    \end{tabular}
+\end{table}
+
+{% endif %}
+
    
 \newpage    
 {% endfor %}

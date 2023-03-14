@@ -251,7 +251,7 @@ def dgubook():
 
     tempdgu = open('AncestorsNotebook.md', 'w')
 
-    args = ['pandoc', '-f', 'markdown', 'AncestorsNotebook.md', '-o', 'AncestorsNotebook.pdf']
+    args = ['pandoc', '-s', 'AncestorsNotebook.md', '-o', 'AncestorsNotebook.pdf']
 
     cwd = os.getcwd()
 
@@ -320,7 +320,7 @@ def dgubook():
     tempdgu.close()
     if not arguments.markdown:
         subprocess.check_call(args)
-        os.remove("AncestorsNotebook.md")
+        os.remove("AncestorsNotebook.md") #! this is tex, change if it turns out to be necessary to use tex instead of md
         
 
 

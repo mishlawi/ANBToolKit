@@ -70,9 +70,10 @@ author:
 - {{autor}}
 variables:
     section-titles: false
-    header-includes:
-    - \usepackage{natslides}
-    - \usepackage{multicol}
+    header-includes: 
+    - \usepackage{subcaption}
+
+
 
 
 toc: true
@@ -154,9 +155,5 @@ $\ast$~$\ast$~$\ast$
     \label{table:\arabic{tablecounter2}} % Use the current table counter value as the label name
 \end{table}
 {% endfor %}
-
-\begin{multicols}{2}
-\end{multicols}
-
 
 """

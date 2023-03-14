@@ -4,12 +4,13 @@ __version__ = "0.0.1"
 
 import re
 import os
-import json
 import subprocess
 import yaml
 import datetime
 import argparse
 import yaml
+
+from jinja2 import Environment, FileSystemLoader
 
 from . import argsConfig
 from . import Constants
@@ -18,6 +19,7 @@ from . import DGUhand
 from . import FSGram
 from . import skeletons
 from . import dataControl
+from . import auxiliar
 
 #*TODO
 ## code
@@ -30,50 +32,6 @@ from . import dataControl
 #! generate 
 #! start to consider images
 #* i want it so that story and bio (and others) are default formats but the users can create their ones 
-
-
-
-
-
-# Gets header and body of dgu and turns it in a dictionary
-#NEEDS MAINTANCE
-
-def parseAbstractDgu(filename):
-    base, ext = os.path.splitext(filename)
-    if ext == '.dgu':
-        with open(filename) as f:
-            data = f.read()
-        headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)", data).group()
-        adgu = yaml.full_load(headers)
-        text = re.split(r'\-\-\-', data)[2]
-        adgu['body'] = text
-        return adgu
-    else:
-        raise ValueError("File format is invalid")
-
-
-def aboutism(abouts):
-    string="\\begin{itemize}"
-    if len(abouts)>0:
-
-        for elem in abouts:
-            string+= f"\\item {elem}\n"
-        string+="\\end{itemize}"
-        return string
-    else:
-        return ""
-
-def texSkeleton(texadgu):
-    string = f"""\\section{{{texadgu.get('title',"missing title")}}}
-{aboutism(texadgu.get('about',[]))}
-\\  
-    \\begin{{center}}
-        $\\ast$~$\\ast$~$\\ast$
-    \\end{{center}}
-    {texadgu.get('body',"")}
-    """
-    return string
-
 
 
 #################### latex book ########################
@@ -98,9 +56,9 @@ def dgu2texbook():
                 headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",temp).group()
                 adgu = yaml.full_load(headers)
                 text = re.split(r'\-\-\-',temp)[2] 
-                temptext = defaultConversion(text)
+                temptext = auxiliar.defaultConversion(text)
                 adgu['body'] = temptext
-                fo.write(texSkeleton(adgu))
+                fo.write(auxiliar.texSkeleton(adgu))
                 fo.write("\t")
                 fo.write("\n")
                 fo.write("\pagebreak")
@@ -118,9 +76,9 @@ def dgu2texbook():
                     headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",temp).group()
                     adgu = yaml.full_load(headers)
                     text = re.split(r'\-\-\-',temp)[2]
-                    temptext = defaultConversion(text)
+                    temptext = auxiliar.defaultConversion(text)
                     adgu['body'] = temptext
-                    fo.write(texSkeleton(adgu))
+                    fo.write(auxiliar.texSkeleton(adgu))
                     fo.write("\t")
                     fo.write("\n")
                     fo.write("\pagebreak")
@@ -130,37 +88,6 @@ def dgu2texbook():
 
 
 
-def defaultConversion(text):
-    with open('temp.md', 'w') as temp_md:
-        temp_md.write(text)
-    subprocess.check_call(['pandoc', '-f', 'markdown', '-t', 'latex', 'temp.md', '-o', 'temp.tex'])
-    with open('temp.tex') as temp_tex:
-        temptext = temp_tex.read()
-
-    return temptext
-
-################### dgu generation ######################
-
-
-#maybe add a way to personalize different types of docs 
-def docType(file):
-    if file.startswith("h"):
-        return 'Story'
-    elif file.startswith("p"):
-        return 'Picture'
-    elif file.startswith("b"):
-        return 'Biography'
-
-
-def getFormat(string):
-    if string == 'tex':
-        return 'latex'
-    elif string == 'txt':
-        return 'text'
-    elif string == 'md':
-        return 'markdown'
-    else:
-        return string
 
 #################### pdf books#############################
 # usage: -file+
@@ -183,8 +110,8 @@ def tex2dgu(dirout=""):
                 text = re.split(r'\-\-\-',fo)[2]
                 print(text)
                 dgufile.write("---\n")
-                format = getFormat('tex')
-                type = docType(filename)
+                format = auxiliar.getFormat('tex')
+                type = auxiliar.docType(filename)
                 abouts = re.findall(r'\\ind\{(.+?| )\}',file)
                 yaml.dump(dgu.DGU(id = id,format = format,type=type,about=abouts),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
                 yaml.dump(adgu,dgufile)
@@ -218,7 +145,7 @@ def dgubookmd():
                 if os.path.dirname(elem)!='':
                     os.chdir(os.path.dirname(os.path.abspath(elem)))
                 temp = open(os.path.basename(elem),'r').read()
-                heading2markdown(temp,tempdgu)
+                auxiliar.heading2markdown(temp,tempdgu)
                 os.chdir(cwd)
                 subprocess.run(['pandoc', 'dgu2pdf.md', '-o', 'dgu2pdf.pdf']) # maybe have a personalized name
                 
@@ -232,15 +159,12 @@ def dgubookmd():
             for filename in filenames:
               if filename.endswith('.dgu'):
                 temp = open(dirpath+'/'+filename,'r').read()
-                heading2markdown(temp,tempdgu)
+                auxiliar.heading2markdown(temp,tempdgu)
                 os.chdir(cwd)
                 subprocess.run(['pandoc', 'dgu2pdf.md', '-o', 'dgu2pdf.pdf']) # maybe have a personalized name
     
     tempdgu.close()
 
-
-
-from jinja2 import Environment, FileSystemLoader
 
 
 def dgubook():
@@ -255,11 +179,11 @@ def dgubook():
 
     cwd = os.getcwd()
 
-    if not find_anb():
+    if not dataControl.find_anb():
         print("Initialize the ancestors notebook first.")
         exit(1)
 
-    os.chdir(find_anb()) 
+    os.chdir(dataControl.find_anb()) 
     environment = Environment(loader=FileSystemLoader("templates/"))
     dgus2md = environment.get_template("anb1.j2")
     os.chdir(cwd)
@@ -275,7 +199,7 @@ def dgubook():
             
             if elem_dirname:
                 os.chdir(elem_dirname)
-            adgu = parseAbstractDgu(elem)
+            adgu = auxiliar.parseAbstractDgu(elem)
             print(adgu)
             with open(os.path.basename(elem_path)) as elem_file:
                 
@@ -322,56 +246,6 @@ def dgubook():
         subprocess.check_call(args)
         os.remove("AncestorsNotebook.md") #! this is tex, change if it turns out to be necessary to use tex instead of md
         
-
-
-#################### headings ##########################
-
-
-def heading2markdown(temp,tempdgu):
-    headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",temp).group()
-    adgu = yaml.full_load(headers)
-    
-    if adgu['type'] == 'Story':
-        tempdgu.write(f"# {{{adgu['title']}}}\n")
-        tempdgu.write(f"### A story written or falling back to _{{{adgu['date']}}}_\n")
-
-    elif adgu['type'] == 'Biography':
-        tempdgu.write(f"## _A suscint Biography regarding:_\n")
-    else:
-        tempdgu.write(f"### {{{adgu['id']}}}\n")
-        
-    tempdgu.write("---\n")
-    for elem in adgu.get('about',''):
-        if elem == '':
-            pass
-        else:
-            tempdgu.write(f"* {elem}\n")
-    tempdgu.write("---\n")
-    text = re.split(r'\-\-\-',temp)[2]
-    tempdgu.write(text)
-    tempdgu.write('\n<div class="page-break"></div>\n')
-    
-
-
-def heading2Latex(temp,tempdgu):
-    headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",temp).group()
-    adgu = yaml.full_load(headers)
-    for elem in adgu['about']:
-        tempdgu.write(f"\\footnote{{{elem}}}")
-    if adgu['type'] == 'Story':
-        tempdgu.write(f"\\section{{{adgu['title']}}}\n")
-        tempdgu.write("Date: \t" + str(adgu['date']))
-    else:
-        tempdgu.write(f"\\section{{{adgu['id']}}}\n")
-        
-    tempdgu.write("""\\begin{center}
-$\\ast$~$\\ast$~$\\ast$
-\\end{center}""")
-    text = re.split(r'\-\-\-',temp)[2]
-    tempdgu.write("\t")
-    tempdgu.write(text)
-    tempdgu.write("\n") 
-    tempdgu.write("\pagebreak\n\n")
 
 
 ######################## notes #######################
@@ -428,11 +302,11 @@ def genStory():
     
     denomination = simplify(title)
 
-    if find_anb is None:
+    if auxiliar.find_anb is None:
         print("No guarantee of a unique name\n")
         filename = "hx-{denomination}"
     else:
-        os.chdir(find_anb())
+        os.chdir(dataControl.find_anb())
         filename = dataControl.dataUpdate('Story',denomination)
     os.chdir(cd)
     
@@ -453,12 +327,12 @@ def genBio():
     bp = args.birthplace
     o = args.occupation
     
-    if find_anb() is None:
+    if dataControl.find_anb() is None:
         print("No guarantee of a unique name since you haven't initialized an Ancestors Notebook\n")
         denomination = simplify(name)
         filename = f"bx-{denomination}"
     else:
-        os.chdir(find_anb())
+        os.chdir(dataControl.find_anb())
         filename = dataControl.dataUpdate('Biography',simplify(name))
         os.chdir(cd)
     with open(f'{filename}.md','w') as mdfileobject:
@@ -468,43 +342,21 @@ def genBio():
 
 ############################## .anb ################################
 
-
-def find_anb():
-    current_dir = os.getcwd()
-    while True:
-        if os.path.isdir(os.path.join(current_dir, '.anbtk')):
-            # .anb folder found
-            return os.path.abspath(os.path.join(current_dir, '.anbtk'))
-        new_dir = os.path.dirname(current_dir)
-        if new_dir == current_dir:
-            # reached root directory without finding .anb folder
-            return None
-        current_dir = new_dir
-
-def dguheadercomposer(newDgu,fileObject):
-    fileObject.write("---\n")
-    yaml.dump(newDgu,fileObject,default_flow_style=False, sort_keys=False,allow_unicode=True)
-    fileObject.write("---\n")
-    fileObject.close()
-
-
-
 def genDgu(title, attributes, nameofthefile, dir):
     id = dataControl.dataUpdate(title, nameofthefile)
     subclass = DGUhand.dgu_subclass(title, attributes)
     newDgu = subclass(nameofthefile, "", title, "", *["" for _ in attributes])
     os.chdir(dir)
     with open(f"{id}.dgu", "w") as f:
-        dguheadercomposer(newDgu, f)
-
-        
+        auxiliar.dguheadercomposer(newDgu, f)
+     
 
 def initanb(path=""):
     cwd = os.getcwd()
     if os.path.exists(cwd + '/.anbtk'):
         
         raise Exception("This folder was already initialized as an Ancestors Notebook.")
-    elif find_anb() is not None:
+    elif dataControl.find_anb() is not None:
         raise Exception("You are already in an Ancestors Notebook")  
     else:
         os.mkdir(filepath := (cwd + '/.anbtk'))
@@ -522,38 +374,6 @@ def initanb(path=""):
             os.chdir(filepath)
             FSGram.initializer(temp)
         dataControl.templateGen()
-
-
-
-def search_anbtk():
-    save = os.getcwd()
-    current_dir = os.getcwd()
-    while current_dir != '/':
-        folder_path = os.path.join(current_dir, '.anbtk')
-        if os.path.isdir(folder_path):
-            os.chdir(folder_path)
-            return True
-        current_dir = os.path.dirname(current_dir)
-    os.chdir(save)
-    return False
-
-def parse_text(input):
-    lines = input.strip().split('\n')
-    result = {}   
-    i = 0
-    while i < len(lines):
-        if lines[i].startswith('*'):
-            name = lines[i][1:].strip().split()[0]            
-            items = []
-            i += 1
-            while i < len(lines) and lines[i].startswith('\t*'):
-                item = lines[i][2:].strip()               
-                items.append(item)       
-                i += 1       
-            result[name] = items
-        i += 1
-    
-    return result
 
 
 
@@ -580,12 +400,12 @@ def anb():
             initanb()
     
     elif args.subcommand == 'dgu':
-        if search_anbtk():
+        if dataControl.search_anbtk():
 
             if args.entity:
             
                 with open('universe.dgu') as universe:
-                    entities = parse_text(universe.read())
+                    entities = auxiliar.parse_text(universe.read())
                     if args.entity[0] in entities.keys():
                         genDgu(args.entity[0], entities[args.entity[0]], args.filename[0],currentdir)
                     else:
@@ -594,7 +414,7 @@ def anb():
                 os.chdir(currentdir)
                 empty_dgu = dgu.DGU("","","","")
                 with open(args.filename[0]+'.dgu',"w") as f:
-                    dguheadercomposer(empty_dgu,f)
+                    auxiliar.dguheadercomposer(empty_dgu,f)
 
         else:
             print("You need to initialize an ancestors notebook")

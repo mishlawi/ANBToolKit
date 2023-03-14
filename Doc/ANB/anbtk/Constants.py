@@ -131,7 +131,7 @@ $\ast$~$\ast$~$\ast$
 
 \stepcounter{tablecounter}
 {% if h|length > 3 %}
-\hyperref[table:\arabic{tablecounter}]{See metadata here}
+\textsuperscript{\hyperref[table:\arabic{tablecounter}]{See metadata here}}
 {% endif %}
 \newpage
 {% endfor %}

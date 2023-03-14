@@ -70,21 +70,24 @@ author:
 - {{autor}}
 variables:
     section-titles: false
-#    header-includes: \usepackage{natslides}
+    header-includes:
+    - \usepackage{natslides}
+    - \usepackage{multicol}
 
 
 toc: true
 number-sections: true
 
 ---
-
 \newpage
+\newcounter{tablecounter}
+
 {% for h in hs %}
 \begin{center}
 
     \section{  {{h.title}}  }
 
-    {% if h.author is defined and h.author != '' %}
+    {% if h.author is defined and h.author != 'False' %}
             {% if h.author|length > 1 %}
                 \textit{by}
                 {% for a in h.author[:-1] %}
@@ -106,14 +109,15 @@ number-sections: true
             \item \textit{ {{about}} }
         {% endfor %}
         \end{itemize}
+        \vspace{0.2cm}
     \end{minipage}}
     {% endif %}
 
 $\ast$~$\ast$~$\ast$
 
-\end{center}
 
-\vspace{0.5cm}
+
+\end{center}
 
 \begin{center}
     \begin{minipage}{0.9\textwidth}
@@ -124,8 +128,19 @@ $\ast$~$\ast$~$\ast$
     \end{minipage}
 \end{center}
 
+\stepcounter{tablecounter}
 {% if h|length > 3 %}
-\hypertarget{table-{{ loop.index }}}{}
+\hyperref[table:\arabic{tablecounter}]{See metadata here}
+{% endif %}
+\newpage
+{% endfor %}
+
+\newcounter{tablecounter2}
+
+\section{Tables}
+
+{% for h in hs %}
+\stepcounter{tablecounter2}
 \begin{table}[h]
     \centering
     \begin{tabular}{|c|c|}
@@ -135,14 +150,13 @@ $\ast$~$\ast$~$\ast$
             \hline
         {% endfor %}
     \end{tabular}
+    \caption{Table \arabic{tablecounter2}} % Add a caption to the table with the current table counter value
+    \label{table:\arabic{tablecounter2}} % Use the current table counter value as the label name
 \end{table}
-
-{% endif %}
-
-   
-\newpage    
 {% endfor %}
 
+\begin{multicols}{2}
+\end{multicols}
 
 
 """

@@ -2,6 +2,7 @@ import re
 import yaml
 import os
 import subprocess
+import imghdr
 
 
 
@@ -240,6 +241,18 @@ def parse_text(input):
         i += 1
     
     return result
+
+def is_image(path):
+    content_type = imghdr.what(path)
+    if content_type is not None:
+        return True
+    else:
+        return False
+
+
+
+
+
 
 
 

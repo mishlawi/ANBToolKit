@@ -9,7 +9,7 @@ UNIVERSE
 
 Story -> title,author,date
 Biography -> name,birthday,birthplace,occupation,death
-Pessoa -> name,age
+Foto -> note,date
 
 FORMATS
 
@@ -72,9 +72,6 @@ variables:
     section-titles: false
     header-includes: 
     - \usepackage{subcaption}
-
-
-
 
 toc: true
 number-sections: true
@@ -151,7 +148,7 @@ $\ast$~$\ast$~$\ast$
             \hline
         {% endfor %}
     \end{tabular}
-    \caption{Table \arabic{tablecounter2}} % Add a caption to the table with the current table counter value
+    \caption{A \textbf{ {{h.type}} }-\textit{ {{h.id}} }} % Add a caption to the table with the current table counter value
     \label{table:\arabic{tablecounter2}} % Use the current table counter value as the label name
 \end{table}
 {% endfor %}

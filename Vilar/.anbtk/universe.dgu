@@ -4,6 +4,7 @@ format: dgu
 type: Universe
 about:
 - Universe of entities currently being used in this ancestors notebook
+path: ''
 ---
 
 * Story 
@@ -18,7 +19,7 @@ about:
 	* occupation
 	* death
 
-* Pessoa 
-	* name
-	* age
+* Foto 
+	* note
+	* date
 

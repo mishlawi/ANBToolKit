@@ -23,7 +23,6 @@ from . import auxiliar
 
 #*TODO
 ## code
-# Distribute all aux functions in specific files
 # reactoring of functions, some things are repeated a lot and could be easily represented by a function
 # templates are trash atm
 ## ideias
@@ -91,6 +90,8 @@ def dgu2texbook():
 
 #################### pdf books#############################
 # usage: -file+
+
+#* dont forget to add the path if needed in the future
 def tex2dgu(dirout=""):
     arguments = argsConfig.a_tex2dgu()
     if arguments.file:
@@ -340,12 +341,17 @@ def genBio():
     
 
 
+
+
 ############################## .anb ################################
+
+
+
 
 def genDgu(title, attributes, nameofthefile, dir):
     id = dataControl.dataUpdate(title, nameofthefile)
     subclass = DGUhand.dgu_subclass(title, attributes)
-    newDgu = subclass(nameofthefile, "", title, "", *["" for _ in attributes])
+    newDgu = subclass(nameofthefile, "", title, "", "", *["" for _ in attributes])
     os.chdir(dir)
     with open(f"{id}.dgu", "w") as f:
         auxiliar.dguheadercomposer(newDgu, f)
@@ -412,7 +418,7 @@ def anb():
                         print("No entity exists with that name")
             if not args.entity:
                 os.chdir(currentdir)
-                empty_dgu = dgu.DGU("","","","")
+                empty_dgu = dgu.DGU()
                 with open(args.filename[0]+'.dgu',"w") as f:
                     auxiliar.dguheadercomposer(empty_dgu,f)
 

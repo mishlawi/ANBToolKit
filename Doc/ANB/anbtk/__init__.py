@@ -196,9 +196,6 @@ def dgubook():
                 raise Exception(f"{elem} is not a dgu file")
             
             elem_path = os.path.abspath(elem)
-            elem_dirname = os.path.dirname(elem_path)
-
-            adgu = auxiliar.parseAbstractDgu(elem)
             with open(elem_path) as elem_file:
                 
                 temp = elem_file.read()
@@ -254,22 +251,32 @@ def genDguImage():
             if not auxiliar.is_image(elem):
                 raise Exception(f"{elem} is not a dgu file")
             else:
+                filename = os.path.basename(elem)
+                format = re.split("\.",filename)[1]
+                id = auxiliar.get_filename_no_extension(elem) # what to do to have data control?
+                abpath = os.path.abspath(elem)
                 if os.path.dirname(elem)!='':
-                    filename = os.path.basename(elem)
-                    name = re.split("\.",filename)[0]
-                    format = re.split("\.",filename)[1]
-                    id = auxiliar.get_filename_no_extension(elem) # what to do to have data control?
-                    abpath = os.path.abspath(elem)
+                    
                     os.chdir(os.path.dirname(os.path.abspath(elem)))
-    if arguments.tree:
-        visited = set()
-        for dirpath, _, filenames in os.walk(cwd, followlinks=True):
-            realpath = os.path.realpath(dirpath)
-            if realpath in visited or os.path.basename(dirpath) == '.anbtk':
-                continue
+                
+                with open(filename[:-4]+'.dgu','w') as dgufile:
+                    dgufile.write('---\n')
+                    yaml.dump(dgu.DGU(id = id,format = format,path=abpath),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
+                    dgufile.write('---\n')
+                os.chdir(cwd)
+                
 
-        visited.add(realpath)
-        # for filename in filenames:
+                    
+
+    # if arguments.tree:
+    #     visited = set()
+    #     for dirpath, _, filenames in os.walk(cwd, followlinks=True):
+    #         realpath = os.path.realpath(dirpath)
+    #         if realpath in visited or os.path.basename(dirpath) == '.anbtk':
+    #             continue
+
+    #     visited.add(realpath)
+    #     # for filename in filenames:
             
     
     

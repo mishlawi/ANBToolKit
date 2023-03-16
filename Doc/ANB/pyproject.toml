@@ -19,5 +19,6 @@ tex2dgu = "anbtk:tex2dgu"
 dgubook = "anbtk:dgubook"
 genStory = "anbtk:genStory"
 genBio = "anbtk:genBio"
+genDguImage = "anbtk:genDguImage"
 anb = "anbtk:anb"
 

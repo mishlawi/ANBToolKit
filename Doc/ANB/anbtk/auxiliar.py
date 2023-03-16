@@ -248,8 +248,11 @@ def is_image(path):
         return True
     else:
         return False
-
-
+    
+def get_filename_no_extension(path):
+    file_name = os.path.basename(path) 
+    file_name_without_ext = os.path.splitext(file_name)[0]  
+    return file_name_without_ext
 
 
 

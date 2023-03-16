@@ -27,8 +27,7 @@ from . import auxiliar
 # templates are trash atm
 ## ideias
 #
-#! dsl for notes
-#! generate 
+#!FIX TEX2DGU regarding the UTF8
 #! start to consider images
 #* i want it so that story and bio (and others) are default formats but the users can create their ones 
 
@@ -177,6 +176,7 @@ def dgubook():
     tempdgu = open('AncestorsNotebook.md', 'w')
 
     args = ['pandoc', '-s', 'AncestorsNotebook.md', '-o', 'AncestorsNotebook.pdf']
+    #args = ['pdflatex', 'AncestorsNotebook.tex']
 
     cwd = os.getcwd()
 
@@ -197,18 +197,14 @@ def dgubook():
             
             elem_path = os.path.abspath(elem)
             elem_dirname = os.path.dirname(elem_path)
-            
-            if elem_dirname:
-                os.chdir(elem_dirname)
+
             adgu = auxiliar.parseAbstractDgu(elem)
-            print(adgu)
-            with open(os.path.basename(elem_path)) as elem_file:
+            with open(elem_path) as elem_file:
                 
                 temp = elem_file.read()
                 if aux:= re.split('---',temp):
                     (_,cabecalho,corpo) = aux
                     meta = yaml.safe_load(cabecalho)  # moved inside the loop
-                    #print(meta)
                     meta['corpo'] = corpo
                     if not "title" in meta.keys() or meta['title'] == '':
                         meta['title'] = meta['id']
@@ -250,7 +246,35 @@ def dgubook():
 
 
 ######################## notes #######################
+def genDguImage():
+    cwd = os.getcwd()
+    arguments = argsConfig.a_image()
+    if arguments.file:
+        for elem in arguments.file:
+            if not auxiliar.is_image(elem):
+                raise Exception(f"{elem} is not a dgu file")
+            else:
+                if os.path.dirname(elem)!='':
+                    filename = os.path.basename(elem)
+                    name = re.split("\.",filename)[0]
+                    format = re.split("\.",filename)[1]
+                    id = auxiliar.get_filename_no_extension(elem) # what to do to have data control?
+                    abpath = os.path.abspath(elem)
+                    os.chdir(os.path.dirname(os.path.abspath(elem)))
+    if arguments.tree:
+        visited = set()
+        for dirpath, _, filenames in os.walk(cwd, followlinks=True):
+            realpath = os.path.realpath(dirpath)
+            if realpath in visited or os.path.basename(dirpath) == '.anbtk':
+                continue
 
+        visited.add(realpath)
+        # for filename in filenames:
+            
+    
+    
+      
+ 
 #? needs to be checked
 # usage : --f+
 def genNote():
@@ -348,6 +372,7 @@ def genBio():
 
 
 
+
 def genDgu(title, attributes, nameofthefile, dir):
     id = dataControl.dataUpdate(title, nameofthefile)
     subclass = DGUhand.dgu_subclass(title, attributes)
@@ -390,7 +415,7 @@ def anb():
     init_parser = subparsers.add_parser('init')
     init_parser.add_argument('-s','--source',help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)
     dguCommands_parser = subparsers.add_parser('dgu',help='Creates a default dgu or a entity based dgu')
-    dguCommands_parser.add_argument('-e','--entity',help='Specify a entity as described in your FSGram file or the default file',nargs=1)
+    dguCommands_parser.add_argument('-e','--entity',help='Specify an entity as described in your FSGram file or the default file',nargs=1)
     dguCommands_parser.add_argument('-f','--filename',help='Name of the dgu',type=str,dest='filename',required=True,nargs=1)
 
     args = parser.parse_args()

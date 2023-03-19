@@ -226,7 +226,6 @@ def dgubook():
                         if aux:= re.split('---',temp):
                             (_,cabecalho,corpo) = aux
                             meta = yaml.safe_load(cabecalho)  # moved inside the loop
-                            #print(meta)
                             meta['corpo'] = corpo
                             if not "title" in meta.keys() or meta['title'] =='':
                                 meta['title'] = meta['id']
@@ -249,7 +248,7 @@ def genDguImage():
     if arguments.file:
         for elem in arguments.file:
             if not auxiliar.is_image(elem):
-                raise Exception(f"{elem} is not a dgu file")
+                raise Exception(f"{elem} is not an image file")
             else:
                 filename = os.path.basename(elem)
                 format = re.split("\.",filename)[1]
@@ -264,21 +263,29 @@ def genDguImage():
                     yaml.dump(dgu.DGU(id = id,format = format,path=abpath),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
                     dgufile.write('---\n')
                 os.chdir(cwd)
-                
+                               
+    if arguments.tree:
+        visited = set()
+        for dirpath, _, filenames in os.walk(cwd, followlinks=True):
+            realpath = os.path.realpath(dirpath)
+            if realpath in visited or os.path.basename(dirpath) == '.anbtk':
+                continue
+            else:
+                visited.add(realpath)
+                for filename in filenames:
+                    filepath = os.path.join(dirpath, filename)
+                    if not auxiliar.is_image(filepath) or os.path.islink(filepath) and not os.path.exists(filepath):
+                        continue
+                    else:
+                        format = os.path.splitext(filename)[1][1:]
+                        id = os.path.splitext(filename)[0]
+                        abpath = os.path.abspath(filepath)
+                        with open(os.path.join(dirpath, id + '.dgu'), 'w') as dgufile:
+                            dgufile.write('---\n')
+                            yaml.dump(dgu.DGU(id=id, format=format, path=abpath), dgufile, default_flow_style=False, sort_keys=False, allow_unicode=True)
+                            dgufile.write('---\n')
 
-                    
-
-    # if arguments.tree:
-    #     visited = set()
-    #     for dirpath, _, filenames in os.walk(cwd, followlinks=True):
-    #         realpath = os.path.realpath(dirpath)
-    #         if realpath in visited or os.path.basename(dirpath) == '.anbtk':
-    #             continue
-
-    #     visited.add(realpath)
-    #     # for filename in filenames:
-            
-    
+                            
     
       
  

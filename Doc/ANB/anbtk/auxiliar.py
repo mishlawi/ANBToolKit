@@ -255,6 +255,7 @@ def get_filename_no_extension(path):
     return file_name_without_ext
 
 
+def genDguSimple():
 
 
 

@@ -130,6 +130,7 @@ def getFormat(string):
 
 #!NEEDS MAINTANCE
 def parseAbstractDgu(filename):
+    
 
     """
     Parses a dgu file and returns a dictionary containing its metadata and body.
@@ -141,8 +142,9 @@ def parseAbstractDgu(filename):
     """
 
     base, ext = os.path.splitext(filename)
+
     if ext == '.dgu':
-        with open(filename) as f:
+        with open(os.path.abspath(filename)) as f:
             data = f.read()
         headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)", data).group()
         adgu = yaml.full_load(headers)

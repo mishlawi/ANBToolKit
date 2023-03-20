@@ -143,7 +143,7 @@ $\ast$~$\ast$~$\ast$
     \centering
     \begin{tabular}{|c|c|}
         \hline
-        {% for k, v in h.items() if k not in ['title', 'author', 'corpo', 'about'] %}
+        {% for k, v in h.items() if k not in ['title', 'author', 'corpo', 'about','path'] %}
             \textbf{ {{ k }} } & \textit{ {{ v }} } \\
             \hline
         {% endfor %}

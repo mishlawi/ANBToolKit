@@ -113,7 +113,8 @@ def tex2dgu(dirout=""):
                 format = auxiliar.getFormat('tex')
                 type = auxiliar.docType(filename)
                 abouts = re.findall(r'\\ind\{(.+?| )\}',file)
-                yaml.dump(dgu.DGU(id = id,format = format,type=type,about=abouts),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
+                path = os.path.abspath(filename)
+                yaml.dump(dgu.DGU(id = id,format = format,type=type,about=abouts,path=path),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
                 yaml.dump(adgu,dgufile)
                 dgufile.write("---\n")
                 dgufile.write(text)
@@ -174,10 +175,7 @@ def dgubook():
         exit(1)
 
     tempdgu = open('AncestorsNotebook.md', 'w')
-
     args = ['pandoc', '-s', 'AncestorsNotebook.md', '-o', 'AncestorsNotebook.pdf']
-    #args = ['pdflatex', 'AncestorsNotebook.tex']
-
     cwd = os.getcwd()
 
     if not dataControl.find_anb():
@@ -190,46 +188,51 @@ def dgubook():
     os.chdir(cwd)
     if arguments.file:
         h2=[]
+        imgs = []
         for elem in arguments.file:
             if not elem.endswith('.dgu'):
                 tempdgu.close()
                 raise Exception(f"{elem} is not a dgu file")
-            
-            elem_path = os.path.abspath(elem)
-            with open(elem_path) as elem_file:
-                
-                temp = elem_file.read()
-                if aux:= re.split('---',temp):
-                    (_,cabecalho,corpo) = aux
-                    meta = yaml.safe_load(cabecalho)  # moved inside the loop
-                    meta['corpo'] = corpo
-                    if not "title" in meta.keys() or meta['title'] == '':
-                        meta['title'] = meta['id']
-                    h2.append(meta)
-
-        tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2))            
+            if auxiliar.isDguImage(elem):
+                imgs.append(auxiliar.parseAbstractDgu(elem)['path'])
+            else:
+                elem_path = os.path.abspath(elem)
+                with open(elem_path) as elem_file:   
+                    temp = elem_file.read()
+                    if aux:= re.split('---',temp):
+                        (_,cabecalho,corpo) = aux
+                        meta = yaml.safe_load(cabecalho)  # moved inside the loop
+                        meta['corpo'] = corpo
+                        if not "title" in meta.keys() or meta['title'] == '':
+                            meta['title'] = meta['id']
+                        h2.append(meta)
+        tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2,imgs=imgs))            
         os.chdir(cwd)
     if arguments.tree:
         h2=[]
+        imgs=[]
         visited = set()
         for dirpath, _, filenames in os.walk(cwd, followlinks=True):
             realpath = os.path.realpath(dirpath)
             if realpath in visited or os.path.basename(dirpath) == '.anbtk':
                 continue
-
             visited.add(realpath)
             for filename in filenames:
                 if filename.endswith('.dgu'):
                     elem_path = os.path.join(dirpath, filename)
-                    with open(elem_path) as elem_file:
-                        temp = elem_file.read()
-                        if aux:= re.split('---',temp):
-                            (_,cabecalho,corpo) = aux
-                            meta = yaml.safe_load(cabecalho)  # moved inside the loop
-                            meta['corpo'] = corpo
-                            if not "title" in meta.keys() or meta['title'] =='':
-                                meta['title'] = meta['id']
-                            h2.append(meta)
+                    if auxiliar.isDguImage(elem_path):
+                        imgs.append(auxiliar.parseAbstractDgu(elem)['path'])
+                    else:
+                        with open(elem_path) as elem_file:
+                            temp = elem_file.read()
+                            if aux:= re.split('---',temp):
+                                (_,cabecalho,corpo) = aux
+                                meta = yaml.safe_load(cabecalho) 
+                                meta['corpo'] = corpo
+                                if not "title" in meta.keys() or meta['title'] =='':
+                                    meta['title'] = meta['id']
+                                h2.append(meta)
+        print(imgs)
         tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2)) 
             
         os.chdir(cwd)
@@ -383,9 +386,6 @@ def genBio():
 
 
 ############################## .anb ################################
-
-
-
 
 
 def genDgu(title, attributes, nameofthefile, dir):

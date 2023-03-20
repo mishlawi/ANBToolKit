@@ -233,7 +233,7 @@ def dgubook():
                                     meta['title'] = meta['id']
                                 h2.append(meta)
         print(imgs)
-        tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2)) 
+        tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2,imgs=imgs)) 
             
         os.chdir(cwd)
 

@@ -133,8 +133,17 @@ $\ast$~$\ast$~$\ast$
 \newpage
 {% endfor %}
 
-\newcounter{tablecounter2}
 
+\section{Images}
+\newcounter{image}
+{% for img in imgs %}
+![image]({{img}})
+{% endfor %}
+
+
+\newpage
+\section{Meta-information}
+\newcounter{tablecounter2}
 \section{Tables}
 
 {% for h in hs %}

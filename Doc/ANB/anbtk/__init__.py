@@ -257,12 +257,12 @@ def genDguImage():
                 if os.path.dirname(elem)!='':
                     
                     os.chdir(os.path.dirname(os.path.abspath(elem)))
-                
-                with open(filename[:-4]+'.dgu','w') as dgufile:
-                    dgufile.write('---\n')
-                    yaml.dump(dgu.DGU(id = id,format = format,path=abpath),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
-                    dgufile.write('---\n')
-                os.chdir(cwd)
+                if not os.path.exists(filename[:-4]+'.dgu'):
+                    with open(filename[:-4]+'.dgu','w') as dgufile:
+                        dgufile.write('---\n')
+                        yaml.dump(dgu.DGU(id = id,format = format,path=abpath),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
+                        dgufile.write('---\n')
+                    os.chdir(cwd)
                                
     if arguments.tree:
         visited = set()
@@ -280,10 +280,11 @@ def genDguImage():
                         format = os.path.splitext(filename)[1][1:]
                         id = os.path.splitext(filename)[0]
                         abpath = os.path.abspath(filepath)
-                        with open(os.path.join(dirpath, id + '.dgu'), 'w') as dgufile:
-                            dgufile.write('---\n')
-                            yaml.dump(dgu.DGU(id=id, format=format, path=abpath), dgufile, default_flow_style=False, sort_keys=False, allow_unicode=True)
-                            dgufile.write('---\n')
+                        if not os.path.exists(os.path.join(dirpath, id + '.dgu')):
+                            with open(os.path.join(dirpath, id + '.dgu'), 'w') as dgufile:
+                                dgufile.write('---\n')
+                                yaml.dump(dgu.DGU(id=id, format=format, path=abpath), dgufile, default_flow_style=False, sort_keys=False, allow_unicode=True)
+                                dgufile.write('---\n')
 
                             
     

@@ -255,8 +255,11 @@ def get_filename_no_extension(path):
     return file_name_without_ext
 
 
-def genDguSimple():
 
-
-
-
+def isDguImage(path):
+    adgu = parseAbstractDgu(path)    
+    if is_image(adgu['path']):
+        return True
+    else:
+        return False
+    

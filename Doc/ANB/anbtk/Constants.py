@@ -72,11 +72,13 @@ variables:
     section-titles: false
     header-includes: 
     - \usepackage{subcaption}
+    - \usepackage{graphicx}
 
 toc: true
 number-sections: true
 
 ---
+
 \newpage
 \newcounter{tablecounter}
 
@@ -134,11 +136,19 @@ $\ast$~$\ast$~$\ast$
 {% endfor %}
 
 
+
 \section{Images}
+
 \newcounter{image}
-{% for img in imgs %}
-![image]({{img}})
-{% endfor %}
+
+\begin{figure}[h!]
+    \centering
+    {% for img in imgs %}
+    \includegraphics[width=0.5\textwidth]{ {{img}} }
+    {% endfor %}
+    \caption{Resized images}
+\end{figure}
+
 
 
 \newpage

@@ -127,47 +127,6 @@ def tex2dgu(dirout=""):
 
 
 
-#! THIS ONE IS NOT FINISHED, I NEED A DIFFERENT APPROACH
-# usage: -file+ | -tree{1} 
-def dgubookmd():
-    arguments = argsConfig.a_dgubookmd()
-    time = datetime.datetime.now()
-    x = str(time)
-
-    tempdgu =  open('dgu2pdf.md','w') 
-    tempdgu.write(Constants.markdownbook)
-    tempdgu.write(f"<sup>Processed and generated on {x[:10]}</sup>.\n\n\n")
-
-    cwd = os.getcwd()
-
-    if arguments.file:            
-        for elem in arguments.file:
-            if elem.endswith('.dgu'):
-                if os.path.dirname(elem)!='':
-                    os.chdir(os.path.dirname(os.path.abspath(elem)))
-                temp = open(os.path.basename(elem),'r').read()
-                auxiliar.heading2markdown(temp,tempdgu)
-                os.chdir(cwd)
-                subprocess.run(['pandoc', 'dgu2pdf.md', '-o', 'dgu2pdf.pdf']) # maybe have a personalized name
-                
-
-            else:
-                raise Exception(elem + " is not a dgu file")
-                
-    if arguments.tree:
-        
-        for (dirpath,_,filenames) in os.walk(cwd):
-            for filename in filenames:
-              if filename.endswith('.dgu'):
-                temp = open(dirpath+'/'+filename,'r').read()
-                auxiliar.heading2markdown(temp,tempdgu)
-                os.chdir(cwd)
-                subprocess.run(['pandoc', 'dgu2pdf.md', '-o', 'dgu2pdf.pdf']) # maybe have a personalized name
-    
-    tempdgu.close()
-
-
-
 def dgubook():
     arguments = argsConfig.a_dgubook()
     if arguments is None:

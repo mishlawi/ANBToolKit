@@ -3,6 +3,7 @@ import yaml
 import os
 import subprocess
 import imghdr
+from datetime import datetime
 
 
 
@@ -264,4 +265,9 @@ def isDguImage(path):
         return True
     else:
         return False
+    
+def getCurrentTime():
+    now = datetime.now()
+    formated = now.strftime("%d of %B of %Y")
+    return formated
     

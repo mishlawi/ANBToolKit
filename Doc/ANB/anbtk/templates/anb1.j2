@@ -15,10 +15,10 @@ number-sections: true
 \newcounter{tablecounter}
 
 {% for h in hs %}
+
+
+\section{  {{h.title}}  }
 \begin{center}
-
-    \section{  {{h.title}}  }
-
     {% if h.author is defined and h.author != 'False' %}
             {% if h.author|length > 1 %}
                 \textit{by}
@@ -64,6 +64,8 @@ $\ast$~$\ast$~$\ast$
 {% if h|length > 3 %}
 \textsuperscript{\hyperref[table:\arabic{tablecounter}]{See metadata here}}
 {% endif %}
+
+
 \newpage
 {% endfor %}
 

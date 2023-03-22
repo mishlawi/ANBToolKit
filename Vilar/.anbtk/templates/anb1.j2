@@ -1,75 +1,9 @@
-defaultFsgram= """Pessoa : H* , Bio, Foto .
-Album : Foto*.
 
-H : r'h[0-9]+\-\w+\.\w+'
-Bio : r'b[0-9]+\-\w+\.\w+'
-Foto : r'p[0-9]+\-\w+\.\w+'
-
-UNIVERSE
-
-Story -> title,author,date
-Biography -> name,birthday,birthplace,occupation,death
-Foto -> note,date
-
-FORMATS
-
-markdown
-latex
-
-
-IGNORE
-.py 
-.out
-.fsgram
-"""
-
-frontdgubook = r"""
-\documentclass[12pt]{article}
-\usepackage{geometry}
-\geometry{letterpaper, margin=1in}
-
-\usepackage{graphicx}
-\usepackage{xcolor}
-\usepackage{titlesec}
-
-\titleformat*{\section}{\huge\bfseries\color{blue}}
-\titleformat*{\subsection}{\LARGE\bfseries\color{orange}}
-
-\title{Auto-Generated Stories}
-\author{}
-\date{\vspace{-5ex}}
-
-\begin{document}
-
-\maketitle
-
-\section*{Introduction}
-
-Welcome to this collection of auto-generated stories! These tales were created using advanced algorithms and artificial intelligence techniques, and are sure to delight and intrigue readers of all ages.
-"""
-
-markdownbook= """# Ancestors Notebook
-
-<sup>*Automatically generated*</sup>
-
-## Table of Contents"""
-
-
-defaultdgu = """
----
-id:
-
----"""
-
-
-
-template1 = r"""
 \documentclass{article}
 
 \usepackage{subcaption}
 \usepackage{graphicx}
 \usepackage{hyperref}
-\usepackage{tcolorbox}
 
 \title{ {{tit}} }
 \author{ {{autor}} }
@@ -146,7 +80,7 @@ template1 = r"""
             \includegraphics[width=\linewidth]{ {{-img-}} }
             \caption{a future caption here}
         \end{minipage}
-        \hspace{3cm} % add some horizontal space here
+        \hspace{1cm} % add some horizontal space here
         \begin{minipage}{0.3\textwidth}
             ok
 
@@ -185,4 +119,3 @@ template1 = r"""
 
 \end{document}
 
-"""

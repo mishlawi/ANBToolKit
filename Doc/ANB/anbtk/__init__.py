@@ -133,8 +133,9 @@ def dgubook():
         print("You need to specify a flag. Use dguBook -h for more info.")
         exit(1)
 
-    tempdgu = open('AncestorsNotebook.md', 'w')
-    args = ['pandoc', '-s', 'AncestorsNotebook.md', '-o', 'AncestorsNotebook.pdf']
+    tempdgu = open('AncestorsNotebook.tex', 'w')
+    args =  ['pdflatex', 'AncestorsNotebook.tex']
+    #args = ['pandoc','-s','AncestorsNotebook.tex', '-o', 'AncestorsNotebook.pdf']
     cwd = os.getcwd()
 
     if not dataControl.find_anb():
@@ -153,7 +154,8 @@ def dgubook():
                 tempdgu.close()
                 raise Exception(f"{elem} is not a dgu file")
             if auxiliar.isDguImage(elem):
-                imgs.append(auxiliar.parseAbstractDgu(elem)['path'])
+                relative_path = os.path.relpath(auxiliar.parseAbstractDgu(elem)['path'], os.getcwd())
+                imgs.append(relative_path)
             else:
                 elem_path = os.path.abspath(elem)
                 with open(elem_path) as elem_file:   
@@ -180,7 +182,7 @@ def dgubook():
                 if filename.endswith('.dgu'):
                     elem_path = os.path.join(dirpath, filename)
                     if auxiliar.isDguImage(elem_path):
-                        imgs.append(auxiliar.parseAbstractDgu(elem)['path'])
+                        imgs.append(auxiliar.parseAbstractDgu(elem_path)['path'])
                     else:
                         with open(elem_path) as elem_file:
                             temp = elem_file.read()
@@ -192,14 +194,14 @@ def dgubook():
                                     meta['title'] = meta['id']
                                 h2.append(meta)
         print(imgs)
-        tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2,imgs=imgs)) 
+        tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2,imgs=imgs,date=auxiliar.getCurrentTime())) 
             
         os.chdir(cwd)
 
     tempdgu.close()
     if not arguments.markdown:
         subprocess.check_call(args)
-        os.remove("AncestorsNotebook.md") #! this is tex, change if it turns out to be necessary to use tex instead of md
+        # os.remove("AncestorsNotebook.tex") #! this is tex, change if it turns out to be necessary to use tex instead of md
         
 
 

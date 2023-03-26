@@ -83,7 +83,7 @@ templateLatex = r"""
 
 \title{ {{tit}} }
 \author{ {{autor}} }
-\date{ {{-day-}} }
+\date{ {{-dates.day-}} }
 
 \begin{document}
 
@@ -195,12 +195,18 @@ templateLatex = r"""
 \clearpage
 \section{Time Frame}
 
-\begin{chronology}[10]{1900}{2023}{\textwidth}
 
-{% for d in dates %}
-    \event{ {{-d.date-}}  }{ {{-d.id-}} }
+
+\newcommand{\foo}{\hspace{-2.3pt}$\bullet$ \hspace{5pt}}
+
+\scalebox{1}{
+\begin{tabular}{r |@{\foo} l}
+{% for d in dates.chronology %}
+	{{-d.date-}} & { {{-d.id-}} }\\
 {% endfor %}
-\end{chronology}
+\end{tabular}
+}
+
 
 \end{document}
 """

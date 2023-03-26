@@ -129,6 +129,15 @@ def tex2dgu(dirout=""):
     #args = ['pandoc','-s','AncestorsNotebook.tex', '-o', 'AncestorsNotebook.pdf']
 
 def dgubook():
+    dates = {}
+    docs = []
+    imgs = []
+    cronology = []
+    
+    dates['day'] = auxiliar.getCurrentTime()
+    dates['year'] = datetime.date.today().year
+    dates['oldest'] = dates['year']
+
     arguments = argsConfig.a_dgubook()
     if arguments is None:
         print("You need to specify a flag. Use dguBook -h for more info.")
@@ -144,12 +153,11 @@ def dgubook():
 
     os.chdir(dataControl.find_anb()) 
     environment = Environment(loader=FileSystemLoader("templates/"))
-    dgus2md = environment.get_template("anb1.j2")
+    dgus2tex = environment.get_template("anb1.j2")
     os.chdir(cwd)
-    if arguments.file:
-        h2 = []
-        imgs = []
-        dates = []
+    
+
+    if arguments.file: 
         for elem in arguments.file:
             if not elem.endswith('.dgu'):
                 tempdgu.close()
@@ -167,16 +175,17 @@ def dgubook():
                         meta = yaml.safe_load(cabecalho)  
                         meta['corpo'] = corpo
                         if auxiliar.getDate(meta) is not None:
-                            dates.append(auxiliar.getDate(meta))               
+                            cronology.append(auxiliar.getDate(meta))
+                            if int((old := auxiliar.getDate(meta)['date'])) < dates['oldest']:
+                                dates['oldest'] = old                                  
                         if not "title" in meta.keys() or meta['title'] == '':
                             meta['title'] = meta['id']
-                        h2.append(meta)
-        tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2,imgs=imgs))            
+                        docs.append(meta)
+        dates['chronology'] = cronology
+        tempdgu.write(dgus2tex.render(tit="Livro dos antepassados",docs=docs,imgs=imgs,dates=dates))            
         os.chdir(cwd)
     if arguments.tree:
-        h2 = []
-        imgs = []
-        dates = []
+
         visited = set()
         for dirpath, _, filenames in os.walk(cwd, followlinks=True):
             realpath = os.path.realpath(dirpath)
@@ -198,12 +207,15 @@ def dgubook():
                                 meta = yaml.safe_load(cabecalho) 
                                 meta['corpo'] = corpo
                                 if auxiliar.getDate(meta) is not None:
-                                    dates.append(auxiliar.getDate(meta)) 
+                                    cronology.append(auxiliar.getDate(meta))
+                                    if int((old := auxiliar.getDate(meta)['date'])) < int(dates['oldest']):
+                                        dates['oldest'] = old 
                                 if not "title" in meta.keys() or meta['title'] =='':
                                     meta['title'] = meta['id']
-                                h2.append(meta)
+                                docs.append(meta)
         print(dates)
-        tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2,imgs=imgs,day=auxiliar.getCurrentTime(),dates=dates)) 
+        dates['chronology'] = cronology
+        tempdgu.write(dgus2tex.render(tit="Livro dos antepassados",docs=docs,imgs=imgs,dates=dates)) 
             
         os.chdir(cwd)
 

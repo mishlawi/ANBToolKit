@@ -284,4 +284,28 @@ def getDate(adgu):
             return None
     else:
         return None
-            
+
+
+
+def parse_dgu(dgu_path,dates,docs,imgs,cronology):
+    
+    if not dgu_path.endswith('.dgu'):
+        raise Exception(f"{dgu_path} is not a dgu file")
+    
+    if isDguImage(dgu_path):
+            adgu = parseAbstractDgu(dgu_path)
+            adgu['path'] = os.path.relpath(parseAbstractDgu(dgu_path)['path'], os.getcwd()) # gets relative path
+            imgs.append(adgu)
+    else:
+        elem_path = os.path.abspath(dgu_path)
+        with open(elem_path) as elem_file:
+            temp = elem_file.read()
+            if aux:= re.split('---',temp):
+                (_,cabecalho,corpo) = aux
+                meta = yaml.safe_load(cabecalho)  
+                meta['corpo'] = corpo
+                if getDate(meta) is not None:
+                            cronology.append(getDate(meta))
+                            if int((old := getDate(meta)['date'])) < dates['oldest']:
+                                dates['oldest'] = old 
+

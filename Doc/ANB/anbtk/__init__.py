@@ -126,6 +126,7 @@ def tex2dgu(dirout=""):
 
 
 
+    #args = ['pandoc','-s','AncestorsNotebook.tex', '-o', 'AncestorsNotebook.pdf']
 
 def dgubook():
     arguments = argsConfig.a_dgubook()
@@ -135,7 +136,6 @@ def dgubook():
 
     tempdgu = open('AncestorsNotebook.tex', 'w')
     args =  ['pdflatex', 'AncestorsNotebook.tex']
-    #args = ['pandoc','-s','AncestorsNotebook.tex', '-o', 'AncestorsNotebook.pdf']
     cwd = os.getcwd()
 
     if not dataControl.find_anb():
@@ -147,31 +147,36 @@ def dgubook():
     dgus2md = environment.get_template("anb1.j2")
     os.chdir(cwd)
     if arguments.file:
-        h2=[]
+        h2 = []
         imgs = []
+        dates = []
         for elem in arguments.file:
             if not elem.endswith('.dgu'):
                 tempdgu.close()
                 raise Exception(f"{elem} is not a dgu file")
             if auxiliar.isDguImage(elem):
-                relative_path = os.path.relpath(auxiliar.parseAbstractDgu(elem)['path'], os.getcwd())
-                imgs.append(relative_path)
+                adgu = auxiliar.parseAbstractDgu(elem_path)
+                adgu['path'] = os.path.relpath(auxiliar.parseAbstractDgu(elem_path)['path'], os.getcwd())
+                imgs.append(adgu)
             else:
                 elem_path = os.path.abspath(elem)
                 with open(elem_path) as elem_file:   
                     temp = elem_file.read()
                     if aux:= re.split('---',temp):
                         (_,cabecalho,corpo) = aux
-                        meta = yaml.safe_load(cabecalho)  # moved inside the loop
+                        meta = yaml.safe_load(cabecalho)  
                         meta['corpo'] = corpo
+                        if auxiliar.getDate(meta) is not None:
+                            dates.append(auxiliar.getDate(meta))               
                         if not "title" in meta.keys() or meta['title'] == '':
                             meta['title'] = meta['id']
                         h2.append(meta)
         tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2,imgs=imgs))            
         os.chdir(cwd)
     if arguments.tree:
-        h2=[]
-        imgs=[]
+        h2 = []
+        imgs = []
+        dates = []
         visited = set()
         for dirpath, _, filenames in os.walk(cwd, followlinks=True):
             realpath = os.path.realpath(dirpath)
@@ -182,7 +187,9 @@ def dgubook():
                 if filename.endswith('.dgu'):
                     elem_path = os.path.join(dirpath, filename)
                     if auxiliar.isDguImage(elem_path):
-                        imgs.append(auxiliar.parseAbstractDgu(elem_path)['path'])
+                        adgu = auxiliar.parseAbstractDgu(elem_path)
+                        adgu['path'] = os.path.relpath(auxiliar.parseAbstractDgu(elem_path)['path'], os.getcwd())
+                        imgs.append(adgu)
                     else:
                         with open(elem_path) as elem_file:
                             temp = elem_file.read()
@@ -190,11 +197,13 @@ def dgubook():
                                 (_,cabecalho,corpo) = aux
                                 meta = yaml.safe_load(cabecalho) 
                                 meta['corpo'] = corpo
+                                if auxiliar.getDate(meta) is not None:
+                                    dates.append(auxiliar.getDate(meta)) 
                                 if not "title" in meta.keys() or meta['title'] =='':
                                     meta['title'] = meta['id']
                                 h2.append(meta)
-        print(imgs)
-        tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2,imgs=imgs,date=auxiliar.getCurrentTime())) 
+        print(dates)
+        tempdgu.write(dgus2md.render(tit="Livro dos antepassados",hs=h2,imgs=imgs,day=auxiliar.getCurrentTime(),dates=dates)) 
             
         os.chdir(cwd)
 

@@ -23,16 +23,16 @@ def universehand(universe):
             subclass = dgu_subclass(entity,atributes)
 
 def p_FSGram(p):
-    "FSGram : Prods UNIVERSE FORMATS IGNORED"
+    "FSGram : Prods UNIVERSE  IGNORED"
     ignoredFiles = []
     executable = ''
     top = list(grammar.values())[0]
     verifyGrammar(top,grammar)
     universe = re.sub('UNIVERSE','',p[2]).strip()
-    formats = re.sub('FORMATS','',p[3]).strip()
+    #formats = re.sub('FORMATS','',p[3]).strip()
     #universehand(universe)
-    ignored = re.sub('IGNORE','',p[4]).strip().split('\n')    
-    bigbang(universe,formats)
+    ignored = re.sub('IGNORE','',p[3]).strip().split('\n')    
+    bigbang(universe)
     
     for elem in ignored:
         ignoredFiles.append(elem)

@@ -3,11 +3,26 @@
 \usepackage{subcaption}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{calc}
+
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    total={170mm,257mm},
+    left=20mm,
+    top=20mm,
+}
+\newlength{\mytopmargin}
+\setlength{\mytopmargin}{\oddsidemargin}
+\addtolength{\mytopmargin}{\topmargin}
+\addtolength{\mytopmargin}{1in}
+\geometry{top=\mytopmargin+0.5in}
 
 
 \title{ {{tit}} }
 \author{ {{autor}} }
-\date{}
+\date{ {{-date-}} }
 
 \begin{document}
 
@@ -19,8 +34,10 @@
 
 {% for h in hs %}
 \newpage
-\section{ {{-h.title-}} }
 
+\begin{center}
+\section{ {{-h.title-}} }
+\vspace{0.5cm}
 {% if h.author is defined and h.author != 'False' %}
     {% if h.author|length > 1 %}
         \textit{by}
@@ -32,7 +49,7 @@
         \textit{by} {{h.author[0]}}
     {% endif %}
 {% endif %}
-
+\vspace{0.75cm}
 {% if h.about is defined and h.about|length > 0 %} 
     \fbox{
         \begin{minipage}{0.9\textwidth}
@@ -47,7 +64,7 @@
         \end{minipage}
     }
     {% endif %}
-
+\vspace{0.75cm}
     $\ast$~$\ast$~$\ast$  
 
 
@@ -59,7 +76,7 @@
             {{h.corpo}}
         \end{minipage}
     \end{center}
-
+\end{center}
     \stepcounter{tablecounter}
     {% if h|length > 3 %}
         \textsuperscript{\hyperref[table:\arabic{tablecounter}]{See metadata here}}
@@ -72,28 +89,29 @@
 
 \newcounter{image}
 
-
-\begin{multicols}{2}
-        \begin{figure*}[ht!]
-            \includegraphics[width=.3\textwidth]{example-image-a}\hfill
-            \includegraphics[width=.3\textwidth]{example-image-b}\hfill
-            \includegraphics[width=.3\textwidth]{example-image-c}
-            \caption{Image A.}
-            \caption{Image B.}
-            \caption{Image C.}
-        \end{figure*}
-        \lipsum[1-10]
-    \end{multicols}
 {% for img in imgs %}
-    \begin{figure}[ht!]
-        \centering
-    
-            \includegraphics[width=0.35\textwidth]{ {{-img-}} }
 
-        \caption{a future caption here}
-    \end{figure}
+    \begin{figure}[ht!]
+    \begin{minipage}{0.35\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{ {{-img.path-}} }
+        \caption{ {{img.id}} }
+    \end{minipage}
+    \hspace{1cm} % add some horizontal space here
+    \begin{minipage}{0.3\textwidth}
+        \begin{tcolorbox}[colback=white, colframe=black, boxrule=1pt]
+            \begin{itemize}
+                \item {{img.format}}
+                \item {{img.about}}
+            \end{itemize}
+
+        \end{tcolorbox}
+    \end{minipage}
+\end{figure}
+
 {% endfor %}
-\newpage
+
+\clearpage
 \section{Meta-information}
 \newcounter{tablecounter2}
 

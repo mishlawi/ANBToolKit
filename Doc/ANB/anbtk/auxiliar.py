@@ -271,3 +271,17 @@ def getCurrentTime():
     formated = now.strftime("%d of %B of %Y")
     return formated
     
+
+
+def getDate(adgu):
+    if 'date' in adgu.keys():
+        pattern = r'\b\d{4}\b'
+        matches = re.findall(pattern, str(adgu['date']))
+        if matches:
+            adgu['date'] = matches[0]
+            return adgu
+        else:
+            return None
+    else:
+        return None
+            

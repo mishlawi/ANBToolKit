@@ -72,7 +72,7 @@ def templateGen():
     os.chdir('templates')
 
     with open('anb1.j2','w') as f:
-        f.write(Constants.template1)
+        f.write(Constants.templateLatex)
 
 
 def find_anb():

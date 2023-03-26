@@ -6,12 +6,12 @@ from .dguObject import DGU as dgu
 
 
 # generates universe.dgu and formats.dgu
-def bigbang(stringUniverse,stringFormats):
+def bigbang(stringUniverse):
     uniformats = re.findall(r"^[^-]+",stringUniverse,re.MULTILINE)
     uniatributes = [re.findall(r'\b[^,]+\b', x) for x in re.findall(r"-> (.*)", stringUniverse, re.MULTILINE)]
-    formatformats = re.findall(r'\w+',stringFormats,re.MULTILINE)
+    #formatformats = re.findall(r'\w+',stringFormats,re.MULTILINE)
     universeAbout = "Universe of entities currently being used in this ancestors notebook"
-    formatsAabout = "Accepted types of file formats"
+   # formatsAabout = "Accepted types of file formats"
     print(uniformats)   
     with open(r'universe.dgu', 'w') as file:
         file.write("---\n")

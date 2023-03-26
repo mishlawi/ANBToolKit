@@ -3,7 +3,7 @@ from ply.lex import TOKEN
 
 
 # terminais
-tokens = ['PP','PF','PYTHON','UNIVERSE','FORMATS','VIR','IGNORED','REGEX','ID','IDm','IDv','IDo'] 
+tokens = ['PP','PF','UNIVERSE','VIR','IGNORED','REGEX','ID','IDm','IDv','IDo'] 
 
 t_PP = r'\:'
 
@@ -23,14 +23,11 @@ def t_REGEX(t):
 
 
 def t_UNIVERSE(t):
-    r'UNIVERSE(.|\n)+?(?=FORMATS)'
+    r'UNIVERSE(.|\n)+?(?=IGNORE)'
     t.value=str(t.value)
     return t
 
-def t_FORMATS(t):
-    r'FORMATS(.|\n)+?(?=IGNORE)'
-    t.value=str(t.value)
-    return t
+
 
 def t_IGNORED(t):
     r'IGNORE(.|\n)+'

@@ -155,36 +155,16 @@ def dgubook():
     environment = Environment(loader=FileSystemLoader("templates/"))
     dgus2tex = environment.get_template("anb1.j2")
     os.chdir(cwd)
-    
 
     if arguments.file: 
         for elem in arguments.file:
-            if not elem.endswith('.dgu'):
-                tempdgu.close()
-                raise Exception(f"{elem} is not a dgu file")
-            if auxiliar.isDguImage(elem):
-                adgu = auxiliar.parseAbstractDgu(elem_path)
-                adgu['path'] = os.path.relpath(auxiliar.parseAbstractDgu(elem_path)['path'], os.getcwd())
-                imgs.append(adgu)
-            else:
-                elem_path = os.path.abspath(elem)
-                with open(elem_path) as elem_file:   
-                    temp = elem_file.read()
-                    if aux:= re.split('---',temp):
-                        (_,cabecalho,corpo) = aux
-                        meta = yaml.safe_load(cabecalho)  
-                        meta['corpo'] = corpo
-                        if auxiliar.getDate(meta) is not None:
-                            cronology.append(auxiliar.getDate(meta))
-                            if int((old := auxiliar.getDate(meta)['date'])) < dates['oldest']:
-                                dates['oldest'] = old                                  
-                        if not "title" in meta.keys() or meta['title'] == '':
-                            meta['title'] = meta['id']
-                        docs.append(meta)
-        dates['chronology'] = cronology
-        tempdgu.write(dgus2tex.render(tit="Livro dos antepassados",docs=docs,imgs=imgs,dates=dates))            
-        os.chdir(cwd)
+            auxiliar.parse_dgu(elem,dates,docs,imgs,cronology)  
+    dates['chronology'] = cronology
+    tempdgu.write(dgus2tex.render(tit="Livro dos antepassados",docs=docs,imgs=imgs,dates=dates))            
+    os.chdir(cwd)
+    
     if arguments.tree:
+        
 
         visited = set()
         for dirpath, _, filenames in os.walk(cwd, followlinks=True):

@@ -286,6 +286,10 @@ def getDate(adgu):
         return None
 
 
+def updateTitleforId(adgu):
+    
+    if not "title" in adgu.keys() or adgu['title'] == '':
+        adgu['title'] = adgu['id']
 
 def parse_dgu(dgu_path,dates,docs,imgs,cronology):
     
@@ -307,5 +311,8 @@ def parse_dgu(dgu_path,dates,docs,imgs,cronology):
                 if getDate(meta) is not None:
                             cronology.append(getDate(meta))
                             if int((old := getDate(meta)['date'])) < dates['oldest']:
-                                dates['oldest'] = old 
+                                dates['oldest'] = old
+                                updateTitleforId(meta)
+                docs.append(meta)
+                 
 

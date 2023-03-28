@@ -291,28 +291,96 @@ def updateTitleforId(adgu):
     if not "title" in adgu.keys() or adgu['title'] == '':
         adgu['title'] = adgu['id']
 
-def parse_dgu(dgu_path,dates,docs,imgs,cronology):
-    
+
+
+
+def parse_individual_dgu(dgu_path, dates, docs, imgs, cronology):
+    """
+    Parse a single .dgu file and add the data to the appropriate lists.
+
+    Args:
+        dgu_path (str): Path to the .dgu file.
+        dates (dict): Dictionary containing various date-related information.
+        docs (list): List of parsed document metadata.
+        imgs (list): List of parsed image metadata.
+        cronology (list): List of parsed document dates.
+
+    Raises:
+        Exception: If the file is not a .dgu file.
+
+    Returns:
+        None
+    """
+
     if not dgu_path.endswith('.dgu'):
         raise Exception(f"{dgu_path} is not a dgu file")
-    
+
     if isDguImage(dgu_path):
-            adgu = parseAbstractDgu(dgu_path)
-            adgu['path'] = os.path.relpath(parseAbstractDgu(dgu_path)['path'], os.getcwd()) # gets relative path
-            imgs.append(adgu)
+        adgu = parseAbstractDgu(dgu_path)
+        adgu['path'] = os.path.relpath(parseAbstractDgu(dgu_path)['path'], os.getcwd()) # gets relative path
+        imgs.append(adgu)
     else:
         elem_path = os.path.abspath(dgu_path)
         with open(elem_path) as elem_file:
             temp = elem_file.read()
             if aux:= re.split('---',temp):
-                (_,cabecalho,corpo) = aux
-                meta = yaml.safe_load(cabecalho)  
+                _, cabecalho, corpo = aux
+                meta = yaml.safe_load(cabecalho)
                 meta['corpo'] = corpo
-                if getDate(meta) is not None:
-                            cronology.append(getDate(meta))
-                            if int((old := getDate(meta)['date'])) < dates['oldest']:
-                                dates['oldest'] = old
-                                updateTitleforId(meta)
+                date = getDate(meta)
+                if date is not None:
+                    cronology.append(date)
+                    if int(date['date']) < int(dates['oldest']):
+                        dates['oldest'] = date['date']
+                    updateTitleforId(meta)
                 docs.append(meta)
-                 
 
+
+
+def parse_dgu_tree(dgu_path,dirpath,dates,docs,imgs,cronology):
+
+    """
+    Parse a DGU tree, appending metadata to docs and images to imgs.
+
+    Args:
+    - dgu_path (str): path to the DGU file
+    - dirpath (str): path to the directory containing the DGU file
+    - dates (dict): dictionary with keys 'oldest' (str) and 'newest' (str)
+                    representing the oldest and newest dates encountered
+                    in the metadata
+    - docs (list): list of metadata dictionaries
+    - imgs (list): list of image dictionaries
+    - cronology (list): list of dates encountered in the metadata
+    """
+    
+    if dgu_path.endswith('.dgu'):
+        elem_path = os.path.join(dirpath, dgu_path)
+        if isDguImage(elem_path):
+            adgu = parseAbstractDgu(elem_path)
+            adgu['path'] = os.path.relpath(parseAbstractDgu(elem_path)['path'], os.getcwd())
+            imgs.append(adgu)
+        else:
+            with open(elem_path) as elem_file:
+                temp = elem_file.read()
+                if aux:= re.split('---',temp):
+                    (_,cabecalho,corpo) = aux
+                    meta = yaml.safe_load(cabecalho) 
+                    meta['corpo'] = corpo
+                    if getDate(meta) is not None:
+                        cronology.append(getDate(meta))
+                        if int((old := getDate(meta)['date'])) < int(dates['oldest']):
+                            dates['oldest'] = old 
+                    if not "title" in meta.keys() or meta['title'] =='':
+                        meta['title'] = meta['id']
+                    docs.append(meta)
+
+
+def tree_iteration(cwd,dates,docs,imgs,cronology,dgufunc):
+    visited = set()
+    for dirpath, _, filenames in os.walk(cwd, followlinks=True):
+        realpath = os.path.realpath(dirpath)
+        if realpath in visited or os.path.basename(dirpath) == '.anbtk':
+            continue
+        visited.add(realpath)
+        for filename in filenames:
+            dgufunc(filename,dirpath,dates,docs,imgs,cronology)

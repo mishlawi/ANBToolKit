@@ -4,10 +4,27 @@
 \usepackage{subcaption}
 \usepackage{graphicx}
 \usepackage{hyperref}
+\usepackage{tcolorbox}
+\usepackage{calc}
+\usepackage{chronology}
+\usepackage{geometry}
+
+\geometry{
+    a4paper,
+    total={170mm,257mm},
+    left=20mm,
+    top=20mm,
+}
+\newlength{\mytopmargin}
+\setlength{\mytopmargin}{\oddsidemargin}
+\addtolength{\mytopmargin}{\topmargin}
+\addtolength{\mytopmargin}{1in}
+\geometry{top=\mytopmargin+0.5in}
+
 
 \title{ {{tit}} }
 \author{ {{autor}} }
-\date{}
+\date{ {{-dates.day-}} }
 
 \begin{document}
 
@@ -17,10 +34,12 @@
 \newpage
 \newcounter{tablecounter}
 
-{% for h in hs %}
+{% for h in docs %}
 \newpage
-\section{ {{-h.title-}} }
 
+\begin{center}
+\section{ {{-h.title-}} }
+\vspace{0.5cm}
 {% if h.author is defined and h.author != 'False' %}
     {% if h.author|length > 1 %}
         \textit{by}
@@ -32,7 +51,7 @@
         \textit{by} {{h.author[0]}}
     {% endif %}
 {% endif %}
-
+\vspace{0.75cm}
 {% if h.about is defined and h.about|length > 0 %} 
     \fbox{
         \begin{minipage}{0.9\textwidth}
@@ -47,7 +66,7 @@
         \end{minipage}
     }
     {% endif %}
-
+\vspace{0.75cm}
     $\ast$~$\ast$~$\ast$  
 
 
@@ -59,7 +78,7 @@
             {{h.corpo}}
         \end{minipage}
     \end{center}
-
+\end{center}
     \stepcounter{tablecounter}
     {% if h|length > 3 %}
         \textsuperscript{\hyperref[table:\arabic{tablecounter}]{See metadata here}}
@@ -68,54 +87,76 @@
 {% endfor %}
 
 \clearpage
+
+{% if imgs|length > 0 %}
+
+\begin{center}
 \section{Images}
+\end{center}
 
 \newcounter{image}
 
-{% for img in imgs %}
+	{% for img in imgs %}
 
-    \begin{figure}[ht!]
-        \begin{minipage}{0.35\textwidth}
-            \centering
-            \includegraphics[width=\linewidth]{ {{-img-}} }
-            \caption{a future caption here}
-        \end{minipage}
-        \hspace{1cm} % add some horizontal space here
-        \begin{minipage}{0.3\textwidth}
-            ok
+		\begin{figure}[ht!]
+		\begin{minipage}{0.35\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{ {{-img.path-}} }
+			\caption{ {{img.id}} }
+		\end{minipage}
+		\hspace{1cm} % add some horizontal space here
+		\begin{minipage}{0.3\textwidth}
+			\begin{tcolorbox}[colback=white, colframe=black, boxrule=1pt]
+				\begin{itemize}
+					\item {{img.format}}
+                    {% if imgs.about|length > 0 %}
+						{% for about in imgs.about %}                 
+							\item {{img.about}}
+                        {% endfor %}
+                    {% endif %}
+				\end{itemize}
 
-            palavra 2
+			\end{tcolorbox}
+		\end{minipage}
+	\end{figure}
+	{% endfor %}
+\clearpage
+{% endif %}
 
-            palavra 3
 
-            lasjgslakgjalkjgsalkj
+{% if docs|length > 0 %}
+	\section{Meta-information}
+	\newcounter{tablecounter2}
 
-            arroz
-            
-        \end{minipage}
-    \end{figure}
+	{% for h in docs %}
+		\stepcounter{tablecounter2}
+		\begin{table}[ht!]
+			\centering
+			\begin{tabular}{|c|c|}
+				\hline
+				{% for k, v in h.items() if k not in ['title', 'author', 'corpo', 'about','path'] %}
+					\textbf{ {{ k }} } & \textit{ {{ v }} } \\
+					\hline
+				{% endfor %}
+			\end{tabular}
+			\caption{A \textbf{ {{h.type}} }-\textit{ {{h.id}} }} % Add a caption to the table with the current table counter value
+			\label{table:\arabic{tablecounter2}} % Use the current table counter value as the label name
+		\end{table}
+	{% endfor %}
+{% endif %}
+\clearpage
 
+\section{Time Frame}
+
+\newcommand{\foo}{\hspace{-2.3pt}$\bullet$ \hspace{5pt}}
+
+\scalebox{1}{
+\begin{tabular}{r |@{\foo} l}
+{% for d in dates.chronology %}
+	{{-d.date-}} & { {{-d.id-}} }\\
 {% endfor %}
+\end{tabular}
+}
 
-\newpage
-\section{Meta-information}
-\newcounter{tablecounter2}
-
-{% for h in hs %}
-    \stepcounter{tablecounter2}
-    \begin{table}[ht!]
-        \centering
-        \begin{tabular}{|c|c|}
-            \hline
-            {% for k, v in h.items() if k not in ['title', 'author', 'corpo', 'about','path'] %}
-                \textbf{ {{ k }} } & \textit{ {{ v }} } \\
-                \hline
-            {% endfor %}
-        \end{tabular}
-        \caption{A \textbf{ {{h.type}} }-\textit{ {{h.id}} }} % Add a caption to the table with the current table counter value
-        \label{table:\arabic{tablecounter2}} % Use the current table counter value as the label name
-    \end{table}
-{% endfor %}
 
 \end{document}
-

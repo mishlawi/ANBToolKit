@@ -5,6 +5,7 @@ __version__ = "0.0.1"
 import re
 import os
 import subprocess
+import sys
 import yaml
 import datetime
 import argparse
@@ -20,6 +21,7 @@ from . import FSGram
 from . import skeletons
 from . import dataControl
 from . import auxiliar
+from . import calls
 
 #*TODO
 ## code
@@ -129,80 +131,62 @@ def tex2dgu(dirout=""):
     #args = ['pandoc','-s','AncestorsNotebook.tex', '-o', 'AncestorsNotebook.pdf']
 
 def dgubook():
-    dates = {}
     docs = []
     imgs = []
     cronology = []
-    
+
+    dates = {}
     dates['day'] = auxiliar.getCurrentTime()
     dates['year'] = datetime.date.today().year
     dates['oldest'] = dates['year']
 
     arguments = argsConfig.a_dgubook()
     if arguments is None:
-        print("You need to specify a flag. Use dguBook -h for more info.")
-        exit(1)
+        print("You need to specify a flag. Use dgubook -h for more info.")
+        sys.exit(1)
 
-    tempdgu = open('AncestorsNotebook.tex', 'w')
-    args =  ['pdflatex', 'AncestorsNotebook.tex']
-    cwd = os.getcwd()
+    with open('AncestorsNotebook.tex', 'w') as tempdgu:
+        args =  calls.pdflatex('AncestorsNotebook.tex')
+        cwd = os.getcwd()
 
-    if not dataControl.find_anb():
-        print("Initialize the ancestors notebook first.")
-        exit(1)
+        if not dataControl.find_anb():
+            print("Initialize the ancestors notebook first.")
+            sys.exit(1)
 
-    os.chdir(dataControl.find_anb()) 
-    environment = Environment(loader=FileSystemLoader("templates/"))
-    dgus2tex = environment.get_template("anb1.j2")
-    os.chdir(cwd)
-
-    if arguments.file: 
-        for elem in arguments.file:
-            auxiliar.parse_dgu(elem,dates,docs,imgs,cronology)  
-    dates['chronology'] = cronology
-    tempdgu.write(dgus2tex.render(tit="Livro dos antepassados",docs=docs,imgs=imgs,dates=dates))            
-    os.chdir(cwd)
-    
-    if arguments.tree:
-        
-
-        visited = set()
-        for dirpath, _, filenames in os.walk(cwd, followlinks=True):
-            realpath = os.path.realpath(dirpath)
-            if realpath in visited or os.path.basename(dirpath) == '.anbtk':
-                continue
-            visited.add(realpath)
-            for filename in filenames:
-                if filename.endswith('.dgu'):
-                    elem_path = os.path.join(dirpath, filename)
-                    if auxiliar.isDguImage(elem_path):
-                        adgu = auxiliar.parseAbstractDgu(elem_path)
-                        adgu['path'] = os.path.relpath(auxiliar.parseAbstractDgu(elem_path)['path'], os.getcwd())
-                        imgs.append(adgu)
-                    else:
-                        with open(elem_path) as elem_file:
-                            temp = elem_file.read()
-                            if aux:= re.split('---',temp):
-                                (_,cabecalho,corpo) = aux
-                                meta = yaml.safe_load(cabecalho) 
-                                meta['corpo'] = corpo
-                                if auxiliar.getDate(meta) is not None:
-                                    cronology.append(auxiliar.getDate(meta))
-                                    if int((old := auxiliar.getDate(meta)['date'])) < int(dates['oldest']):
-                                        dates['oldest'] = old 
-                                if not "title" in meta.keys() or meta['title'] =='':
-                                    meta['title'] = meta['id']
-                                docs.append(meta)
-        print(dates)
-        dates['chronology'] = cronology
-        tempdgu.write(dgus2tex.render(tit="Livro dos antepassados",docs=docs,imgs=imgs,dates=dates)) 
-            
+        os.chdir(dataControl.find_anb())
+        environment = Environment(loader=FileSystemLoader("templates/"))
+        dgus2tex = environment.get_template("anb1.j2")
         os.chdir(cwd)
 
-    tempdgu.close()
-    if not arguments.markdown:
-        subprocess.check_call(args)
-        # os.remove("AncestorsNotebook.tex") #! this is tex, change if it turns out to be necessary to use tex instead of md
+        if arguments.file:
+            print("entrei")
+            for elem in arguments.file:
+                auxiliar.parse_individual_dgu(elem, dates, docs, imgs, cronology)           
+            os.chdir(cwd)
+
+
+        if arguments.tree:
+            auxiliar.tree_iteration(cwd, dates, docs, imgs, cronology, auxiliar.parse_dgu_tree)
+
+            os.chdir(cwd)
+                
+
+        try:
+            dates['chronology'] = cronology
+            tempdgu.write(dgus2tex.render(tit="Livro dos antepassados", docs=docs, imgs=imgs, dates=dates))
+            tempdgu.flush()
+            subprocess.check_call(args)
+            subprocess.check_call(calls.rm_latex_unecessary)
+            
+            if arguments.markdown:
+
+                subprocess.check_call(calls.pandoc_latex_to_markdown('AncestorsNotebook.tex','AncestorsNotebook.md'))
+                os.remove("AncestorsNotebook.tex")
+
+        except subprocess.CalledProcessError as e:
+            print(f"Error: {e}")
+            sys.exit(1)
+
         
 
 

@@ -93,7 +93,7 @@ templateLatex = r"""
 \newpage
 \newcounter{tablecounter}
 
-{% for h in hs %}
+{% for h in docs %}
 \newpage
 
 \begin{center}
@@ -146,56 +146,66 @@ templateLatex = r"""
 {% endfor %}
 
 \clearpage
+
+{% if imgs|length > 0 %}
+
+\begin{center}
 \section{Images}
+\end{center}
 
 \newcounter{image}
 
-{% for img in imgs %}
+	{% for img in imgs %}
 
-    \begin{figure}[ht!]
-    \begin{minipage}{0.35\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{ {{-img.path-}} }
-        \caption{ {{img.id}} }
-    \end{minipage}
-    \hspace{1cm} % add some horizontal space here
-    \begin{minipage}{0.3\textwidth}
-        \begin{tcolorbox}[colback=white, colframe=black, boxrule=1pt]
-            \begin{itemize}
-                \item {{img.format}}
-                \item {{img.about}}
-            \end{itemize}
+		\begin{figure}[ht!]
+		\begin{minipage}{0.35\textwidth}
+			\centering
+			\includegraphics[width=\linewidth]{ {{-img.path-}} }
+			\caption{ {{img.id}} }
+		\end{minipage}
+		\hspace{1cm} % add some horizontal space here
+		\begin{minipage}{0.3\textwidth}
+			\begin{tcolorbox}[colback=white, colframe=black, boxrule=1pt]
+				\begin{itemize}
+					\item {{img.format}}
+                    {% if imgs.about|length > 0 %}
+						{% for about in imgs.about %}                 
+							\item {{img.about}}
+                        {% endfor %}
+                    {% endif %}
+				\end{itemize}
 
-        \end{tcolorbox}
-    \end{minipage}
-\end{figure}
-
-{% endfor %}
-
+			\end{tcolorbox}
+		\end{minipage}
+	\end{figure}
+	{% endfor %}
 \clearpage
-\section{Meta-information}
-\newcounter{tablecounter2}
+{% endif %}
 
-{% for h in hs %}
-    \stepcounter{tablecounter2}
-    \begin{table}[ht!]
-        \centering
-        \begin{tabular}{|c|c|}
-            \hline
-            {% for k, v in h.items() if k not in ['title', 'author', 'corpo', 'about','path'] %}
-                \textbf{ {{ k }} } & \textit{ {{ v }} } \\
-                \hline
-            {% endfor %}
-        \end{tabular}
-        \caption{A \textbf{ {{h.type}} }-\textit{ {{h.id}} }} % Add a caption to the table with the current table counter value
-        \label{table:\arabic{tablecounter2}} % Use the current table counter value as the label name
-    \end{table}
-{% endfor %}
 
+{% if docs|length > 0 %}
+	\section{Meta-information}
+	\newcounter{tablecounter2}
+
+	{% for h in docs %}
+		\stepcounter{tablecounter2}
+		\begin{table}[ht!]
+			\centering
+			\begin{tabular}{|c|c|}
+				\hline
+				{% for k, v in h.items() if k not in ['title', 'author', 'corpo', 'about','path'] %}
+					\textbf{ {{ k }} } & \textit{ {{ v }} } \\
+					\hline
+				{% endfor %}
+			\end{tabular}
+			\caption{A \textbf{ {{h.type}} }-\textit{ {{h.id}} }} % Add a caption to the table with the current table counter value
+			\label{table:\arabic{tablecounter2}} % Use the current table counter value as the label name
+		\end{table}
+	{% endfor %}
+{% endif %}
 \clearpage
+
 \section{Time Frame}
-
-
 
 \newcommand{\foo}{\hspace{-2.3pt}$\bullet$ \hspace{5pt}}
 
@@ -210,15 +220,6 @@ templateLatex = r"""
 
 \end{document}
 """
-
-
-
-
-
-
-
-
-
 
 
 

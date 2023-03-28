@@ -47,3 +47,37 @@ def dgubookmd():
                 subprocess.run(['pandoc', 'dgu2pdf.md', '-o', 'dgu2pdf.pdf']) # maybe have a personalized name
     
     tempdgu.close()
+
+
+
+
+# this was from dgu book tree
+
+        # visited = set()
+        # for dirpath, _, filenames in os.walk(cwd, followlinks=True):
+        #     realpath = os.path.realpath(dirpath)
+        #     if realpath in visited or os.path.basename(dirpath) == '.anbtk':
+        #         continue
+        #     visited.add(realpath)
+        #     for filename in filenames:
+
+        #         if filename.endswith('.dgu'):
+        #             elem_path = os.path.join(dirpath, filename)
+        #             if auxiliar.isDguImage(elem_path):
+        #                 adgu = auxiliar.parseAbstractDgu(elem_path)
+        #                 adgu['path'] = os.path.relpath(auxiliar.parseAbstractDgu(elem_path)['path'], os.getcwd())
+        #                 imgs.append(adgu)
+        #             else:
+        #                 with open(elem_path) as elem_file:
+        #                     temp = elem_file.read()
+        #                     if aux:= re.split('---',temp):
+        #                         (_,cabecalho,corpo) = aux
+        #                         meta = yaml.safe_load(cabecalho) 
+        #                         meta['corpo'] = corpo
+        #                         if auxiliar.getDate(meta) is not None:
+        #                             cronology.append(auxiliar.getDate(meta))
+        #                             if int((old := auxiliar.getDate(meta)['date'])) < int(dates['oldest']):
+        #                                 dates['oldest'] = old 
+        #                         if not "title" in meta.keys() or meta['title'] =='':
+        #                             meta['title'] = meta['id']
+        #                         docs.append(meta)

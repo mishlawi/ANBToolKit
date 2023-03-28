@@ -141,6 +141,7 @@ def dgubook():
     dates['oldest'] = dates['year']
 
     arguments = argsConfig.a_dgubook()
+
     if arguments is None:
         print("You need to specify a flag. Use dgubook -h for more info.")
         sys.exit(1)
@@ -170,19 +171,29 @@ def dgubook():
 
             os.chdir(cwd)
                 
-
         try:
-            dates['chronology'] = cronology
+            if arguments.timeframe:
+                dates['chronology'] = cronology
+            
             tempdgu.write(dgus2tex.render(tit="Livro dos antepassados", docs=docs, imgs=imgs, dates=dates))
             tempdgu.flush()
             subprocess.check_call(args)
-            subprocess.check_call(calls.rm_latex_unecessary)
+
+            if not arguments.all:
+    
+                subprocess.check_call(calls.rm_latex_unecessary)
+
+            if arguments.output:
+                calls.move_to_output('AncestorsNotebook.pdf',arguments.output[0])
+
             
             if arguments.markdown:
 
                 subprocess.check_call(calls.pandoc_latex_to_markdown('AncestorsNotebook.tex','AncestorsNotebook.md'))
                 os.remove("AncestorsNotebook.tex")
-
+            
+            os.chdir(cwd)
+        
         except subprocess.CalledProcessError as e:
             print(f"Error: {e}")
             sys.exit(1)

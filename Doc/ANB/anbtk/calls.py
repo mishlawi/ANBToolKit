@@ -1,3 +1,7 @@
+
+rm_latex_unecessary = ['latexmk','-c']
+
+
 def pdflatex(filename):
     """
     Compile a LaTeX file to PDF using pdflatex.
@@ -31,7 +35,22 @@ def pandoc_latex_to_markdown(infile, outfile):
     
     return ['pandoc', '-s', infile, '-o', outfile ]
 
+import os
+import shutil
 
-rm_latex_unecessary = ['latexmk','-c']
+def move_to_output(path, out):
+    """Move file at `path` to the output directory specified by `out`."""
+    if os.path.isfile(path):
+
+        filename = os.path.basename(path)
+
+        if not os.path.isdir(out):
+            print(f"Error: Output directory {out} does not exist.")
+            return
+
+        shutil.move(path, os.path.join(out, filename))
+    else:
+        print(f"File not found at {path}")
+
 
 

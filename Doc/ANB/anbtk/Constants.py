@@ -203,20 +203,22 @@ templateLatex = r"""
 		\end{table}
 	{% endfor %}
 {% endif %}
-\clearpage
 
-\section{Time Frame}
 
-\newcommand{\foo}{\hspace{-2.3pt}$\bullet$ \hspace{5pt}}
+{% if dates.chronology|length > 0 %}
+	\clearpage
+	\section{Time Frame}
 
-\scalebox{1}{
-\begin{tabular}{r |@{\foo} l}
-{% for d in dates.chronology %}
-	{{-d.date-}} & { {{-d.id-}} }\\
-{% endfor %}
-\end{tabular}
-}
+	\newcommand{\foo}{\hspace{-2.3pt}$\bullet$ \hspace{5pt}}
 
+	\scalebox{1}{
+	\begin{tabular}{r |@{\foo} l}
+	{% for d in dates.chronology %}
+		{{-d.date-}} & { {{-d.id-}} }\\
+	{% endfor %}
+	\end{tabular}
+	}
+{% endif %}
 
 \end{document}
 """

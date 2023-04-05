@@ -1,9 +1,0 @@
-\contentsline {section}{\numberline {1}Industrias reunidas 'Vilar'}{2}{section.1}%
-\contentsline {section}{\numberline {2}Industrias de Adelino Vilar}{3}{section.2}%
-\contentsline {section}{\numberline {3}Educação primária}{4}{section.3}%
-\contentsline {section}{\numberline {4}Pirolitos}{5}{section.4}%
-\contentsline {section}{\numberline {5}Viagem a cabo Verde}{6}{section.5}%
-\contentsline {section}{\numberline {6}Prenda de Natal 2004}{7}{section.6}%
-\contentsline {section}{\numberline {7}Images}{8}{section.7}%
-\contentsline {section}{\numberline {8}Meta-information}{11}{section.8}%
-\contentsline {section}{\numberline {9}Time Frame}{12}{section.9}%

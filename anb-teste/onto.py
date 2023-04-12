@@ -1,6 +1,9 @@
 import os
 from rdflib import Graph, Namespace, URIRef, Literal
-from rdflib.namespace import RDF, RDFS, OWL
+import rdflib
+from rdflib.namespace import RDF, RDFS, OWL, XSD
+
+import sparql_queries 
 
 def process_family(file):
     
@@ -21,7 +24,6 @@ def process_family(file):
         else:
             aux.append(line.strip())
     return couples
-
 
 
 #! check n3 notation
@@ -59,31 +61,29 @@ def connections(couples, rel):
     return individuals, rels
 
 
-
-
-
 ns = Namespace("http://example.org/")
-# def genOnto(filename):
+
+def genOntoclassic(filename):
     
-#     ft = process_family(filename)
+    ft = process_family(filename)
 
-#     relationships={
-#     'married': URIRef(ns["married"]),
-#     'parent': URIRef(ns["parent"]),
-#     'child': URIRef(ns["child"]),
-#     'sibling': URIRef(ns["sibling"])
-#     }
+    relationships={
+    'married': URIRef(ns["married"]),
+    'parent': URIRef(ns["parent"]),
+    'child': URIRef(ns["child"]),
+    'sibling': URIRef(ns["sibling"])
+    }
 
-#     g = Graph()
-#     g.bind("", rdflib.Namespace(ns))
+    g = Graph()
+    g.bind("", rdflib.Namespace(ns))
 
-#     _, relations = connections(ft,relationships)
-#     for elem in relations:
-#         g.add(elem)
-#     with open("family_relationships.n3", "wb") as f:
-#         f.write(g.serialize(format="n3").encode('u8'))
+    _, relations = connections(ft,relationships)
+    for elem in relations:
+        g.add(elem)
+    with open("family_relationships.n3", "wb") as f:
+        f.write(g.serialize(format="n3").encode('u8'))
 
-#     return g
+    return g
 
 
 def genOnto(filename):
@@ -93,6 +93,13 @@ def genOnto(filename):
         f.write(g.serialize(format="n3").encode('u8'))
     with open("family.rdf", "wb") as f:
         f.write(g.serialize(format="xml").encode('u8'))
+
+
+def addFolder(famNS, name, path):
+    FAMILY = famNS
+    individual = FAMILY[name]
+    folder = Literal(os.path.realpath(path))
+    return (individual, FAMILY['hasFolder'], folder)
 
 
 def defineOnto(ft):
@@ -138,14 +145,14 @@ def defineOnto(ft):
     g.add((has_spouse_property, RDFS.domain, person_class))
     g.add((has_spouse_property, RDFS.range, person_class))
 
-    # has sibling
-    has_sibling_property = FAMILY['hassibling']
-    g.add((has_sibling_property, RDF.type, OWL.ObjectProperty))
-    g.add((has_sibling_property, RDFS.label,Literal( 'has sibling')))
-    g.add((has_sibling_property, RDFS.domain, person_class))
-    g.add((has_sibling_property, RDFS.range, person_class))
+    has_folder_property = FAMILY['hasFolder']
+    g.add((has_folder_property, RDF.type, OWL.DatatypeProperty))
+    g.add((has_folder_property, RDFS.label, Literal('has folder')))
+    g.add((has_folder_property, RDFS.domain, person_class))
+    g.add((has_folder_property, RDFS.range, XSD.string))
 
-    g.add((has_sibling_property, OWL.inverseOf, has_sibling_property))
+
+
     g.add((has_spouse_property, OWL.inverseOf, has_spouse_property))
     g.add((has_child_property, OWL.inverseOf, has_parent_property))
     g.add((has_parent_property, OWL.inverseOf, has_child_property))
@@ -154,138 +161,64 @@ def defineOnto(ft):
         p1, p2 = couple.split("+")
         i1 = FAMILY.term(p1)
         g.add((i1,RDF.type,person_class))
-        g.add((i1, RDFS.label,Literal( p1)))
+        g.add((i1, RDFS.label,Literal(p1)))
         i2 = FAMILY.term(p2)
         g.add((i2,RDF.type,person_class))
-        g.add((i2, RDFS.label,Literal( p2)))
+        g.add((i2, RDFS.label,Literal(p2)))
         g.add((i1,has_spouse_property,i2))
         g.add((i2,has_spouse_property,i1))
         if descendents != []:
-            siblings = []
             for child in descendents:
                 c = FAMILY.term(child)
                 g.add((c,RDF.type,person_class))
-                g.add((c, RDFS.label,Literal( child)))
+                g.add((c, RDFS.label,Literal(child)))
                 g.add((i1, has_child_property, c))
                 g.add((i2, has_child_property, c))
-            for s in siblings:
-                aux = siblings.copy()
-                aux.remove(s)
-                for bro in aux: # todo: check if the derivation works
-                    g.add((s,has_sibling_property,bro))
+                g.add((c, has_parent_property, i1))
+                g.add((c, has_parent_property, i2))
 
     return g
 
 
-def queries():
+def queriesA(name):
     g = Graph()
     file = 'family.rdf'
     try:
         g.parse(file, format='xml')
-        print(g.serialize(format='turtle'))  # print the graph
+        g.serialize(format='turtle')  # print the graph
     except Exception as e:
         print(e)
-    qres = g.query('''
-    PREFIX family: <http://example.org/family#>
-    SELECT ?grandparent
-    WHERE {
-        ?individual family:hasParent ?parent .
-        ?parent family:hasParent ?grandparent .
-        FILTER (?individual = family:Silvestre)
-    }
-''')
-    print(qres)
-    for row in qres:
+
+    
+
+    # grandparents
+    graparentQres = g.query(sparql_queries.grandparentsQres(name))
+    unclesQres= g.query(sparql_queries.unclesQres(name))
+    siblingsQres = g.query(sparql_queries.siblingsQres(name))
+
+
+    for row in graparentQres:
+        print(row)
+
+    print("\n\n")
+    for row in unclesQres:
+        print(row)
+
+    print("\n\n")
+    for row in siblingsQres:
         print(row)
 
 
-
-
 def main():
-
     #print( process_family('relations.txt'))
-    #ft = process_family('relations.txt')
+    ft = process_family('relations.txt')
+    print(ft)
     #print(dict_to_gedcom(ft))
     #get_relations('relations.txt')
+
     genOnto('relations.txt')
-    queries()
+    queriesA('Silvestre')
 
-
-
-
-
-
-
-def get_familiar_relations(name, family_tree):
-    relations = {
-        "parents": [],
-        "children": [],
-        "siblings": [],
-        "spouse": [],
-        "nieces": [],
-        "grandparents": [],
-        "cousins": [],
-        "uncles" : []
-    }
-    
-    for parent_child, children in family_tree.items():
-        parents = parent_child.split("+")
-        if name in parents:
-            if parents[0] == name:
-                if relations['spouse'] != []:
-                    relations['ex-spouses'] = relations['spouse'] 
-                relations['spouse'] = parents[1]            
-            elif parents[1] == name:
-                if relations['spouse'] != []:
-                    relations['ex-spouses'] = relations['spouse'] 
-                relations['spouse'] = parents[0]
-            if children != []:
-                relations['children'].append(children)
-        if name in children:
-            relations['parents'] = parents
-            siblings = []
-            for sibling in children:
-                if sibling != name:
-                    siblings.append(sibling)
-            relations['siblings'] = siblings
-            if (grandparents := get_familiar_relations(parents[0],family_tree)['parents']) != []:
-                relations['grandparents'] = grandparents
-            elif (grandparents := get_familiar_relations(parents[1],family_tree)['parents']) != []:
-                relations['grandparents'] = grandparents
-            if (uncles := get_familiar_relations(parents[0],family_tree)['siblings']) != []:
-                relations['uncles'] = uncles
-            elif (uncles := get_familiar_relations(parents[0],family_tree)['siblings']) != []:
-                relations['uncles'] = uncles
-            
-    return relations
-
-
-def get_unique_individuals(family_tree):
-    individuals = []
-    for parent_child, children in family_tree.items():
-        parents = parent_child.split("+")
-        individuals.extend(parents)
-        individuals.extend(children)
-    return list(set(individuals))
-
-def get_relations(filename):
-    family_tree = process_family(filename)
-    individuals = get_unique_individuals(family_tree)
-    connections = {}
-    for person in individuals:
-        connections[person] = get_familiar_relations(person,family_tree)
-
-    print(len(connections))
-    print(connections)
-    return connections
-
-
-
-
-
-main()
-
-#for elem in individuals
 
 
 

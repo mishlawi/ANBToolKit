@@ -1,7 +1,7 @@
 # Byte-compiled / optimized / DLL files
 ANBToolKit/
 
-anb-teste/
+anb-teste/anb-family/
 *.py[cod]
 *$py.class
 

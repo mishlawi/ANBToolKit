@@ -5,30 +5,49 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 >
-  <rdf:Description rdf:about="http://example.org/family#Maria">
+  <rdf:Description rdf:about="http://example.org/family#Joaquina">
     <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Maria</rdfs:label>
-    <family:hasSpouse rdf:resource="http://example.org/family#Adelino"/>
-    <family:hasChild rdf:resource="http://example.org/family#Manuel"/>
-    <family:hasChild rdf:resource="http://example.org/family#José"/>
-    <family:hasChild rdf:resource="http://example.org/family#Ana"/>
+    <rdfs:label>Joaquina</rdfs:label>
+    <family:hasSpouse rdf:resource="http://example.org/family#Manuel"/>
+    <family:hasChild rdf:resource="http://example.org/family#Rui"/>
+    <family:hasChild rdf:resource="http://example.org/family#Silvana"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Family">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:label>Family</rdfs:label>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Mariana">
+  <rdf:Description rdf:about="http://example.org/family#Silvestre">
     <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Mariana</rdfs:label>
-    <family:hasSpouse rdf:resource="http://example.org/family#Rui"/>
-    <family:hasChild rdf:resource="http://example.org/family#Silvestre"/>
-    <family:hasChild rdf:resource="http://example.org/family#Rodrigo"/>
+    <rdfs:label>Silvestre</rdfs:label>
+    <family:hasParent rdf:resource="http://example.org/family#Rui"/>
+    <family:hasParent rdf:resource="http://example.org/family#Mariana"/>
   </rdf:Description>
   <rdf:Description rdf:about="http://example.org/family#Rodrigo">
     <rdf:type rdf:resource="http://example.org/family#Person"/>
     <rdfs:label>Rodrigo</rdfs:label>
     <family:hasParent rdf:resource="http://example.org/family#Rui"/>
     <family:hasParent rdf:resource="http://example.org/family#Mariana"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Rui">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Rui</rdfs:label>
+    <family:hasParent rdf:resource="http://example.org/family#Manuel"/>
+    <family:hasParent rdf:resource="http://example.org/family#Joaquina"/>
+    <family:hasSpouse rdf:resource="http://example.org/family#Mariana"/>
+    <family:hasChild rdf:resource="http://example.org/family#Silvestre"/>
+    <family:hasChild rdf:resource="http://example.org/family#Rodrigo"/>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Mariana</family:hasFolder>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Silvestre</family:hasFolder>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Rodrigo</family:hasFolder>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Adelino">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Adelino</rdfs:label>
+    <family:hasSpouse rdf:resource="http://example.org/family#Maria"/>
+    <family:hasChild rdf:resource="http://example.org/family#Manuel"/>
+    <family:hasChild rdf:resource="http://example.org/family#José"/>
+    <family:hasChild rdf:resource="http://example.org/family#Ana"/>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Adelino</family:hasFolder>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Maria</family:hasFolder>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Manuel</family:hasFolder>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/José</family:hasFolder>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Ana</family:hasFolder>
   </rdf:Description>
   <rdf:Description rdf:about="http://example.org/family#Manuel">
     <rdf:type rdf:resource="http://example.org/family#Person"/>
@@ -40,15 +59,39 @@
     <family:hasChild rdf:resource="http://example.org/family#Rui"/>
     <family:hasChild rdf:resource="http://example.org/family#Silvana"/>
     <family:hasChild rdf:resource="http://example.org/family#Lucas"/>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Joaquina</family:hasFolder>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Rui</family:hasFolder>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Silvana</family:hasFolder>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Luisa</family:hasFolder>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Lucas</family:hasFolder>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Luis">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Luis</rdfs:label>
-    <family:hasSpouse rdf:resource="http://example.org/family#Olga"/>
+  <rdf:Description rdf:about="http://example.org/family#hasParent">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:label>has parent</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
+    <rdfs:range rdf:resource="http://example.org/family#Person"/>
+    <owl:inverseOf rdf:resource="http://example.org/family#hasChild"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#José">
+  <rdf:Description rdf:about="http://example.org/family#Luisa">
     <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>José</rdfs:label>
+    <rdfs:label>Luisa</rdfs:label>
+    <family:hasSpouse rdf:resource="http://example.org/family#Manuel"/>
+    <family:hasChild rdf:resource="http://example.org/family#Lucas"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#hasChild">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:label>has child</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
+    <rdfs:range rdf:resource="http://example.org/family#Person"/>
+    <owl:inverseOf rdf:resource="http://example.org/family#hasParent"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#family-ontology">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <rdfs:label>Family Ontology</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Ana">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Ana</rdfs:label>
     <family:hasParent rdf:resource="http://example.org/family#Adelino"/>
     <family:hasParent rdf:resource="http://example.org/family#Maria"/>
   </rdf:Description>
@@ -58,75 +101,52 @@
     <family:hasParent rdf:resource="http://example.org/family#Manuel"/>
     <family:hasParent rdf:resource="http://example.org/family#Luisa"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Rui">
+  <rdf:Description rdf:about="http://example.org/family#José">
     <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Rui</rdfs:label>
-    <family:hasParent rdf:resource="http://example.org/family#Manuel"/>
-    <family:hasParent rdf:resource="http://example.org/family#Joaquina"/>
-    <family:hasSpouse rdf:resource="http://example.org/family#Mariana"/>
-    <family:hasChild rdf:resource="http://example.org/family#Silvestre"/>
-    <family:hasChild rdf:resource="http://example.org/family#Rodrigo"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Silvestre">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Silvestre</rdfs:label>
-    <family:hasParent rdf:resource="http://example.org/family#Rui"/>
-    <family:hasParent rdf:resource="http://example.org/family#Mariana"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Joaquina">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Joaquina</rdfs:label>
-    <family:hasSpouse rdf:resource="http://example.org/family#Manuel"/>
-    <family:hasChild rdf:resource="http://example.org/family#Rui"/>
-    <family:hasChild rdf:resource="http://example.org/family#Silvana"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#hasChild">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
-    <rdfs:label>has child</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
-    <rdfs:range rdf:resource="http://example.org/family#Person"/>
-    <owl:inverseOf rdf:resource="http://example.org/family#hasParent"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Adelino">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Adelino</rdfs:label>
-    <family:hasSpouse rdf:resource="http://example.org/family#Maria"/>
-    <family:hasChild rdf:resource="http://example.org/family#Manuel"/>
-    <family:hasChild rdf:resource="http://example.org/family#José"/>
-    <family:hasChild rdf:resource="http://example.org/family#Ana"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Ana">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Ana</rdfs:label>
+    <rdfs:label>José</rdfs:label>
     <family:hasParent rdf:resource="http://example.org/family#Adelino"/>
     <family:hasParent rdf:resource="http://example.org/family#Maria"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Silvana">
+  <rdf:Description rdf:about="http://example.org/family#Mariana">
     <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Silvana</rdfs:label>
-    <family:hasParent rdf:resource="http://example.org/family#Manuel"/>
-    <family:hasParent rdf:resource="http://example.org/family#Joaquina"/>
+    <rdfs:label>Mariana</rdfs:label>
+    <family:hasSpouse rdf:resource="http://example.org/family#Rui"/>
+    <family:hasChild rdf:resource="http://example.org/family#Silvestre"/>
+    <family:hasChild rdf:resource="http://example.org/family#Rodrigo"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#hasFolder">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>has folder</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Luisa">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Luisa</rdfs:label>
-    <family:hasSpouse rdf:resource="http://example.org/family#Manuel"/>
-    <family:hasChild rdf:resource="http://example.org/family#Lucas"/>
+  <rdf:Description rdf:about="http://example.org/family#Person">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Person</rdfs:label>
   </rdf:Description>
   <rdf:Description rdf:about="http://example.org/family#Olga">
     <rdf:type rdf:resource="http://example.org/family#Person"/>
     <rdfs:label>Olga</rdfs:label>
     <family:hasSpouse rdf:resource="http://example.org/family#Luis"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#family-ontology">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
-    <rdfs:label>Family Ontology</rdfs:label>
+  <rdf:Description rdf:about="http://example.org/family#Luis">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Luis</rdfs:label>
+    <family:hasSpouse rdf:resource="http://example.org/family#Olga"/>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Luis</family:hasFolder>
+    <family:hasFolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Olga</family:hasFolder>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Family">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Family</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Maria">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Maria</rdfs:label>
+    <family:hasSpouse rdf:resource="http://example.org/family#Adelino"/>
+    <family:hasChild rdf:resource="http://example.org/family#Manuel"/>
+    <family:hasChild rdf:resource="http://example.org/family#José"/>
+    <family:hasChild rdf:resource="http://example.org/family#Ana"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Silvana">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Silvana</rdfs:label>
+    <family:hasParent rdf:resource="http://example.org/family#Manuel"/>
+    <family:hasParent rdf:resource="http://example.org/family#Joaquina"/>
   </rdf:Description>
   <rdf:Description rdf:about="http://example.org/family#hasSpouse">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
@@ -135,15 +155,10 @@
     <rdfs:range rdf:resource="http://example.org/family#Person"/>
     <owl:inverseOf rdf:resource="http://example.org/family#hasSpouse"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#hasParent">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
-    <rdfs:label>has parent</rdfs:label>
+  <rdf:Description rdf:about="http://example.org/family#hasFolder">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>has path</rdfs:label>
     <rdfs:domain rdf:resource="http://example.org/family#Person"/>
-    <rdfs:range rdf:resource="http://example.org/family#Person"/>
-    <owl:inverseOf rdf:resource="http://example.org/family#hasChild"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Person">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:label>Person</rdfs:label>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </rdf:Description>
 </rdf:RDF>

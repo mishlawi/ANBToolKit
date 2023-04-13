@@ -1,4 +1,15 @@
 def unclesQres(individual):
+      
+    """
+    Returns a SPARQL query as a string to find all aunts/uncles of a given individual in an RDF graph using the family ontology.
+    
+    Parameters:
+    individual (str): The name of the individual to find aunts/uncles for.
+    
+    Returns:
+    str: A SPARQL query string.
+    """
+
     return f"""PREFIX family: <http://example.org/family#>
 
 SELECT DISTINCT ?auntuncle WHERE {{
@@ -11,7 +22,17 @@ SELECT DISTINCT ?auntuncle WHERE {{
 
 
 def grandparentsQres(individual):
+      
+    """
+    Returns a SPARQL query as a string to find all grandparents of a given individual in an RDF graph using the family ontology.
     
+    Parameters:
+    individual (str): The name of the individual to find grandparents for.
+    
+    Returns:
+    str: A SPARQL query string.
+    """
+
     return f"""
 PREFIX family: <http://example.org/family#>
 
@@ -23,7 +44,19 @@ SELECT ?grandparent WHERE {{
 
 """
 
+
 def siblingsQres(individual):
+    
+    """
+    Returns a SPARQL query as a string to find all siblings of a given individual in an RDF graph using the family ontology.
+    
+    Parameters:
+    individual (str): The name of the individual to find siblings for.
+    
+    Returns:
+    str: A SPARQL query string.
+    """
+
     return f"""
     PREFIX family: <http://example.org/family#>
 
@@ -37,5 +70,4 @@ WHERE {{
   
   FILTER (?sibling != family:{individual})
 }}
-
 """

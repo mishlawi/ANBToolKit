@@ -1,36 +1,94 @@
 import os
-from rdflib import Graph, Namespace, URIRef, Literal
+import sparql_queries 
 import rdflib
+
+from rdflib import Graph, Namespace, URIRef, Literal
 from rdflib.namespace import RDF, RDFS, OWL, XSD
 
-import sparql_queries 
 
-def process_family(file):
+
+#              TODO:
+
+#              ? check n3 notation
+#              ? owl
+#              ? expressoes de pesquisa
+#              ? gedcom 
+
+
+#####################################
+
+
+FAMILY = Namespace('http://example.org/family#')
+RDFS = Namespace('http://www.w3.org/2000/01/rdf-schema#')
+ns = Namespace("http://example.org/") # to be removed
+
+
+#*       classical way of defining relations . might be useful for gedcom conversion
+
+def get_familiar_relations(name, family_tree):
+    relations = {
+        "parents": [],
+        "children": [],
+        "siblings": [],
+        "spouse": [],
+        "nieces": [],
+        "grandparents": [],
+        "cousins": [],
+        "uncles" : []
+    }
     
-    os.getcwd()
-    couples = {}
-    with open(file, 'r') as f:
-        contents = f.read()
-        lines = contents.splitlines()
-    aux = []
-    current = ''
-    for line in lines:
-        if '+' in line:
-            couples[line] = []
-            current = line
-        elif line == '':
-            couples[current]  = aux
-            aux = []
-        else:
-            aux.append(line.strip())
-    return couples
+    for parent_child, children in family_tree.items():
+        parents = parent_child.split("+")
+        if name in parents:
+            if parents[0] == name:
+                if relations['spouse'] != []:
+                    relations['ex-spouses'] = relations['spouse'] 
+                relations['spouse'] = parents[1]            
+            elif parents[1] == name:
+                if relations['spouse'] != []:
+                    relations['ex-spouses'] = relations['spouse'] 
+                relations['spouse'] = parents[0]
+            if children != []:
+                relations['children'].append(children)
+        if name in children:
+            relations['parents'] = parents
+            siblings = []
+            for sibling in children:
+                if sibling != name:
+                    siblings.append(sibling)
+            relations['siblings'] = siblings
+            if (grandparents := get_familiar_relations(parents[0],family_tree)['parents']) != []:
+                relations['grandparents'] = grandparents
+            elif (grandparents := get_familiar_relations(parents[1],family_tree)['parents']) != []:
+                relations['grandparents'] = grandparents
+            if (uncles := get_familiar_relations(parents[0],family_tree)['siblings']) != []:
+                relations['uncles'] = uncles
+            elif (uncles := get_familiar_relations(parents[0],family_tree)['siblings']) != []:
+                relations['uncles'] = uncles
+            
+    return relations
 
 
-#! check n3 notation
-#! owl
-#! expressoes de pesquisa
-#! gedcom 
+def get_unique_individuals(family_tree):
+    individuals = [] 
+    for couple, children in family_tree.items():
+        parents = couple.split("+")
+        individuals.extend(parents)
+        individuals.extend(children)
+    return list(set(individuals))
 
+def get_relations(filename):
+    family_tree = process_family(filename)
+    individuals = get_unique_individuals(family_tree)
+    relations = {}
+    for person in individuals:
+        relations[person] = get_familiar_relations(person,family_tree)
+
+    return relations
+
+#
+#          * classical rdf; no owl
+#
 def connections(couples, rel):
     individuals = []
     rels = []
@@ -57,15 +115,12 @@ def connections(couples, rel):
                 aux.remove(s)
                 [rels.append((s,rel['sibling'],bro)) for bro in aux]
             
-    print(rels)
     return individuals, rels
 
 
-ns = Namespace("http://example.org/")
-
 def genOntoclassic(filename):
     
-    ft = process_family(filename)
+    family_tree = process_family(filename)
 
     relationships={
     'married': URIRef(ns["married"]),
@@ -77,7 +132,7 @@ def genOntoclassic(filename):
     g = Graph()
     g.bind("", rdflib.Namespace(ns))
 
-    _, relations = connections(ft,relationships)
+    _, relations = connections(family_tree,relationships)
     for elem in relations:
         g.add(elem)
     with open("family_relationships.n3", "wb") as f:
@@ -86,29 +141,41 @@ def genOntoclassic(filename):
     return g
 
 
-def genOnto(filename):
-    ft = ft = process_family(filename)
-    g =  defineOnto(ft)
-    with open("ontology.n3", "wb") as f:
-        f.write(g.serialize(format="n3").encode('u8'))
-    with open("family.rdf", "wb") as f:
-        f.write(g.serialize(format="xml").encode('u8'))
+
+def process_family(file):
+    
+    os.getcwd()
+    family_structure = {}
+    with open(file, 'r') as f:
+        contents = f.read()
+        lines = contents.splitlines()
+    aux = []
+    current_individual = ''
+    for line in lines:
+        if '+' in line:
+            family_structure[line] = []
+            current_individual = line
+        elif line == '':
+            family_structure[current_individual]  = aux
+            aux = []
+        else:
+            aux.append(line.strip())
 
 
-def addFolder(famNS, name, path):
-    FAMILY = famNS
-    individual = FAMILY[name]
-    folder = Literal(os.path.realpath(path))
-    return (individual, FAMILY['hasFolder'], folder)
+    return family_structure
 
 
-def defineOnto(ft):
+
+#
+#           * owl ontology
+#
+
+def defineOnto(family_tree):
     g = Graph()
 
     # Define namespaces
-    FAMILY = Namespace('http://example.org/family#')
     g.bind('family', FAMILY)
-    RDFS = Namespace('http://www.w3.org/2000/01/rdf-schema#')
+
     g.bind('rdfs', RDFS)
 
     ont = FAMILY['family-ontology']
@@ -145,42 +212,90 @@ def defineOnto(ft):
     g.add((has_spouse_property, RDFS.domain, person_class))
     g.add((has_spouse_property, RDFS.range, person_class))
 
-    has_folder_property = FAMILY['hasFolder']
-    g.add((has_folder_property, RDF.type, OWL.DatatypeProperty))
-    g.add((has_folder_property, RDFS.label, Literal('has folder')))
-    g.add((has_folder_property, RDFS.domain, person_class))
-    g.add((has_folder_property, RDFS.range, XSD.string))
+    # has Path 
+    has_path_property = FAMILY['hasFolder']
+    g.add((has_path_property, RDF.type, OWL.DatatypeProperty))
+    g.add((has_path_property, RDFS.label, Literal( 'has path')))
+    g.add((has_path_property, RDFS.domain, person_class))
+    g.add((has_path_property, RDFS.range, XSD.string))
 
 
-
+    # inverse properties
     g.add((has_spouse_property, OWL.inverseOf, has_spouse_property))
     g.add((has_child_property, OWL.inverseOf, has_parent_property))
     g.add((has_parent_property, OWL.inverseOf, has_child_property))
 
-    for couple, descendents in ft.items():
-        p1, p2 = couple.split("+")
-        i1 = FAMILY.term(p1)
-        g.add((i1,RDF.type,person_class))
-        g.add((i1, RDFS.label,Literal(p1)))
-        i2 = FAMILY.term(p2)
-        g.add((i2,RDF.type,person_class))
-        g.add((i2, RDFS.label,Literal(p2)))
-        g.add((i1,has_spouse_property,i2))
-        g.add((i2,has_spouse_property,i1))
+    for couple, descendents in family_tree.items():
+        parent1, parent2 = couple.split("+")
+        individual1 = FAMILY.term(parent1)
+        g.add((individual1,RDF.type,person_class))
+        g.add((individual1, RDFS.label,Literal(parent1)))
+        individual2 = FAMILY.term(parent2)
+        g.add(( individual2, RDF.type , person_class ))
+        g.add(( individual2, RDFS.label , Literal(parent2) ))
+        g.add (( individual1, has_spouse_property , individual2 ))
+        g.add (( individual2, has_spouse_property , individual1 ))
         if descendents != []:
             for child in descendents:
                 c = FAMILY.term(child)
                 g.add((c,RDF.type,person_class))
                 g.add((c, RDFS.label,Literal(child)))
-                g.add((i1, has_child_property, c))
-                g.add((i2, has_child_property, c))
-                g.add((c, has_parent_property, i1))
-                g.add((c, has_parent_property, i2))
+                g.add((individual1, has_child_property, c))
+                g.add((individual2, has_child_property, c))
+                g.add((c, has_parent_property, individual1))
+                g.add((c, has_parent_property, individual2))
 
     return g
 
 
-def queriesA(name):
+
+
+def add_folder(name, path):
+
+    return (FAMILY[name], FAMILY['hasFolder'], Literal(path, datatype=XSD.string))
+
+
+def onto_folders_correspondence(file):
+    
+    family_structure = process_family(file)
+    cwd = os.getcwd()
+    if not os.path.exists("anb-family"): # this name should be personalizable
+        os.mkdir("anb-family")
+    os.chdir("anb-family")
+
+    g = defineOnto(family_structure)
+
+    for couple,children in family_structure.items():
+        if not os.path.exists(couple):
+            os.mkdir(couple)
+        if not os.path.exists(parent1:=couple.split('+')[0]):
+            os.mkdir(parent1)    
+            g.add(add_folder(parent1,os.path.abspath(parent1)))
+            os.symlink(f'../{couple}',f'{parent1}/{couple}')
+        if not os.path.exists(parent2:=couple.split('+')[1]):
+            os.mkdir(parent2)
+            g.add(add_folder(parent1,os.path.abspath(parent2)))
+            os.symlink(f'../{couple}',f'{parent2}/{couple}')
+        for son in children:
+            if not os.path.exists(son):
+                os.mkdir(son)
+                g.add(add_folder(parent1,os.path.abspath(son)))
+                os.symlink(f'../{son}',f'{couple}/{son}')
+   
+    os.chdir(cwd)
+   
+    return g
+
+
+def gen_onto_file(g):
+
+    with open("ontology.n3", "wb") as f:
+        f.write(g.serialize(format="n3").encode('u8'))
+    with open("family.rdf", "wb") as f:
+        f.write(g.serialize(format="xml").encode('u8'))
+
+
+def queriesA(individual):
     g = Graph()
     file = 'family.rdf'
     try:
@@ -189,12 +304,9 @@ def queriesA(name):
     except Exception as e:
         print(e)
 
-    
-
-    # grandparents
-    graparentQres = g.query(sparql_queries.grandparentsQres(name))
-    unclesQres= g.query(sparql_queries.unclesQres(name))
-    siblingsQres = g.query(sparql_queries.siblingsQres(name))
+    graparentQres = g.query(sparql_queries.grandparentsQres(individual))
+    unclesQres= g.query(sparql_queries.unclesQres(individual))
+    siblingsQres = g.query(sparql_queries.siblingsQres(individual))
 
 
     for row in graparentQres:
@@ -211,17 +323,16 @@ def queriesA(name):
 
 def main():
     #print( process_family('relations.txt'))
-    ft = process_family('relations.txt')
-    print(ft)
-    #print(dict_to_gedcom(ft))
+    # ft = process_family('relations.txt')
+    # print(ft)
     #get_relations('relations.txt')
-
-    genOnto('relations.txt')
-    queriesA('Silvestre')
-
-
+    g = onto_folders_correspondence('relations.txt')
+    gen_onto_file(g)
+    #queriesA('Silvestre')
 
 
+
+main()
 
 
 

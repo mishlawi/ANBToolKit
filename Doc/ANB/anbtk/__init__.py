@@ -22,6 +22,7 @@ from . import skeletons
 from . import dataControl
 from . import auxiliar
 from . import calls
+from . import onto
 
 #*TODO
 ## code
@@ -322,7 +323,7 @@ def genBio():
     cd = os.getcwd()
     args = argsConfig.a_genBio()
     name = args.name
-    birth= args.birth
+    birth = args.birth
     death = args.death
     bp = args.birthplace
     o = args.occupation
@@ -339,6 +340,11 @@ def genBio():
         mdfileobject.write(skeletons.biography(name,birth,death,bp,o))
     
 
+def genFolderOnto(path=""):
+    g = onto.onto_folders_correspondence(path)
+    onto.gen_onto_file(g)
+
+
 
 
 
@@ -353,6 +359,8 @@ def genDgu(title, attributes, nameofthefile, dir):
     with open(f"{id}.dgu", "w") as f:
         auxiliar.dguheadercomposer(newDgu, f)
      
+
+
 
 def initanb(path=""):
     cwd = os.getcwd()
@@ -377,6 +385,8 @@ def initanb(path=""):
             os.chdir(filepath)
             FSGram.initializer(temp)
         dataControl.templateGen()
+
+
 
 
 

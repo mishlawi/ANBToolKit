@@ -246,6 +246,17 @@ def parse_text(input):
     return result
 
 def is_image(path):
+
+    """
+    Determine if a file is an image based on its content type.
+
+    Args:
+        path (str): The file path to check.
+
+    Returns:
+        bool: True if the file is an image, False otherwise.
+    """
+
     content_type = imghdr.what(path)
     if content_type is not None:
         return True
@@ -253,6 +264,17 @@ def is_image(path):
         return False
     
 def get_filename_no_extension(path):
+    
+    """
+    Get the filename without extension from a file path.
+
+    Args:
+        path (str): The file path to process.
+
+    Returns:
+        str: The filename without extension.
+    """
+
     file_name = os.path.basename(path) 
     file_name_without_ext = os.path.splitext(file_name)[0]  
     return file_name_without_ext
@@ -260,6 +282,16 @@ def get_filename_no_extension(path):
 
 
 def isDguImage(path):
+    """
+    Determine if a file is an image using `is_image()`, after parsing the metadata.
+
+    Args:
+        path (str): The file path to check.
+
+    Returns:
+        bool: True if the file is an image, False otherwise.
+    """
+
     adgu = parseAbstractDgu(path)    
     if is_image(adgu['path']):
         return True
@@ -267,6 +299,13 @@ def isDguImage(path):
         return False
     
 def getCurrentTime():
+    
+    """
+    Get the current date and time.
+
+    Returns:
+        str: The current date and time in the format 'day of month of year'.
+    """
     now = datetime.now()
     formated = now.strftime("%d of %B of %Y")
     return formated
@@ -274,6 +313,15 @@ def getCurrentTime():
 
 
 def getDate(adgu):
+    """
+    Extract the year from the 'date' field of the metadata.
+
+    Args:
+        adgu (dict): A dictionary containing metadata information.
+
+    Returns:
+        dict or None: If the 'date' field is present and contains a valid year, the 'date' field is updated to contain only the year, and the modified dictionary is returned. Otherwise, None is returned.
+    """
     if 'date' in adgu.keys():
         pattern = r'\b\d{4}\b'
         matches = re.findall(pattern, str(adgu['date']))
@@ -287,7 +335,15 @@ def getDate(adgu):
 
 
 def updateTitleforId(adgu):
-    
+    """
+    Update the 'title' field of the abstract representations of the dgu to be the same as the 'id' field if the former is missing or empty.
+
+    Args:
+        adgu (dict): A dictionary containing metadata information.
+
+    Returns:
+        None: The 'title' field of the input dictionary is modified in place.
+    """
     if not "title" in adgu.keys() or adgu['title'] == '':
         adgu['title'] = adgu['id']
 

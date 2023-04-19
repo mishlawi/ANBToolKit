@@ -1,18 +1,9 @@
 Adelino+Maria
 	Manuel
-	José
 	Ana
 
 Manuel+Joaquina
 	Rui
-	Silvana
-
-Rui+Mariana
-	Silvestre
-	Rodrigo
-
-Manuel+Luisa
-	Lucas
-
+	
 Luis+Olga
 	

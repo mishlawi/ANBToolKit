@@ -71,3 +71,30 @@ WHERE {{
   FILTER (?sibling != family:{individual})
 }}
 """
+
+
+def gp_folderPath_Qres(individual):
+  """
+    Returns a SPARQL query that retrieves the folders of the grandparents of an individual in a family RDF graph.
+    
+    Args:
+        individual (str): The name of the individual whose grandparents' folders should be retrieved.
+        
+    Returns:
+        str: A string representing the constructed SPARQL query.
+  """
+
+
+  return f"""
+PREFIX family: <http://example.org/family#>
+
+SELECT ?folder
+WHERE {{
+  ?person family:hasChild family:{individual} .
+  ?parent family:hasChild ?person .
+  ?parent family:hasFolder ?folder .
+}}
+
+"""
+
+

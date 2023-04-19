@@ -14,14 +14,19 @@ family:hasFolder a owl:DatatypeProperty ;
     rdfs:domain family:Person ;
     rdfs:range xsd:string .
 
+family:Joaquina a family:Person ;
+    rdfs:label "Joaquina" ;
+    family:hasFolder "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Joaquina"^^xsd:string ;
+    family:hasSpouse family:Manuel .
+
 family:Luis a family:Person ;
     rdfs:label "Luis" ;
-    family:hasFolder "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Luis"^^xsd:string,
-        "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Olga"^^xsd:string ;
+    family:hasFolder "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Luis"^^xsd:string ;
     family:hasSpouse family:Olga .
 
 family:Olga a family:Person ;
     rdfs:label "Olga" ;
+    family:hasFolder "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Olga"^^xsd:string ;
     family:hasSpouse family:Luis .
 
 family:hasChild a owl:ObjectProperty ;
@@ -44,95 +49,30 @@ family:hasSpouse a owl:ObjectProperty ;
 
 family:Ana a family:Person ;
     rdfs:label "Ana" ;
+    family:hasFolder "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Ana"^^xsd:string ;
     family:hasParent family:Adelino,
         family:Maria .
-
-family:José a family:Person ;
-    rdfs:label "José" ;
-    family:hasParent family:Adelino,
-        family:Maria .
-
-family:Lucas a family:Person ;
-    rdfs:label "Lucas" ;
-    family:hasParent family:Luisa,
-        family:Manuel .
-
-family:Luisa a family:Person ;
-    rdfs:label "Luisa" ;
-    family:hasChild family:Lucas ;
-    family:hasSpouse family:Manuel .
-
-family:Rodrigo a family:Person ;
-    rdfs:label "Rodrigo" ;
-    family:hasParent family:Mariana,
-        family:Rui .
-
-family:Silvana a family:Person ;
-    rdfs:label "Silvana" ;
-    family:hasParent family:Joaquina,
-        family:Manuel .
-
-family:Silvestre a family:Person ;
-    rdfs:label "Silvestre" ;
-    family:hasParent family:Mariana,
-        family:Rui .
-
-family:Joaquina a family:Person ;
-    rdfs:label "Joaquina" ;
-    family:hasChild family:Rui,
-        family:Silvana ;
-    family:hasSpouse family:Manuel .
-
-family:Mariana a family:Person ;
-    rdfs:label "Mariana" ;
-    family:hasChild family:Rodrigo,
-        family:Silvestre ;
-    family:hasSpouse family:Rui .
 
 family:Adelino a family:Person ;
     rdfs:label "Adelino" ;
     family:hasChild family:Ana,
-        family:José,
         family:Manuel ;
-    family:hasFolder "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Adelino"^^xsd:string,
-        "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Ana"^^xsd:string,
-        "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/José"^^xsd:string,
-        "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Manuel"^^xsd:string,
-        "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Maria"^^xsd:string ;
+    family:hasFolder "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Adelino"^^xsd:string ;
     family:hasSpouse family:Maria .
+
+family:Manuel a family:Person ;
+    rdfs:label "Manuel" ;
+    family:hasFolder "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Manuel"^^xsd:string ;
+    family:hasParent family:Adelino,
+        family:Maria ;
+    family:hasSpouse family:Joaquina .
 
 family:Maria a family:Person ;
     rdfs:label "Maria" ;
     family:hasChild family:Ana,
-        family:José,
         family:Manuel ;
+    family:hasFolder "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Maria"^^xsd:string ;
     family:hasSpouse family:Adelino .
-
-family:Rui a family:Person ;
-    rdfs:label "Rui" ;
-    family:hasChild family:Rodrigo,
-        family:Silvestre ;
-    family:hasFolder "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Mariana"^^xsd:string,
-        "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Rodrigo"^^xsd:string,
-        "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Silvestre"^^xsd:string ;
-    family:hasParent family:Joaquina,
-        family:Manuel ;
-    family:hasSpouse family:Mariana .
-
-family:Manuel a family:Person ;
-    rdfs:label "Manuel" ;
-    family:hasChild family:Lucas,
-        family:Rui,
-        family:Silvana ;
-    family:hasFolder "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Joaquina"^^xsd:string,
-        "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Lucas"^^xsd:string,
-        "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Luisa"^^xsd:string,
-        "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Rui"^^xsd:string,
-        "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-teste/anb-family/Silvana"^^xsd:string ;
-    family:hasParent family:Adelino,
-        family:Maria ;
-    family:hasSpouse family:Joaquina,
-        family:Luisa .
 
 family:Person a owl:Class ;
     rdfs:label "Person" .

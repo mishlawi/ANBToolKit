@@ -19,7 +19,7 @@ from rdflib.namespace import RDF, RDFS, OWL, XSD
 #              ! duvidas
 
 #              ? adição de triplos repetidos sao ignorados pelo grafo rdf ?
-
+#              ? add axioms or rules to the ontology 
 
 #####################################
 

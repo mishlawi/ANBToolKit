@@ -13,8 +13,12 @@ from rdflib.namespace import RDF, RDFS, OWL, XSD
 #              ? owl
 #              ? expressoes de pesquisa
 #              ? gedcom 
+#              ? xmllint
 
 
+#              ! duvidas
+
+#              ? adição de triplos repetidos sao ignorados pelo grafo rdf ?
 #####################################
 
 
@@ -225,6 +229,7 @@ def defineOnto(family_tree):
     g.add((has_child_property, OWL.inverseOf, has_parent_property))
     g.add((has_parent_property, OWL.inverseOf, has_child_property))
 
+
     for couple, descendents in family_tree.items():
         parent1, parent2 = couple.split("+")
         individual1 = FAMILY.term(parent1)
@@ -255,6 +260,9 @@ def add_folder(name, path):
     return (FAMILY[name], FAMILY['hasFolder'], Literal(path, datatype=XSD.string))
 
 
+
+# an inverse function that goes through the filesystem and gets the composition should be somethign to be considered
+
 def onto_folders_correspondence(file):
     
     family_structure = process_family(file)
@@ -274,12 +282,12 @@ def onto_folders_correspondence(file):
             os.symlink(f'../{couple}',f'{parent1}/{couple}')
         if not os.path.exists(parent2:=couple.split('+')[1]):
             os.mkdir(parent2)
-            g.add(add_folder(parent1,os.path.abspath(parent2)))
+            g.add(add_folder(parent2,os.path.abspath(parent2)))
             os.symlink(f'../{couple}',f'{parent2}/{couple}')
         for son in children:
             if not os.path.exists(son):
                 os.mkdir(son)
-                g.add(add_folder(parent1,os.path.abspath(son)))
+                g.add(add_folder(son,os.path.abspath(son)))
                 os.symlink(f'../{son}',f'{couple}/{son}')
    
     os.chdir(cwd)
@@ -307,7 +315,7 @@ def queriesA(individual):
     graparentQres = g.query(sparql_queries.grandparentsQres(individual))
     unclesQres= g.query(sparql_queries.unclesQres(individual))
     siblingsQres = g.query(sparql_queries.siblingsQres(individual))
-
+    gpFoldersQres = g.query(sparql_queries.gp_folderPath_Qres(individual))
 
     for row in graparentQres:
         print(row)
@@ -320,6 +328,13 @@ def queriesA(individual):
     for row in siblingsQres:
         print(row)
 
+    print("\n\n")
+    for row in gpFoldersQres:
+        print(row[0])
+
+
+
+
 
 def main():
     #print( process_family('relations.txt'))
@@ -328,7 +343,7 @@ def main():
     #get_relations('relations.txt')
     g = onto_folders_correspondence('relations.txt')
     gen_onto_file(g)
-    #queriesA('Silvestre')
+    queriesA('Silvestre')
 
 
 

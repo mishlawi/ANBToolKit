@@ -22,7 +22,7 @@ from . import skeletons
 from . import dataControl
 from . import auxiliar
 from . import calls
-from . import onto
+from . import genealogia
 
 #*TODO
 ## code
@@ -341,8 +341,8 @@ def genBio():
     
 
 def genFolderOnto(path=""):
-    g = onto.onto_folders_correspondence(path)
-    onto.gen_onto_file(g)
+    g = genealogia.onto_folders_correspondence(path)
+    genealogia.gen_onto_file(g)
 
 
 

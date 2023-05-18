@@ -34,7 +34,6 @@ def grandparentsQres(individual):
     """
 
     return f"""
-    
 PREFIX family: <http://example.org/family#>
 
 SELECT ?grandparent WHERE {{

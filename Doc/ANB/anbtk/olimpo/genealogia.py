@@ -1,4 +1,7 @@
-import sparql_queries 
+from . import gramma
+from . import ousia
+from . import controlsystem
+from . import dgu
 
 import os
 from rdflib import Graph
@@ -17,6 +20,7 @@ genealogia == γενεαλογία
 
 
 def process_family(file):
+
     """
     Reads the seed file and processes it to create a dictionary of family members and their relationships.
 
@@ -29,18 +33,22 @@ def process_family(file):
     
     os.getcwd()
     family_structure = {}
+
     with open(file, 'r') as f:
         contents = f.read()
         lines = contents.splitlines()
     aux = []
     current_individual = ''
+
     for line in lines:
+
         if '+' in line:
             family_structure[line] = []
             current_individual = line
         elif line == '':
             family_structure[current_individual]  = aux
             aux = []
+
         else:
             aux.append(line.strip())
 
@@ -62,10 +70,12 @@ def populate_graph(family_tree,g):
     """
 
     for couple, descendents in family_tree.items():
+
         parent1, parent2 = couple.split("+")
         ousia.add_individual(adapt_name(parent1),parent1,g)
         ousia.add_individual(adapt_name(parent2),parent2,g)
         ousia.add_hasSpouse(adapt_name(parent1),adapt_name(parent2),g)
+
         if descendents != []:
             for child in descendents:
                 ousia.add_individual(adapt_name(child),child,g)
@@ -73,6 +83,7 @@ def populate_graph(family_tree,g):
 
 
 def adapt_name(name):
+
     name = name.replace(" ","-")
     return name
     
@@ -85,6 +96,7 @@ def add_dates_onto(ages,g):
 
 
     for individual in ages.items():
+
         name,dates = individual
         ousia.add_birthdate(adapt_name(name),dates['birthDate'],g)
         ousia.add_deathdate(adapt_name(name),dates['deathDate'],g)
@@ -95,9 +107,13 @@ def gen_onto_file(g,filename):
     
     with open(f"{filename}.n3", "wb") as f:
         f.write(g.serialize(format="n3").encode('u8'))
+
     with open(f"{filename}.rdf", "wb") as f:
         f.write(g.serialize(format="xml").encode('u8'))
+
     print(f"\nSuccessfully generated the ontology files.\n Info: {filename} generated.")
+
+
 def read_onto_file(filename):
     g = Graph()
     g.parse(filename,format="xml")
@@ -118,9 +134,13 @@ def onto_folders_correspondence(file,family="anb-family"):
     family_structure,ages = gramma.parsing(file)
     print("Successfully parsed the seed file.")
     cwd = os.getcwd()
+
     if not os.path.exists(family):
         os.mkdir(family)
+
     os.chdir(family)
+    dgu.initanb(family)
+
 
     g = defineOnto(family_structure,ages)
     
@@ -176,78 +196,11 @@ def gen_parents_folders(couple,children,graph,path):
 
 
 
-# here the change of abs to rel
 def gen_parental_folder_connections(individual,couple,graph,path):
     os.mkdir(individual)  
     relpath = os.path.join(path,individual)
     ousia.add_folder(individual,relpath,graph)
     os.symlink(f'../.{couple}',f'{individual}/.{couple}')
- 
-
-
-
-def queriesA(individual,file):
-    # must be rdf
-    if file.endswith()!= 'rdf':
-        raise Exception("Must be a rdf file")
-    else:
-
-        g = Graph()
-        
-        try:
-            g.parse(file, format='xml')
-            g.serialize(format='turtle')  # print the graph
-        except Exception as e:
-            print(e)
-
-        graparentQres = g.query(sparql_queries.grandparentsQres(individual))
-        unclesQres = g.query(sparql_queries.unclesQres(individual))
-        siblingsQres = g.query(sparql_queries.siblingsQres(individual))
-        gpFoldersQres = g.query(sparql_queries.gp_folderPath_Qres(individual))
-
-        for row in graparentQres:
-            print(row)
-
-        print("\n\n")
-        for row in unclesQres:
-            print(row)
-
-        print("\n\n")
-        for row in siblingsQres:
-            print(row)
-
-        print("\n\n")
-        for row in gpFoldersQres:
-            print(row[0])
-
-
-
-def generate_family_file(directory_name, family_file):
-    
-    family_structure = {}
-    for root, dirs, _ in os.walk(directory_name):
-        
-        parents = os.path.basename(root)
-        if '+' not in parents:
-            continue
-        # parent1, parent2 = parents.split('+')
-        children = []
-        for d in dirs:
-            
-            if '+' in d:
-                continue
-            children.append(d)
-        # Add the family to the family structure dictionary
-        family_structure[parents] = children
-
-    # Write the family file
-    with open(family_file, 'w') as f:
-        for parents, children in family_structure.items():
-            p1,p2 = parents.split(r"\+")
-            f.write(f"{p1} ? + {p2} ?\n")
-            for child in children:
-                f.write(f".{child} ?")
-
 
 
 

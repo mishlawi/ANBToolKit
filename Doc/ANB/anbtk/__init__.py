@@ -14,7 +14,6 @@ import yaml
 from jinja2 import Environment, FileSystemLoader
 
 from . import argsConfig
-from . import Constants
 from . import dguObject as dgu
 from . import DGUhand
 from . import FSGram
@@ -33,6 +32,7 @@ from . import genealogia
 #!FIX TEX2DGU regarding the UTF8
 #! start to consider images
 #* i want it so that story and bio (and others) are default formats but the users can create their ones 
+#* create an ontology for new entities
 
 
 #################### latex book ########################

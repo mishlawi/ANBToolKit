@@ -4,7 +4,7 @@
 import json
 import os
 
-from . import Constants
+from .auxiliar import constants
 
 def initData():
     """
@@ -72,7 +72,7 @@ def templateGen():
     os.chdir('templates')
 
     with open('anb1.j2','w') as f:
-        f.write(Constants.templateLatex)
+        f.write(constants.templateLatex)
 
 
 def find_anb():

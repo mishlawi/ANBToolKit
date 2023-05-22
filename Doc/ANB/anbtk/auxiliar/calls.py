@@ -2,8 +2,6 @@
 import os
 import shutil
 
-
-
 rm_latex_unecessary = ['latexmk','-c']
 
 

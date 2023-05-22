@@ -2,7 +2,7 @@ import re
 import yaml
 from pathlib import Path
 
-from .dguObject import DGU as dgu
+from dguObject import DGU as dgu
 
 
 # generates universe.dgu and formats.dgu

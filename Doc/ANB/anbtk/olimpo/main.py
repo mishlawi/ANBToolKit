@@ -4,8 +4,8 @@ import time
 import os 
 
 from . import dgu
-from . import genealogia
-from . import controlsystem
+from .. import genealogia
+from .. import controlsystem
 
 # python onto.py genFolders --seed complexfam.txt -onto
 
@@ -76,6 +76,10 @@ def main():
         else:
             print("Not in any initialized folder.")
         
+
+
+
+
 
     elif args.subcommand == 'genStory':
         date = args.date

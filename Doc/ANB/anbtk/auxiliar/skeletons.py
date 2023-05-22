@@ -1,5 +1,10 @@
+"""
+Structures of different documents
+"""
+
+
 def story(title,author,date):
-    
+      
     skeleton = rf"""\documentclass{{article}}
 \usepackage[utf8]{{inputenc}}
 \usepackage{{imakeidx}}

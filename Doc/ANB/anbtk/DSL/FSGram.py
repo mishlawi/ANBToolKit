@@ -1,12 +1,13 @@
 import ply.yacc as yacc
 import re
-from .handlers.html.htmlLogic import *
-from .handlers.grammar.gramLogic import *
-from .FSGramTokens import tokens
-from .DGUhand import *
-from .Constants import *
+
+from . import gramLogic
+from ..dgu import DGUhand
+from ..auxiliar import constants
 
 #todo nao ir ao topo da produção
+
+
 grammar = {}
 terminals = {}
 nonterminals = {}
@@ -20,23 +21,23 @@ def universehand(universe):
             entity = values[0]
             atributes = values[1]
             atributes = re.split(r'::',atributes)
-            subclass = dgu_subclass(entity,atributes)
+            subclass = DGUhand.dgu_subclass(entity,atributes)
 
 def p_FSGram(p):
     "FSGram : Prods UNIVERSE  IGNORED"
     ignoredFiles = []
     executable = ''
     top = list(grammar.values())[0]
-    verifyGrammar(top,grammar)
+    gramLogic.verifyGrammar(top,grammar)
     universe = re.sub('UNIVERSE','',p[2]).strip()
     #formats = re.sub('FORMATS','',p[3]).strip()
     #universehand(universe)
     ignored = re.sub('IGNORE','',p[3]).strip().split('\n')    
-    bigbang(universe)
+    DGUhand.bigbang(universe)
     
     for elem in ignored:
         ignoredFiles.append(elem)
-    interpreter(terminals,nonterminals)
+    gramLogic.interpreter(terminals,nonterminals)
     
 
     #! keep tagged, needs maintance
@@ -114,7 +115,7 @@ dirout = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis
 def initializer(res=''):
     parser = yacc.yacc()
     if res=='' :
-        result = parser.parse(defaultFsgram)
+        result = parser.parse(constants.defaultFsgram)
     else:
         result = parser.parse(res) 
 

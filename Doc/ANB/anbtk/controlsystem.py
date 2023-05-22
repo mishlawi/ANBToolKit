@@ -2,17 +2,11 @@ import os
 import json
 import yaml
 import re
-from . import ousia
+from .ontology import ousia
 
 # para a tese:
 # comparar esta implementaçao vs um observer como o inotify/watchdog
 
-# bilbiografia
-# templates jinja/pandoc
-# observers (watchdog/inotify)
-# DSL  ply  yacc
-# genealogia gedcom
-# rdf graphs
 
 #todo:
 # about is being passed as none in the yaml, that should be changed
@@ -63,7 +57,7 @@ def populate_onto(dict_graph,graph):
                 
 
 
-def create_vc_file(path,dir_dicts):
+def create_vc_file(path,dir_dicts): 
         
     json_str = json.dumps(dir_dicts,indent=4)
     print(path)

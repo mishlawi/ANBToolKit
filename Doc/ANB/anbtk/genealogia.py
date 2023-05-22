@@ -1,7 +1,7 @@
 from . import gramma
-from . import ousia
+from .ontology import ousia
 from . import controlsystem
-from . import dgu
+from .olimpo import dgu
 
 import os
 from rdflib import Graph

@@ -49,6 +49,35 @@ def dgubookmd():
     tempdgu.close()
 
 
+#? needs to be checked
+# usage : --f+
+def genNote():
+    arguments = argsConfig.a_notes()
+    if arguments.file:            
+        for elem in arguments.file:
+                if os.path.dirname(elem)!='':
+                    filename = os.path.basename(elem)
+                    name = re.split("\.",filename)[0]
+                    format = re.split("\.",filename)[1]
+                    identifier = re.split("-",name)[0]
+                    os.chdir(os.path.dirname(os.path.abspath(elem)))
+                    if (identifier +'.anbnote') in os.listdir(os.getcwd()):
+                        print("Note already exists.")
+                    else:
+                        if format == 'tex':
+                            args = ['pandoc','-s', elem, '-o', name + '.md']
+                            subprocess.check_call(args)
+                            fo = open(f'{name}.md').read()
+                            headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",fo).group()
+                            adgu = yaml.full_load(headers)
+                            subprocess.check_call(['rm',f"{name}.md"])
+                            notename = "note" + '-' + re.split("-",name)[1] 
+                            body = skeletons.note(notename,adgu.get('title',' '),adgu.get('author',' '),adgu.get('date',' '))
+                            foNote = open(f"{identifier}.anbnote",'w')
+                            foNote.write(body)
+                            foNote.close()
+                        # more formats to be added
+
 
 
 # this was from dgu book tree

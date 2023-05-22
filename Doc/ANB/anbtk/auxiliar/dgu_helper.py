@@ -6,8 +6,6 @@ import imghdr
 from datetime import datetime
 
 
-
-
 ###################################### headings 
 
 def heading2Latex(temp,tempdgu):
@@ -432,6 +430,21 @@ def parse_dgu_tree(dgu_path,dirpath,dates,docs,imgs,cronology):
 
 
 def tree_iteration(cwd,dates,docs,imgs,cronology,dgufunc):
+    """
+    Recursively iterates through a directory tree starting from the specified directory path.
+
+    Args:
+        cwd (str): The path to the directory to start iterating from.
+        dates (list): A list to store date information.
+        docs (list): A list to store document information.
+        imgs (list): A list to store image information.
+        cronology (list): A list to store chronological information.
+        dgufunc (function): A function to process each file encountered during iteration.
+
+    Returns:
+        None
+    """
+
     visited = set()
     for dirpath, _, filenames in os.walk(cwd, followlinks=True):
         realpath = os.path.realpath(dirpath)

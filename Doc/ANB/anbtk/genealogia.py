@@ -1,20 +1,21 @@
-from . import gramma
+
+from .DSL.family import gramma
 from .ontology import ousia
 from . import controlsystem
-from .olimpo import dgu
+from . import dataControl
 
 import os
 from rdflib import Graph
+
 
 #! check tests 
 #! relacao entre pastas dentro de individuos (se pasta esta pedurada no elemento, ha um about entre a pasta e o elemento) ; estas pastas terem um ficheiro metadados com info que contemple a relacao
 #! add pai e filho relacoes automatica na geracao das pastas 
 #! convert to gedcom
+
+
 '''
-
 genealogia == γενεαλογία 
-
-.greek
 
 '''
 
@@ -68,7 +69,7 @@ def populate_graph(family_tree,g):
     Returns:
     - None
     """
-
+    
     for couple, descendents in family_tree.items():
 
         parent1, parent2 = couple.split("+")
@@ -102,18 +103,6 @@ def add_dates_onto(ages,g):
         ousia.add_deathdate(adapt_name(name),dates['deathDate'],g)
 
 
-
-def gen_onto_file(g,filename):
-    
-    with open(f"{filename}.n3", "wb") as f:
-        f.write(g.serialize(format="n3").encode('u8'))
-
-    with open(f"{filename}.rdf", "wb") as f:
-        f.write(g.serialize(format="xml").encode('u8'))
-
-    print(f"\nSuccessfully generated the ontology files.\n Info: {filename} generated.")
-
-
 def read_onto_file(filename):
     g = Graph()
     g.parse(filename,format="xml")
@@ -130,27 +119,37 @@ def defineOnto(family_structure,ages):
     return g
 
 
-def onto_folders_correspondence(file,family="anb-family"):    
-    family_structure,ages = gramma.parsing(file)
+
+def onto_folders_correspondence(file, family="anb-family", entities=""):
+    family_structure, ages = gramma.parsing(file)
+
+    if family_structure is None:
+        raise Exception("Failed to parse family structure.")
+
     print("Successfully parsed the seed file.")
+
     cwd = os.getcwd()
 
     if not os.path.exists(family):
         os.mkdir(family)
 
     os.chdir(family)
-    dgu.initanb(family)
 
+    if entities == "":
+        dataControl.initanb()
+    else:
+        dataControl.initanb(grampath=entities)
 
-    g = defineOnto(family_structure,ages)
-    
-    for couple,children in family_structure.items():
-        
-        gen_parents_folders(couple,children,g,family)
+    g = defineOnto(family_structure, ages)
+
+    for couple, children in family_structure.items():
+        gen_parents_folders(couple, children, g, family)
+
     os.chdir(cwd)
-    controlsystem.version_control(family,g)
-    
+    controlsystem.version_control(family, g)
+
     return g
+
 
 
 def gen_parents_folders(couple,children,graph,path):
@@ -202,5 +201,28 @@ def gen_parental_folder_connections(individual,couple,graph,path):
     ousia.add_folder(individual,relpath,graph)
     os.symlink(f'../.{couple}',f'{individual}/.{couple}')
 
+
+def gen_onto_file(g,filename):
+    """
+            
+    This function serializes the given RDF graph in two different formats, N3 and RDF/XML,
+    and saves them as separate files with the provided filename.
+
+    Args:
+        g (rdflib.Graph): The RDF graph to serialize and save as ontology files.
+        filename (str): The base filename for the generated ontology files.
+
+    Returns:
+        None
+
+    """
+    
+    with open(f"{filename}.n3", "wb") as f:
+        f.write(g.serialize(format="n3").encode('u8'))
+
+    with open(f"{filename}.rdf", "wb") as f:
+        f.write(g.serialize(format="xml").encode('u8'))
+
+    print(f"\nSuccessfully generated the ontology files.\n Info: {filename} generated.")
 
 

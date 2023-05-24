@@ -4,9 +4,6 @@ import yaml
 import re
 from .ontology import ousia
 
-# para a tese:
-# comparar esta implementaçao vs um observer como o inotify/watchdog
-
 
 #todo:
 # about is being passed as none in the yaml, that should be changed
@@ -92,12 +89,16 @@ def compare_file_structure(path,graph):
 
     for added_file in diff['added_files']:
         parent_folder = os.path.basename(os.path.dirname(added_file))
+        # add correspondence between the folder and the file
         ousia.add_file(parent_folder,added_file,graph)
         
         with open(added_file, 'r') as file:
             x = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",file.read()).group()
             yaml_header = yaml.full_load(x)
-        
+
+
+
+        # create the file spec in the ontology
         if yaml_header['type'] == 'Biography':
             ousia.add_fileBio(yaml_header['id'],yaml_header['Birthdate'],yaml_header['Deathdate'],added_file,"",graph)
         
@@ -116,9 +117,17 @@ def compare_file_structure(path,graph):
 
     return new_dict
 
-
-
 def compare_files_directories(dir1, dir2, base_dir=''):
+    """Compares two directories and returns the added files, removed files, added directories, and removed directories.
+
+    Args:
+        dir1 (dict): The directory structure of the first directory.
+        dir2 (dict): The directory structure of the second directory.
+        base_dir (str, optional): The base directory path. Defaults to ''.
+
+    Returns:
+        dict: A dictionary containing the added files, removed files, added directories, and removed directories.
+    """
     def get_files_and_dirs(d, path=''):
         files = set()
         dirs = set()
@@ -154,7 +163,6 @@ def compare_files_directories(dir1, dir2, base_dir=''):
 
     return {'added_files': added_files, 'removed_files': removed_files,
             'added_dirs': added_dirs, 'removed_dirs': removed_dirs}
-
 
 
     

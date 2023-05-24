@@ -4,7 +4,37 @@
 import json
 import os
 
+from .DSL.entities import FSGram
+from .DSL.family import gramma
 from .auxiliar import constants
+
+def initanb(grampath,folderpath=""):
+    cwd = os.getcwd()
+    if os.path.exists(cwd + '/.anbtk'):
+        
+        raise Exception("This folder was already initialized as an Ancestors Notebook.")
+    elif find_anb() is not None:
+        raise Exception("You are already in an Ancestors Notebook")  
+    else:
+        os.mkdir(filepath := (cwd + '/.anbtk'))
+        os.chdir(filepath)
+        initData()
+        
+
+        if grampath=="":
+            FSGram.initializer()
+        else:
+            if os.path.dirname(grampath)!='':
+                os.chdir(os.path.dirname(os.path.abspath(grampath)))
+            print(grampath)
+            temp = open(grampath,'r').read()
+            os.chdir(filepath)
+            FSGram.initializer(temp)
+        templateGen()
+    os.chdir(cwd)
+
+
+
 
 def initData():
     """
@@ -15,8 +45,9 @@ def initData():
     
     data['Biography'] = 0
     data['Story'] = 0
+    data['Picture'] = 0
     
-    # > more formats tba
+    #  > more formats tba
     with open('anbtk.json','w') as anbtkfo:
         json.dump(data,anbtkfo)
 

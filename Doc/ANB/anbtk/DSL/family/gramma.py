@@ -39,7 +39,6 @@ t_ignore = r' '
 
 
 
-
 def p_family(p):
     '''
     Family : Couples 
@@ -57,6 +56,7 @@ def p_names(p):
         p[0] = f"{p[1]} {p[2]}"
     else:
         p[0] = p[1]
+
 
 
 def p_couples(p):
@@ -159,7 +159,7 @@ def p_child(p):
     '''
     p[0] = p[2]
 
-
+# todo 
 def p_nickname(p):
 
     '''
@@ -186,7 +186,7 @@ def t_error(t):
     print(f"Error: Illegal character '{t.value[0]}'")
 
 parser = yacc.yacc()
-lexer = lex.lex()
+gramma_lexer = lex.lex()
 meta = {'total': 0, 'undiscovered': 0}
 
 
@@ -194,7 +194,7 @@ def parsing(filename):
 
     with open(filename) as file:
         data = file.read()
-    family_tree = parser.parse(data)
+    family_tree = parser.parse(data,lexer=gramma_lexer)
     return family_tree, meta
 
 # #Get each token recognized by the lexer

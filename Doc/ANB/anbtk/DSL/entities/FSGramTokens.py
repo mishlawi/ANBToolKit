@@ -65,5 +65,5 @@ def t_error(t):
     return t
 
 
-lexer = lex.lex()
+lexer_fsgram = lex.lex()
 

@@ -194,6 +194,15 @@ def dgu_ontology(g):
 Triple insertions to the graph are represented from this point foward.
 
 """
+def gen_dgu_base():
+    pass
+
+
+
+def add_dgu(params,graph):
+    dgu = DGU[params['path']]
+    for key,value in params.items():
+        graph.add(dgu,DGU[f'has{key}'], Literal(value, datatype=XSD.string))
 
 def add_fileBio(name,db,dd,path,about,graph):
     

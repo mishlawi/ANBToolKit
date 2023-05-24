@@ -1,9 +1,11 @@
 import ply.yacc as yacc
 import re
 
+
+from .FSGramTokens import tokens,lexer_fsgram
 from . import gramLogic
-from ..dgu import DGUhand
-from ..auxiliar import constants
+from ...dgu import DGUhand
+from ...auxiliar import constants
 
 #todo nao ir ao topo da produção
 
@@ -22,6 +24,8 @@ def universehand(universe):
             atributes = values[1]
             atributes = re.split(r'::',atributes)
             subclass = DGUhand.dgu_subclass(entity,atributes)
+
+
 
 def p_FSGram(p):
     "FSGram : Prods UNIVERSE  IGNORED"
@@ -103,20 +107,21 @@ def p_IDOPTN(p):
     p[0] = [p[1]]
 
 def p_error(p):
-    print("erro")
+    print("error")
     print(p)
 
 
 
-dirin = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/RootSorter/DuarteVilar"
-dirout = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/RootSorter/OUT"
+# dirin = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/RootSorter/DuarteVilar"
+# dirout = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/RootSorter/OUT"
 
+
+parser = yacc.yacc()
 
 def initializer(res=''):
-    parser = yacc.yacc()
     if res=='' :
-        result = parser.parse(constants.defaultFsgram)
+        result = parser.parse(constants.defaultFsgram,lexer=lexer_fsgram)
     else:
-        result = parser.parse(res) 
+        result = parser.parse(res,lexer=lexer_fsgram) 
 
     return result

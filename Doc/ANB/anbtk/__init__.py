@@ -27,7 +27,7 @@ from .dgu import dguObject as dgu
 ##############################################################################################################
 
 #? DUVIDAS
-# * how important is that i have an ontology with the different specs of the dgus?
+# * how important is that i have an ontology with the different specs of the dgus? 
 
 #*TODO
 # ! FIX TEX2DGU regarding the UTF8
@@ -37,6 +37,8 @@ from .dgu import dguObject as dgu
 # * i want it so that story and bio (and others) are default formats but the users can create their ones 
 # * create an ontology for new entities
 # * maybe add specs to dont do anything if there are no differences in the sync command
+# * update the onto file so that new entities can be added
+# * anbvc has the absolute path 
 
 
 ##############################################################################################################
@@ -137,7 +139,8 @@ def anb():
             fsgram = ""
         if args.seed:
             seed = args.seed[0]
-            g = genealogia.onto_folders_correspondence(seed,fsgram)
+            g = genealogia.onto_folders_correspondence(seed,entities=fsgram)
+        
             
             if args.filename:
                 genealogia.gen_onto_file(g,args.filename[0])

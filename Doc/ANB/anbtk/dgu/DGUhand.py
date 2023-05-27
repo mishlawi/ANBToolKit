@@ -20,9 +20,9 @@ def bigbang(stringUniverse):
         file.write("---\n\n")
         uni = zip(uniformats,uniatributes)
         for format,atribute in uni:
-            file.write(f"* {format}\n")
+            file.write(f"{format}\n")
             for elem in atribute:
-                file.write('\t* ' + elem + '\n')
+                file.write('\t- ' + elem + '\n')
             file.write('\n')
 
     # # usar o objeto dgu para inserir coisas

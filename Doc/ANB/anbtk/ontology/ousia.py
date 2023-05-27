@@ -105,6 +105,7 @@ def ontology():
     return g
 
 def dgu_ontology(g):
+    
     person_class = FAMILY['Person']
 
     file_class = DGU['hasPath']
@@ -137,65 +138,41 @@ def dgu_ontology(g):
     g.add((has_about_property, RDFS.domain, file_class))
     g.add((has_about_property, RDFS.range, XSD.string))
 
-    picture_class = DGU['Picture']
-    g.add((picture_class, RDF.type, OWL.Class))
-    g.add((picture_class, RDFS.label, Literal('Picture')))
-    g.add((picture_class, RDFS.subClassOf, file_class))
-    
-    
-    
-    #################
-
-    biography_class = DGU['Biography']
-    g.add((biography_class, RDF.type, OWL.Class))
-    g.add((biography_class, RDFS.label, Literal('Biography')))
-    g.add((biography_class, RDFS.subClassOf, file_class))
-
-    dob_property = DGU['hasDateOfBirth']
-    g.add((dob_property, RDF.type, OWL.DatatypeProperty))
-    g.add((dob_property, RDFS.label, Literal('has date of birth')))
-    g.add((dob_property, RDFS.domain, biography_class))
-    g.add((dob_property, RDFS.range, XSD.date))
-
-    dod_property = DGU['hasDateOfDeath']
-    g.add((dod_property, RDF.type, OWL.DatatypeProperty))
-    g.add((dod_property, RDFS.label, Literal('has date of death')))
-    g.add((dod_property, RDFS.domain, biography_class))
-    g.add((dod_property, RDFS.range, XSD.date))
-
-    ##################
-
-    story_class = DGU['Story']
-    g.add((story_class, RDF.type, OWL.Class))
-    g.add((story_class, RDFS.label, Literal('Story')))
-    g.add((story_class, RDFS.subClassOf, file_class))
-
-    
-    author_property = DGU['hasAuthor']
-    g.add((author_property, RDF.type, OWL.DatatypeProperty))
-    g.add((author_property, RDFS.label, Literal('has author')))
-    g.add((author_property, RDFS.domain, story_class))
-    g.add((author_property, RDFS.range, XSD.string))
-
-    date_property = DGU['hasDate']
-    g.add((date_property, RDF.type, OWL.DatatypeProperty))
-    g.add((date_property, RDFS.label, Literal('has date')))
-    g.add((date_property, RDFS.domain, story_class))
-    g.add((date_property, RDFS.range, XSD.date))
-
-    title_property = DGU['hasTitle']
-    g.add((title_property, RDF.type, OWL.DatatypeProperty))
-    g.add((title_property, RDFS.label, Literal('has title')))
-    g.add((title_property, RDFS.domain, story_class))
-    g.add((title_property, RDFS.range, XSD.string))
-
 """
 
 Triple insertions to the graph are represented from this point foward.
 
 """
-def gen_dgu_base():
-    pass
+
+
+def dgu_base(entities,g):
+
+    file_class = DGU['hasPath']
+    for key, value in entities.items():
+        main_class = DGU[f'has{key}']
+        g.add((main_class, RDF.type, OWL.Class))
+        g.add((main_class, RDFS.label, Literal(key)))
+        g.add((main_class, RDFS.subClassOf, file_class))   
+        for elem in value:
+            elem = elem.capitalize()
+            temp_property = DGU[f'has{elem}']
+            g.add((temp_property, RDF.type, OWL.DatatypeProperty))
+            g.add((temp_property, RDFS.label, Literal(f'has {elem}')))
+            g.add((temp_property, RDFS.domain, main_class))
+            g.add((temp_property, RDFS.range, XSD.string))
+    
+
+
+def add_dgu_file(attributes,graph):
+    print("entrei")
+    print(attributes['path'])
+    dgu = DGU[attributes['path']]
+    for key,value in attributes.items():
+        onto_name = key.capitalize()
+        if key != 'path':
+            graph.add((dgu,DGU[f'has{onto_name}'],Literal(value,datatype=XSD.string)))
+
+    
 
 
 
@@ -306,28 +283,28 @@ def add_file(folder,path,graph):
 def remove_file(folder, path, graph):
     graph.remove((FAMILY[folder], FAMILY['hasFile'], Literal(path, datatype=XSD.string)))
 
-def add_fileBio(name,db,dd,path,about,graph):
+# def add_fileBio(name,db,dd,path,about,graph):
     
-    dgu = DGU[path]
-    graph.add((dgu, DGU['hasName'], Literal(name, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasFormat'], Literal('Latex', datatype=XSD.string)))
-    graph.add((dgu, DGU['hasType'], Literal('Biography', datatype=XSD.string)))
-    graph.add((dgu, DGU['hasFilePath'],Literal(path, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasAbout'], Literal(about, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasDateOfBirth'], Literal(db, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasDateOfDeath'], Literal(dd, datatype=XSD.string)))
+#     dgu = DGU[path]
+#     graph.add((dgu, DGU['hasName'], Literal(name, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasFormat'], Literal('Latex', datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasType'], Literal('Biography', datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasFilePath'],Literal(path, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasAbout'], Literal(about, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasDateOfBirth'], Literal(db, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasDateOfDeath'], Literal(dd, datatype=XSD.string)))
 
 
-def add_fileStory(name,title,path,author,date,about,graph):   
-    dgu = DGU[path]
-    graph.add((dgu, DGU['hasName'], Literal(name, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasFormat'], Literal('Latex', datatype=XSD.string)))
-    graph.add((dgu, DGU['hasType'], Literal('Story', datatype=XSD.string)))
-    graph.add((dgu, DGU['hasFilePath'],Literal(path, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasAbout'], Literal(about, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasTitle'], Literal(title, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasAuthor'], Literal(author, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasDate'], Literal(date, datatype=XSD.string)))
+# def add_fileStory(name,title,path,author,date,about,graph):   
+#     dgu = DGU[path]
+#     graph.add((dgu, DGU['hasName'], Literal(name, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasFormat'], Literal('Latex', datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasType'], Literal('Story', datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasFilePath'],Literal(path, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasAbout'], Literal(about, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasTitle'], Literal(title, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasAuthor'], Literal(author, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasDate'], Literal(date, datatype=XSD.string)))
 
 def remove_file_special(path, graph):
     dgu = DGU[path]
@@ -336,12 +313,10 @@ def remove_file_special(path, graph):
         graph.remove(triple)
 
 
-
-def add_Picture(name,path,format,about,graph):   
-    dgu = DGU[path]
-    graph.add((dgu, DGU['hasName'], Literal(name, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasFormat'], Literal(format, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasType'], Literal('Picture', datatype=XSD.string)))
-    graph.add((dgu, DGU['hasFilePath'],Literal(path, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasAbout'], Literal(about, datatype=XSD.string)))
-
+# def add_Picture(name,path,format,about,graph):   
+#     dgu = DGU[path]
+#     graph.add((dgu, DGU['hasName'], Literal(name, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasFormat'], Literal(format, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasType'], Literal('Picture', datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasFilePath'],Literal(path, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasAbout'], Literal(about, datatype=XSD.string)))

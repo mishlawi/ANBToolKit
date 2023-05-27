@@ -3,6 +3,7 @@ from .DSL.family import gramma
 from .ontology import ousia
 from . import controlsystem
 from . import dataControl
+from .auxiliar import dgu_helper
 
 import os
 from rdflib import Graph
@@ -116,6 +117,9 @@ def defineOnto(family_structure,ages):
     populate_graph(family_structure,g) # add individuals and imediate relations
     add_dates_onto(ages,g) # adds born and death dates
     
+    with open(os.path.join(dataControl.find_anb(),'universe.dgu')) as universe:
+        entities = dgu_helper.parse_text(universe.read())
+    ousia.dgu_base(entities,g)
     return g
 
 
@@ -147,7 +151,6 @@ def onto_folders_correspondence(file, family="anb-family", entities=""):
 
     os.chdir(cwd)
     controlsystem.version_control(family, g)
-
     return g
 
 

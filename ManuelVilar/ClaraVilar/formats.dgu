@@ -1,0 +1,12 @@
+---
+id: Formats
+format: dgu
+type: formats?
+about:
+- Accepted types of file formats
+---
+
+* markdown
+* latex
+* text
+* yaml

@@ -3,6 +3,7 @@ import json
 import yaml
 import re
 from .ontology import ousia
+from .auxiliar import dgu_helper
 
 
 #todo:
@@ -53,7 +54,6 @@ def populate_onto(dict_graph,graph):
                 ousia.add_file(os.path.basename(individual),file,graph)
                 
 
-
 def create_vc_file(path,dir_dicts): 
         
     json_str = json.dumps(dir_dicts,indent=4)
@@ -61,7 +61,6 @@ def create_vc_file(path,dir_dicts):
     os.chdir(path)
     with open('anbvc.json', 'w') as file:
         file.write(json_str)
-
 
 
 def compare_file_structure(path,graph):
@@ -89,27 +88,27 @@ def compare_file_structure(path,graph):
 
     for added_file in diff['added_files']:
         parent_folder = os.path.basename(os.path.dirname(added_file))
+        if " " in os.path.basename(added_file):
+            print(f"Filenames with spaces are not accepted, please rename it.\nInfo: {os.path.basename(added_file)}")
+            exit()
+            
+        
         # add correspondence between the folder and the file
+    
         ousia.add_file(parent_folder,added_file,graph)
-        
-        with open(added_file, 'r') as file:
-            x = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",file.read()).group()
-            yaml_header = yaml.full_load(x)
+        # it is only adding dgus
+        print(added_file)
+        if added_file.endswith(".dgu"):
+            with open(added_file, 'r') as file:
+                x = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",file.read()).group()
+                yaml_header = yaml.full_load(x)
 
+            ousia.add_dgu_file(yaml_header,graph)
+            print(f"    * {added_file} was added.")
+            
 
-
-        # create the file spec in the ontology
-        if yaml_header['type'] == 'Biography':
-            ousia.add_fileBio(yaml_header['id'],yaml_header['Birthdate'],yaml_header['Deathdate'],added_file,"",graph)
-        
-        elif yaml_header['type'] == 'Story':
-            ousia.add_fileStory(yaml_header['id'],yaml_header['title'],added_file,yaml_header['author'],yaml_header['date'],"",graph)
-        
-        elif yaml_header['type'] == 'Picture':
-            ousia.add_Picture(yaml_header['id'],added_file,yaml_header['format'],"",graph)
-        print(f"    * {added_file} was added.")
-
-    for removed_file in diff['removed_files']:  
+    for removed_file in diff['removed_files']:
+        print(diff['removed_files'])  
         parent_folder = os.path.basename(os.path.dirname(removed_file))                  
         ousia.remove_file(parent_folder,removed_file,graph)
         ousia.remove_file_special(removed_file,graph)
@@ -163,7 +162,6 @@ def compare_files_directories(dir1, dir2, base_dir=''):
 
     return {'added_files': added_files, 'removed_files': removed_files,
             'added_dirs': added_dirs, 'removed_dirs': removed_dirs}
-
 
     
 def version_control(path,graph):

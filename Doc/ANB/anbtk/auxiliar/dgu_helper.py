@@ -127,7 +127,7 @@ def getFormat(string):
 
 
 
-#!NEEDS MAINTANCE
+#! NEEDS MAINTANCE
 def parseAbstractDgu(filename):
     
 
@@ -220,26 +220,54 @@ def defaultConversion(text):
 
 
 def parse_text(input):
+    """
     
-    """
-    Parses a string containing lines of text and returns a dictionary of the form:
+    Parses the universe file specified format and returns a dictionary of the form:
     {'name1': ['item1', 'item2', ...], 'name2': ['item1', 'item2', ...], ...}
-    """
 
-    lines = input.strip().split('\n')
-    result = {}   
-    i = 0
-    while i < len(lines):
-        if lines[i].startswith('*'):
-            name = lines[i][1:].strip().split()[0]            
-            items = []
-            i += 1
-            while i < len(lines) and lines[i].startswith('\t*'):
-                item = lines[i][2:].strip()               
-                items.append(item)       
-                i += 1       
-            result[name] = items
-        i += 1
+    """
+    start_index = input.rfind('---')
+    if start_index == -1:
+        return {}
+    
+    lines = input[start_index + 3:].strip().split('\n')
+    result = {}
+    current_category = None
+    
+    for line in lines:
+        line = line.strip()
+        if line:
+            if not line.startswith('-'):
+                current_category = line
+                result[current_category] = []
+            else:
+                attribute = line[1:].strip()
+                if current_category:
+                    result[current_category].append(attribute)
+    print(result)
+    return result
+
+# def parse_text(input):
+    
+#     """
+#     Parses a string containing lines of text and returns a dictionary of the form:
+#     {'name1': ['item1', 'item2', ...], 'name2': ['item1', 'item2', ...], ...}
+#     """
+
+#     lines = input.strip().split('\n')
+#     result = {}   
+#     i = 0
+#     while i < len(lines):
+#         if lines[i].startswith('*'):
+#             name = lines[i][1:].strip().split()[0]            
+#             items = []
+#             i += 1
+#             while i < len(lines) and lines[i].startswith('\t*'):
+#                 item = lines[i][2:].strip()               
+#                 items.append(item)       
+#                 i += 1       
+#             result[name] = items
+#         i += 1
     
     return result
 
@@ -274,7 +302,7 @@ def get_filename_no_extension(path):
     """
 
     file_name = os.path.basename(path) 
-    file_name_without_ext = os.path.splitext(file_name)[0]  
+    file_name_without_ext = (os.path.splitext(file_name)[0])
     return file_name_without_ext
 
 

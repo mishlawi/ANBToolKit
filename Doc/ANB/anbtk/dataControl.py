@@ -1,6 +1,7 @@
 
 #? This module represents all the control version of the files and entities
 
+from pathlib import Path
 import json
 import os
 
@@ -8,7 +9,17 @@ from .DSL.entities import FSGram
 from .DSL.family import gramma
 from .auxiliar import constants
 
-def initanb(grampath,folderpath=""):
+
+def relative_to_anbtk(path):
+    if (anbtk_path := find_anb()) != None:
+        seed_folder = os.path.dirname(anbtk_path)
+        relative_path = Path(path).relative_to(seed_folder)
+        relative_path = os.path.join(os.path.basename(seed_folder),relative_path)
+        return relative_path
+
+
+
+def initanb(grampath="",folderpath=""):
     cwd = os.getcwd()
     if os.path.exists(cwd + '/.anbtk'):
         
@@ -35,7 +46,7 @@ def initanb(grampath,folderpath=""):
 
 
 
-
+# must go and calculate the others entities
 def initData():
     """
     Create an initial JSON file for storing statistics related to the types of content in the notebook.

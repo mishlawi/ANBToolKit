@@ -283,28 +283,6 @@ def add_file(folder,path,graph):
 def remove_file(folder, path, graph):
     graph.remove((FAMILY[folder], FAMILY['hasFile'], Literal(path, datatype=XSD.string)))
 
-# def add_fileBio(name,db,dd,path,about,graph):
-    
-#     dgu = DGU[path]
-#     graph.add((dgu, DGU['hasName'], Literal(name, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasFormat'], Literal('Latex', datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasType'], Literal('Biography', datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasFilePath'],Literal(path, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasAbout'], Literal(about, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasDateOfBirth'], Literal(db, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasDateOfDeath'], Literal(dd, datatype=XSD.string)))
-
-
-# def add_fileStory(name,title,path,author,date,about,graph):   
-#     dgu = DGU[path]
-#     graph.add((dgu, DGU['hasName'], Literal(name, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasFormat'], Literal('Latex', datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasType'], Literal('Story', datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasFilePath'],Literal(path, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasAbout'], Literal(about, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasTitle'], Literal(title, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasAuthor'], Literal(author, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasDate'], Literal(date, datatype=XSD.string)))
 
 def remove_file_special(path, graph):
     dgu = DGU[path]
@@ -312,11 +290,3 @@ def remove_file_special(path, graph):
     for triple in triples_to_remove:
         graph.remove(triple)
 
-
-# def add_Picture(name,path,format,about,graph):   
-#     dgu = DGU[path]
-#     graph.add((dgu, DGU['hasName'], Literal(name, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasFormat'], Literal(format, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasType'], Literal('Picture', datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasFilePath'],Literal(path, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasAbout'], Literal(about, datatype=XSD.string)))

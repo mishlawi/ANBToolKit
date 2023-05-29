@@ -6,8 +6,8 @@ import json
 import os
 
 from .DSL.entities import FSGram
-from .DSL.family import gramma
 from .auxiliar import constants
+from .auxiliar import dgu_helper
 
 
 def relative_to_anbtk(path):
@@ -84,12 +84,10 @@ def dataUpdate(file_type, name):
         data[file_type] = 0
     
     data[file_type] += 1
-    
-    if file_type =='Biography':
-        id = f"b{data[file_type]}-{name}"
-    
-    elif file_type == 'Story':
-        id = f"h{data[file_type]}-{name}"
+    with open('universe.dgu','r') as universe:
+        const = dgu_helper.parse_text_denomination(universe.read())[file_type]
+    print(const)
+    id = f"{const}[{data[file_type]}]-{name}"
     
     # > more formats tba
 

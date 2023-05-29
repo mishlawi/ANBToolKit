@@ -218,6 +218,29 @@ def defaultConversion(text):
 
     return temptext
 
+def parse_text_denomination(input):
+    """
+    Parses the universe file specified format and returns a dictionary of the form:
+    {'category1': 'abbreviation1', 'category2': 'abbreviation2', ...}
+    """
+
+    start_index = input.find('---')
+    if start_index == -1:
+        return {}
+
+    lines = input[start_index + 3:].strip().split('\n')
+    result = {}
+
+    for line in lines:
+        line = line.strip()
+        if line and not line.startswith('-'):
+            category_name, _, abbreviation = line.partition('(')
+            category_name = category_name.strip()
+            abbreviation = abbreviation.rstrip(')')
+            if abbreviation.strip():
+                result[category_name] = abbreviation.strip()
+
+    return result
 
 def parse_text(input):
     """

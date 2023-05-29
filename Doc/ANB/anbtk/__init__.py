@@ -38,7 +38,9 @@ from .dgu import dguObject as dgu
 # * maybe add specs to dont do anything if there are no differences in the sync command
 # * update the onto file so that new entities can be added
 # * anbvc has the absolute path 
-
+# * update connections , and entities' attributes
+# * show commands : show entities, etc
+ 
 
 ##############################################################################################################
 ##############################################################################################################

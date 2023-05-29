@@ -53,6 +53,7 @@ def verifyGrammar(lista,grammar):
 
             if id not in grammar.keys():
                 print("Gramatica mal formulada")
+                exit()
 
 
 

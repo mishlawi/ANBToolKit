@@ -34,15 +34,14 @@ def p_FSGram(p):
     top = list(grammar.values())[0]
     gramLogic.verifyGrammar(top,grammar)
     universe = re.sub('UNIVERSE','',p[2]).strip()
-    #formats = re.sub('FORMATS','',p[3]).strip()
     #universehand(universe)
     ignored = re.sub('IGNORE','',p[3]).strip().split('\n')    
-    DGUhand.bigbang(universe)
     
     for elem in ignored:
         ignoredFiles.append(elem)
     gramLogic.interpreter(terminals,nonterminals)
     
+    DGUhand.bigbang(universe,terminals)
 
     #! keep tagged, needs maintance
     # disposal = travessia(grammar,dirin,dirout,ignoredFiles)

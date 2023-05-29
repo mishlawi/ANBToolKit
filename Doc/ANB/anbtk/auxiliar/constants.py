@@ -1,9 +1,9 @@
 defaultFsgram= """Pessoa : H* , Bio, Foto.
 Album : Foto*.
 
-H : r'h[0-9]+\-\w+\.\w+'
-Bio : r'b[0-9]+\-\w+\.\w+'
-Foto : r'p[0-9]+\-\w+\.\w+'
+H : h.
+Bio : b.
+Foto : p.
 
 UNIVERSE
 

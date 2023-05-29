@@ -35,7 +35,6 @@ from .dgu import dguObject as dgu
 # * cd folders
 # * create parent-children connections and folders
 # * i want it so that story and bio (and others) are default formats but the users can create their ones 
-# * create an ontology for new entities
 # * maybe add specs to dont do anything if there are no differences in the sync command
 # * update the onto file so that new entities can be added
 # * anbvc has the absolute path 

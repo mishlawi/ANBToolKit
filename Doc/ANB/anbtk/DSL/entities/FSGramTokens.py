@@ -11,8 +11,9 @@ t_PF = r'\.'
 
 t_VIR = r'\,'
 
+#p[0-9]+\-\w+\.\w+'
 def t_REGEX(t):
-    r'r\'.+\''
+    r"[a-z]+(\s+)?\."
     t.value = str(t.value)
     return t
 

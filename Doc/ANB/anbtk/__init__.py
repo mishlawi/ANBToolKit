@@ -28,6 +28,7 @@ from .dgu import dguObject as dgu
 
 #? DUVIDAS
 # * how important is that i have an ontology with the different specs of the dgus? 
+# * dgu path is being written as an absolute path, is that a problem?
 
 #*TODO
 # ! FIX TEX2DGU regarding the UTF8
@@ -40,7 +41,11 @@ from .dgu import dguObject as dgu
 # * anbvc has the absolute path 
 # * update connections , and entities' attributes
 # * show commands : show entities, etc
- 
+# * erro de ja estar numa pasta  já inicializada como anb, quando na realidade apenas se está um nivel acima de uma pasta inicializada
+# * tex2dgu poe author a false
+# * maybe, moving a file updates its path?
+# * refactor dgubook individual and generic functions
+# ! individual dgubook not working
 
 ##############################################################################################################
 ##############################################################################################################
@@ -121,7 +126,7 @@ def anb():
                     if args.entity[0] in entities.keys():
                         genDgu(args.entity[0], entities[args.entity[0]], args.filename[0],currentdir)
                     else:
-                        print("No entity exists with that name")
+                        print("✗ No entity exists with that name")
             if not args.entity:
                 os.chdir(currentdir)
                 empty_dgu = dgu.DGU()
@@ -129,11 +134,11 @@ def anb():
                     dgu_helper.dguheadercomposer(empty_dgu,f)
 
         else:
-            print("You need to initialize an ancestors notebook")
+            print("✗ You need to initialize an ancestors notebook")
 
 
     elif args.subcommand == 'genFolders':
-
+        print(" --- Ancestors Notebook processing status: --- \n")
         if args.source:
             fsgram = args.source[0]
         else:
@@ -164,7 +169,7 @@ def anb():
             controlsystem.version_control(path,g)
             genealogia.gen_onto_file(g,'anbsafeonto')
         else:
-            print("Not in any initialized folder.")
+            print("✗ Not in any initialized folder.")
         
     else:
         args.func(args.name, args.attributes, args)

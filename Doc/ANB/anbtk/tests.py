@@ -38,9 +38,9 @@ def test2():
         relative_path = Path(path1).relative_to(path2)
         return relative_path
 
-    path1 = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-family/Ana-Sofia-Mendes/foto2.png"
-    path2 = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/anb-family"
+    path1 = "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/fams/anb-family/Vitalina-Moreira-Martins"
+    path2 = "anb-family/Vitalina-Moreira-Martins/h4-Pobreza.tex"
 
-    relative_path = get_relative_path(path1, path2)
+    relative_path = get_relative_path(path2, path1)
     print(relative_path)
-test1()
+test2()

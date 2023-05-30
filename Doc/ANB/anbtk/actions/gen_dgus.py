@@ -21,7 +21,6 @@ def genDguImage():
         genDguImage_tree(cwd)
 
 
-
 def genDguImage_file(files):
 
     cwd = os.getcwd()
@@ -32,7 +31,7 @@ def genDguImage_file(files):
         else:
             filename = os.path.basename(elem)
             format = re.split("\.",filename)[1]
-            id = dgu_helper.get_filename_no_extension(elem) # what to do to have data control?
+            id = dgu_helper.get_filename_no_extension(elem) 
             abpath = os.path.abspath(elem)
             realpath = dataControl.relative_to_anbtk(abpath)
             if os.path.dirname(elem)!='':    
@@ -41,14 +40,14 @@ def genDguImage_file(files):
             if not os.path.exists(usedname+'.dgu'):
                 with open(usedname+'.dgu','w') as dgufile:
                     dgufile.write('---\n')
-                    yaml.dump(dgu.DGU(id = id,format = format,path=realpath),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
+                    yaml.dump(dgu.DGU(id = id,format = format,path=abpath),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
                     dgufile.write('---\n')
                 os.chdir(cwd)
 
                     
 def genDguImage_tree(cwd):
         visited = set()
-        for dirpath, _, filenames in os.walk(cwd, followlinks=True):
+        for dirpath, _, filenames in os.walk(cwd):
             realpath = os.path.realpath(dirpath)
             if realpath in visited or os.path.basename(dirpath) == '.anbtk':
                 continue
@@ -62,11 +61,11 @@ def genDguImage_tree(cwd):
                         format = os.path.splitext(filename)[1][1:]
                         id = os.path.splitext(filename)[0]
                         abpath = os.path.abspath(filepath)
-                        realpath = dataControl.relative_to_anbtk(abpath)
+                        # realpath = dataControl.relative_to_anbtk(abpath)
                         if not os.path.exists(os.path.join(dirpath, id + '.dgu')):
                             with open(os.path.join(dirpath, id + '.dgu'), 'w') as dgufile:
                                 dgufile.write('---\n')
-                                yaml.dump(dgu.DGU(id=id, format=format, path=realpath), dgufile, default_flow_style=False, sort_keys=False, allow_unicode=True)
+                                yaml.dump(dgu.DGU(id=id, format=format, path=abpath), dgufile, default_flow_style=False, sort_keys=False, allow_unicode=True)
                                 dgufile.write('---\n')
                         else:
                             print("There is a dgu file for this image already!\n")

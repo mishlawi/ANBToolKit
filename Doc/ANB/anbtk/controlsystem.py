@@ -50,14 +50,14 @@ def populate_onto(dict_graph,graph):
                 # here will be the ontology addition of dgus
                 with open('myfile.yaml', 'r') as file:
                     yaml_header = yaml.safe_load(file)
-                print(yaml_header)
+                
                 ousia.add_file(os.path.basename(individual),file,graph)
                 
 
 def create_vc_file(path,dir_dicts): 
         
     json_str = json.dumps(dir_dicts,indent=4)
-    print(path)
+
     os.chdir(path)
     with open('anbvc.json', 'w') as file:
         file.write(json_str)
@@ -97,7 +97,7 @@ def compare_file_structure(path,graph):
     
         ousia.add_file(parent_folder,added_file,graph)
         # it is only adding dgus
-        print(added_file)
+    
         if added_file.endswith(".dgu"):
             with open(added_file, 'r') as file:
                 x = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",file.read()).group()
@@ -108,7 +108,6 @@ def compare_file_structure(path,graph):
             
 
     for removed_file in diff['removed_files']:
-        print(diff['removed_files'])  
         parent_folder = os.path.basename(os.path.dirname(removed_file))                  
         ousia.remove_file(parent_folder,removed_file,graph)
         ousia.remove_file_special(removed_file,graph)
@@ -166,11 +165,11 @@ def compare_files_directories(dir1, dir2, base_dir=''):
     
 def version_control(path,graph):
     if os.path.isfile(os.path.join(path,'.anbtk/anbvc.json')):
-        print("Version Control file reviewed.")
+        print(" ✓ Version Control file reviewed.")
         new_dict = compare_file_structure(path,graph)
 
     else:
-        print("Version Control file created.")
+        print(" ✓ Version Control file created.")
         new_dict = check_file_structure(path)
     
     create_vc_file(f'{path}/.anbtk', new_dict)

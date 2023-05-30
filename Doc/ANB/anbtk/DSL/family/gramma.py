@@ -195,13 +195,13 @@ def parsing(filename):
     with open(filename) as file:
         data = file.read()
     family_tree = parser.parse(data,lexer=gramma_lexer)
-    return family_tree, meta
 
-# #Get each token recognized by the lexer
-#     lexer.input(data)
-#     while True:
-#         token = lexer.token()
-#         if not token:
-#             break  # no more tokens
-#         print(token)
+    return family_tree, meta
+#Get each token recognized by the lexer
+    # gramma_lexer.input(data)
+    # while True:
+    #     token = gramma_lexer.token()
+    #     if not token:
+    #         break  # no more tokens
+    #     print(token)
 

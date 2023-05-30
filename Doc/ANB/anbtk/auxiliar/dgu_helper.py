@@ -4,7 +4,7 @@ import os
 import subprocess
 import imghdr
 from datetime import datetime
-
+from .. import dataControl
 
 ###################################### headings 
 
@@ -311,7 +311,7 @@ def is_image(path):
     Returns:
         bool: True if the file is an image, False otherwise.
     """
-
+    # print(os.getcwd())
     content_type = imghdr.what(path)
     if content_type is not None:
         return True
@@ -348,6 +348,9 @@ def isDguImage(path):
     """
 
     adgu = parseAbstractDgu(path)    
+    if (anbtk_path := dataControl.find_anb()) != None:
+        os.chdir(os.path.dirname(anbtk_path))
+    print(os.getcwd())
     if is_image(adgu['path']):
         return True
     else:
@@ -424,7 +427,8 @@ def parse_individual_dgu(dgu_path, dates, docs, imgs, cronology):
     """
 
     if not dgu_path.endswith('.dgu'):
-        raise Exception(f"{dgu_path} is not a dgu file")
+        print (f"{dgu_path} is not a dgu file!")
+        exit()
 
     if isDguImage(dgu_path):
         adgu = parseAbstractDgu(dgu_path)
@@ -432,6 +436,7 @@ def parse_individual_dgu(dgu_path, dates, docs, imgs, cronology):
         imgs.append(adgu)
     else:
         elem_path = os.path.abspath(dgu_path)
+        
         with open(elem_path) as elem_file:
             temp = elem_file.read()
             if aux:= re.split('---',temp):
@@ -466,6 +471,7 @@ def parse_dgu_tree(dgu_path,dirpath,dates,docs,imgs,cronology):
     
     if dgu_path.endswith('.dgu'):
         elem_path = os.path.join(dirpath, dgu_path)
+        
         if isDguImage(elem_path):
             adgu = parseAbstractDgu(elem_path)
             adgu['path'] = os.path.relpath(parseAbstractDgu(elem_path)['path'], os.getcwd())
@@ -501,12 +507,13 @@ def tree_iteration(cwd,dates,docs,imgs,cronology,dgufunc):
     Returns:
         None
     """
-
     visited = set()
-    for dirpath, _, filenames in os.walk(cwd, followlinks=True):
+    for dirpath, _, filenames in os.walk(cwd):
         realpath = os.path.realpath(dirpath)
+
         if realpath in visited or os.path.basename(dirpath) == '.anbtk':
             continue
         visited.add(realpath)
         for filename in filenames:
+
             dgufunc(filename,dirpath,dates,docs,imgs,cronology)

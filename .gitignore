@@ -2,6 +2,7 @@
 ANBToolKit/
 anb-family/
 anb-teste/
+fams/
 *.py[cod]
 *$py.class
 

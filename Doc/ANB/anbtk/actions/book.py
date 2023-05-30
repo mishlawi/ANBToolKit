@@ -42,10 +42,8 @@ def dgubook():
             print("Initialize the ancestors notebook first.")
             sys.exit(1)
 
-        os.chdir(dataControl.find_anb())
-        environment = Environment(loader=FileSystemLoader("templates/"))
+        environment = Environment(loader=FileSystemLoader(os.path.join(dataControl.find_anb(),"templates/")))
         dgus2tex = environment.get_template("anb1.j2")
-        os.chdir(cwd)
 
         if arguments.file:
             for elem in arguments.file:

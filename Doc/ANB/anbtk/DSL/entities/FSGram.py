@@ -18,7 +18,7 @@ def universehand(universe):
     galaxies = universe.split('\n')
     
     for elem in galaxies:
-        print(elem)
+    
         if len(values:=re.split(r'\-\>',elem))>1:
             entity = values[0]
             atributes = values[1]
@@ -47,9 +47,12 @@ def p_FSGram(p):
     # disposal = travessia(grammar,dirin,dirout,ignoredFiles)
     # genHtml(disposal,dirout,dirin)
     
-    print("\n\n\n")
-    print("Nao terminais",nonterminals)
-    print("Terminais",terminals)
+    print("\n\n")
+    print("fsgram file declarations:")
+    print(" * non terminals",nonterminals)
+    print(" * terminals",terminals)
+    print("\n\n")
+
 
 def p_Prods(p):
     "Prods : Prod Prods"

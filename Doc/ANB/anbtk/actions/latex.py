@@ -6,6 +6,7 @@ import subprocess
 
 from ..auxiliar import dgu_helper
 from ..auxiliar import argsConfig
+from .. import dataControl
 
 from ..dgu import dguObject as dgu
 
@@ -63,7 +64,7 @@ def dgu2texbook():
 
 
 
-def tex2dgu(dirout):
+def tex2dgu(dirout=""):
     arguments = argsConfig.a_tex2dgu()
     if arguments.file:
         for elem in arguments.file:
@@ -80,12 +81,12 @@ def tex2dgu(dirout):
                 dgufile = open(filename[:-4]+'.dgu','w')
                 id = re.search(r'(?<=\-).+(?=\.)',filename).group()
                 text = re.split(r'\-\-\-',fo)[2]
-                print(text)
                 dgufile.write("---\n")
                 format = dgu_helper.getFormat('tex')
                 type = dgu_helper.docType(filename)
                 abouts = re.findall(r'\\ind\{(.+?| )\}',file)
                 path = os.path.abspath(filename)
+                #path = dataControl.relative_to_anbtk(path)
                 yaml.dump(dgu.DGU(id = id,format = format,type=type,about=abouts,path=path),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
                 yaml.dump(adgu,dgufile)
                 dgufile.write("---\n")
@@ -94,4 +95,5 @@ def tex2dgu(dirout):
                 if dirout!="":
                     subprocess.check_call(['mv',filename+'.dgu',dirout])
             else:
-                raise Exception("Not a latex file")
+                print("Not a latex file!")
+                exit()

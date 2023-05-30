@@ -128,9 +128,9 @@ def onto_folders_correspondence(file, family="anb-family", entities=""):
     family_structure, ages = gramma.parsing(file)
 
     if family_structure is None:
-        raise Exception("Failed to parse family structure.")
+        raise Exception("✗ Failed to parse family structure.")
 
-    print("Successfully parsed the seed file.")
+    print("✓ Successfully parsed the family seed file.")
 
     cwd = os.getcwd()
 
@@ -183,9 +183,20 @@ def gen_parents_folders(couple,children,graph,path):
     if not os.path.exists(p1) and not p1.startswith('undiscovered'):
         gen_parental_folder_connections(p1,couple,graph,path)
 
+    elif os.path.exists(p1):
+        os.symlink(f'../.{couple}',f'{p1}/.{couple}')
+        print(p1)
+    
     if not os.path.exists(p2) and not p2.startswith('undiscovered'):
         gen_parental_folder_connections(p2,couple,graph,path)
+    
+    elif os.path.exists(p2):
+        os.symlink(f'../.{couple}',f'{p2}/.{couple}')
         
+
+        print(p2)
+    
+
     for son in children:           
         son = adapt_name(son)     
         if not os.path.exists(son) and not son.startswith('undiscovered'):
@@ -202,6 +213,7 @@ def gen_parental_folder_connections(individual,couple,graph,path):
     os.mkdir(individual)  
     relpath = os.path.join(path,individual)
     ousia.add_folder(individual,relpath,graph)
+
     os.symlink(f'../.{couple}',f'{individual}/.{couple}')
 
 

@@ -10,11 +10,20 @@ from .auxiliar import constants
 from .auxiliar import dgu_helper
 
 
+
+
+def get_root():
+    if (anbtk_path:=find_anb())!=None:
+        return os.path.dirname(anbtk_path)
+
+
+
 def relative_to_anbtk(path):
     if (anbtk_path := find_anb()) != None:
         seed_folder = os.path.dirname(anbtk_path)
         relative_path = Path(path).relative_to(seed_folder)
         relative_path = os.path.join(os.path.basename(seed_folder),relative_path)
+        relative_path =   "/".join(relative_path.split("/")[1:])
         return relative_path
 
 

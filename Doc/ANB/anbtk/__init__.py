@@ -29,8 +29,10 @@ from .dgu import dguObject as dgu
 #? DUVIDAS
 # * how important is that i have an ontology with the different specs of the dgus? 
 # * dgu path is being written as an absolute path, is that a problem?
+# * como fazer o visualizer?
 
 #*TODO
+
 # ! FIX TEX2DGU regarding the UTF8
 # * ( ls ) search through the folders
 # * cd folders
@@ -42,9 +44,16 @@ from .dgu import dguObject as dgu
 # * update connections , and entities' attributes
 # * show commands : show entities, etc
 # * erro de ja estar numa pasta  já inicializada como anb, quando na realidade apenas se está um nivel acima de uma pasta inicializada
-# * tex2dgu poe author a false
+# * tex2dgu puts author false
 # * maybe, moving a file updates its path?
 # * refactor dgubook individual and generic functions
+# * ontology for dgus and ontology for relations
+# * be careful with new couples for the same individual (ex spouse)
+# * auto sync when creating dgus
+# * revise the command for dgu generation for generic dgus
+# *
+
+
 # ! individual dgubook not working
 
 ##############################################################################################################

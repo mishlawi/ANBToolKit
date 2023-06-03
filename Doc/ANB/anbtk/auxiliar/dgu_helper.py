@@ -127,9 +127,7 @@ def getFormat(string):
 
 
 
-#! NEEDS MAINTANCE
 def parseAbstractDgu(filename):
-    
 
     """
     Parses a dgu file and returns a dictionary containing its metadata and body.
@@ -140,9 +138,10 @@ def parseAbstractDgu(filename):
     Returns: a dictionary containing the metadata and body of the dgu file.
     """
 
-    base, ext = os.path.splitext(filename)
+    _ , ext = os.path.splitext(filename)
 
     if ext == '.dgu':
+        print(os.path.abspath(filename))
         with open(os.path.abspath(filename)) as f:
             data = f.read()
         headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)", data).group()
@@ -271,34 +270,6 @@ def parse_text(input):
 
     return result
 
-    # """
-    
-    # Parses the universe file specified format and returns a dictionary of the form:
-    # {'name1': ['item1', 'item2', ...], 'name2': ['item1', 'item2', ...], ...}
-
-    # """
-    # start_index = input.rfind('---')
-    # if start_index == -1:
-    #     return {}
-    
-    # lines = input[start_index + 3:].strip().split('\n')
-    # result = {}
-    # current_category = None
-    
-    # for line in lines:
-    #     line = line.strip()
-    #     if line:
-    #         if not line.startswith('-'):
-    #             current_category = line
-    #             result[current_category] = []
-    #         else:
-    #             attribute = line[1:].strip()
-    #             if current_category:
-    #                 result[current_category].append(attribute)
-    # print(result)
-    # return result
-
-
 
 def is_image(path):
 
@@ -346,11 +317,14 @@ def isDguImage(path):
     Returns:
         bool: True if the file is an image, False otherwise.
     """
+    cwd = os.getcwd()
+    os.chdir(dataControl.get_root())
+    adgu = parseAbstractDgu(path)  
 
-    adgu = parseAbstractDgu(path)    
+    os.chdir(cwd)
     if (anbtk_path := dataControl.find_anb()) != None:
         os.chdir(os.path.dirname(anbtk_path))
-    print(os.getcwd())
+
     if is_image(adgu['path']):
         return True
     else:
@@ -408,6 +382,8 @@ def updateTitleforId(adgu):
 
 
 
+
+
 def parse_individual_dgu(dgu_path, dates, docs, imgs, cronology):
     """
     Parse a single .dgu file and add the data to the appropriate lists.
@@ -429,8 +405,7 @@ def parse_individual_dgu(dgu_path, dates, docs, imgs, cronology):
     if not dgu_path.endswith('.dgu'):
         print (f"{dgu_path} is not a dgu file!")
         exit()
-
-    if isDguImage(dgu_path):
+    if isDguImage(os.path.relpath(dgu_path,dataControl.get_root())):
         adgu = parseAbstractDgu(dgu_path)
         adgu['path'] = os.path.relpath(parseAbstractDgu(dgu_path)['path'], os.getcwd()) # gets relative path
         imgs.append(adgu)

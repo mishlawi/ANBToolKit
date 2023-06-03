@@ -7,7 +7,6 @@ import subprocess
 from ..auxiliar import dgu_helper
 from ..auxiliar import argsConfig
 from .. import dataControl
-
 from ..dgu import dguObject as dgu
 
 
@@ -86,7 +85,7 @@ def tex2dgu(dirout=""):
                 type = dgu_helper.docType(filename)
                 abouts = re.findall(r'\\ind\{(.+?| )\}',file)
                 path = os.path.abspath(filename)
-                #path = dataControl.relative_to_anbtk(path)
+                path = dataControl.relative_to_anbtk(path)
                 yaml.dump(dgu.DGU(id = id,format = format,type=type,about=abouts,path=path),dgufile,default_flow_style=False, sort_keys=False,allow_unicode=True)
                 yaml.dump(adgu,dgufile)
                 dgufile.write("---\n")

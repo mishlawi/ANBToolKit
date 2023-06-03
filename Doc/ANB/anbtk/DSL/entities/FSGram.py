@@ -48,10 +48,19 @@ def p_FSGram(p):
     # genHtml(disposal,dirout,dirin)
     
     print("\n\n")
-    print("fsgram file declarations:")
-    print(" * non terminals",nonterminals)
-    print(" * terminals",terminals)
-    print("\n\n")
+    print("-- Declarations --\n")
+    for nonterminal,spec in nonterminals.items():
+        text = ''
+        for elem in spec:
+            text += f'{elem}, '
+        text = text[:-1]
+        print(f" - {nonterminal} : {text}")
+    print("\n")
+    for terminal, symbol in terminals.items(): 
+        print(f" -> {terminal} : {symbol}")
+
+    
+    print("\n")
 
 
 def p_Prods(p):

@@ -128,9 +128,10 @@ def onto_folders_correspondence(file, family="anb-family", entities=""):
     family_structure, ages = gramma.parsing(file)
 
     if family_structure is None:
-        raise Exception("✗ Failed to parse family structure.")
+        print("✗ Failed to parse family structure. Some errors might exist in the anbtemplate")
+        exit()
 
-    print("✓ Successfully parsed the family seed file.")
+    print("✓ Successfully parsed the anb template file.")
 
     cwd = os.getcwd()
 
@@ -185,7 +186,7 @@ def gen_parents_folders(couple,children,graph,path):
 
     elif os.path.exists(p1):
         os.symlink(f'../.{couple}',f'{p1}/.{couple}')
-        print(p1)
+
     
     if not os.path.exists(p2) and not p2.startswith('undiscovered'):
         gen_parental_folder_connections(p2,couple,graph,path)
@@ -194,7 +195,6 @@ def gen_parents_folders(couple,children,graph,path):
         os.symlink(f'../.{couple}',f'{p2}/.{couple}')
         
 
-        print(p2)
     
 
     for son in children:           

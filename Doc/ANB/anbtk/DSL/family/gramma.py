@@ -177,9 +177,30 @@ def p_empty(p):
 
 def p_error(p):
     if p:
-        print(f"Syntax error at line {p.lineno} position {p.lexpos}: Unexpected token {p.type}")
+        error_message = f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token {p.type} ({p.value})"
+        
+        # Additional error handling for specific cases
+        if p.type == 'PLUS':
+            error_message += " - Invalid use of '+' token"
+        elif p.type == 'DATE':
+            error_message += " - Invalid date format"
+        elif p.type == 'UND':
+            error_message += " - Invalid use of 'undeterminated' token"
+        elif p.type == 'UNK':
+            error_message += " - Invalid use of 'unknown' token"
+        
+        print(error_message)
+        
+        # Get the line where the error occurred
+        lines = p.lexer.lexdata.split("\n")
+        error_line = lines[p.lineno-1]
+        
+        
+        print(error_line)
     else:
         print("Syntax error: Unexpected end of input")
+
+
 
 
 def t_error(t):
@@ -187,16 +208,32 @@ def t_error(t):
 
 parser = yacc.yacc()
 gramma_lexer = lex.lex()
+check_lexer = lex.lex()
 meta = {'total': 0, 'undiscovered': 0}
 
 
 def parsing(filename):
+    global meta
+    meta = {'total': 0, 'undiscovered': 0}
+
 
     with open(filename) as file:
         data = file.read()
     family_tree = parser.parse(data,lexer=gramma_lexer)
 
     return family_tree, meta
+
+
+def check_parsing(data):
+    global meta
+    meta = {'total': 0, 'undiscovered': 0}
+
+
+    family_tree = parser.parse(data,lexer=check_lexer)
+
+    return family_tree, meta
+
+
 #Get each token recognized by the lexer
     # gramma_lexer.input(data)
     # while True:

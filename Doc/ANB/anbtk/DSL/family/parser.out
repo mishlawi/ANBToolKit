@@ -1,0 +1,535 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> Family
+Rule 1     Family -> Couples
+Rule 2     Names -> Names NAME
+Rule 3     Names -> NAME
+Rule 4     Names -> empty
+Rule 5     Couples -> Couples Couple
+Rule 6     Couples -> Couple
+Rule 7     Couple -> Person PLUS Person NEWLINE Children NEWLINE
+Rule 8     Person -> Names Nickname Dates
+Rule 9     Person -> Names Dates
+Rule 10    Person -> UND
+Rule 11    Dates -> LP DATE DATE RP
+Rule 12    Dates -> LP DATE NDY RP
+Rule 13    Dates -> LP DATE UNK RP
+Rule 14    Dates -> LP UNK NDY RP
+Rule 15    Dates -> LP UNK DATE RP
+Rule 16    Dates -> UNK
+Rule 17    Children -> Children Child
+Rule 18    Children -> Child
+Rule 19    Children -> empty
+Rule 20    Child -> POINT Person NEWLINE
+Rule 21    Nickname -> LP Names RP
+Rule 22    empty -> <empty>
+
+Terminals, with rules where they appear
+
+DATE                 : 11 11 12 13 15
+LP                   : 11 12 13 14 15 21
+NAME                 : 2 3
+NDY                  : 12 14
+NEWLINE              : 7 7 20
+PLUS                 : 7
+POINT                : 20
+RP                   : 11 12 13 14 15 21
+UND                  : 10
+UNK                  : 13 14 15 16
+error                : 
+
+Nonterminals, with rules where they appear
+
+Child                : 17 18
+Children             : 7 17
+Couple               : 5 6
+Couples              : 1 5
+Dates                : 8 9
+Family               : 0
+Names                : 2 8 9 21
+Nickname             : 8
+Person               : 7 7 20
+empty                : 4 19
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . Family
+    (1) Family -> . Couples
+    (5) Couples -> . Couples Couple
+    (6) Couples -> . Couple
+    (7) Couple -> . Person PLUS Person NEWLINE Children NEWLINE
+    (8) Person -> . Names Nickname Dates
+    (9) Person -> . Names Dates
+    (10) Person -> . UND
+    (2) Names -> . Names NAME
+    (3) Names -> . NAME
+    (4) Names -> . empty
+    (22) empty -> .
+
+  ! shift/reduce conflict for NAME resolved as shift
+    UND             shift and go to state 6
+    NAME            shift and go to state 7
+    LP              reduce using rule 22 (empty -> .)
+    UNK             reduce using rule 22 (empty -> .)
+
+  ! NAME            [ reduce using rule 22 (empty -> .) ]
+
+    Family                         shift and go to state 1
+    Couples                        shift and go to state 2
+    Couple                         shift and go to state 3
+    Person                         shift and go to state 4
+    Names                          shift and go to state 5
+    empty                          shift and go to state 8
+
+state 1
+
+    (0) S' -> Family .
+
+
+
+state 2
+
+    (1) Family -> Couples .
+    (5) Couples -> Couples . Couple
+    (7) Couple -> . Person PLUS Person NEWLINE Children NEWLINE
+    (8) Person -> . Names Nickname Dates
+    (9) Person -> . Names Dates
+    (10) Person -> . UND
+    (2) Names -> . Names NAME
+    (3) Names -> . NAME
+    (4) Names -> . empty
+    (22) empty -> .
+
+  ! shift/reduce conflict for NAME resolved as shift
+    $end            reduce using rule 1 (Family -> Couples .)
+    UND             shift and go to state 6
+    NAME            shift and go to state 7
+    LP              reduce using rule 22 (empty -> .)
+    UNK             reduce using rule 22 (empty -> .)
+
+  ! NAME            [ reduce using rule 22 (empty -> .) ]
+
+    Couple                         shift and go to state 9
+    Person                         shift and go to state 4
+    Names                          shift and go to state 5
+    empty                          shift and go to state 8
+
+state 3
+
+    (6) Couples -> Couple .
+
+    UND             reduce using rule 6 (Couples -> Couple .)
+    NAME            reduce using rule 6 (Couples -> Couple .)
+    LP              reduce using rule 6 (Couples -> Couple .)
+    UNK             reduce using rule 6 (Couples -> Couple .)
+    $end            reduce using rule 6 (Couples -> Couple .)
+
+
+state 4
+
+    (7) Couple -> Person . PLUS Person NEWLINE Children NEWLINE
+
+    PLUS            shift and go to state 10
+
+
+state 5
+
+    (8) Person -> Names . Nickname Dates
+    (9) Person -> Names . Dates
+    (2) Names -> Names . NAME
+    (21) Nickname -> . LP Names RP
+    (11) Dates -> . LP DATE DATE RP
+    (12) Dates -> . LP DATE NDY RP
+    (13) Dates -> . LP DATE UNK RP
+    (14) Dates -> . LP UNK NDY RP
+    (15) Dates -> . LP UNK DATE RP
+    (16) Dates -> . UNK
+
+    NAME            shift and go to state 13
+    LP              shift and go to state 14
+    UNK             shift and go to state 15
+
+    Nickname                       shift and go to state 11
+    Dates                          shift and go to state 12
+
+state 6
+
+    (10) Person -> UND .
+
+    PLUS            reduce using rule 10 (Person -> UND .)
+    NEWLINE         reduce using rule 10 (Person -> UND .)
+
+
+state 7
+
+    (3) Names -> NAME .
+
+    NAME            reduce using rule 3 (Names -> NAME .)
+    LP              reduce using rule 3 (Names -> NAME .)
+    UNK             reduce using rule 3 (Names -> NAME .)
+    RP              reduce using rule 3 (Names -> NAME .)
+
+
+state 8
+
+    (4) Names -> empty .
+
+    NAME            reduce using rule 4 (Names -> empty .)
+    LP              reduce using rule 4 (Names -> empty .)
+    UNK             reduce using rule 4 (Names -> empty .)
+    RP              reduce using rule 4 (Names -> empty .)
+
+
+state 9
+
+    (5) Couples -> Couples Couple .
+
+    UND             reduce using rule 5 (Couples -> Couples Couple .)
+    NAME            reduce using rule 5 (Couples -> Couples Couple .)
+    LP              reduce using rule 5 (Couples -> Couples Couple .)
+    UNK             reduce using rule 5 (Couples -> Couples Couple .)
+    $end            reduce using rule 5 (Couples -> Couples Couple .)
+
+
+state 10
+
+    (7) Couple -> Person PLUS . Person NEWLINE Children NEWLINE
+    (8) Person -> . Names Nickname Dates
+    (9) Person -> . Names Dates
+    (10) Person -> . UND
+    (2) Names -> . Names NAME
+    (3) Names -> . NAME
+    (4) Names -> . empty
+    (22) empty -> .
+
+  ! shift/reduce conflict for NAME resolved as shift
+    UND             shift and go to state 6
+    NAME            shift and go to state 7
+    LP              reduce using rule 22 (empty -> .)
+    UNK             reduce using rule 22 (empty -> .)
+
+  ! NAME            [ reduce using rule 22 (empty -> .) ]
+
+    Person                         shift and go to state 16
+    Names                          shift and go to state 5
+    empty                          shift and go to state 8
+
+state 11
+
+    (8) Person -> Names Nickname . Dates
+    (11) Dates -> . LP DATE DATE RP
+    (12) Dates -> . LP DATE NDY RP
+    (13) Dates -> . LP DATE UNK RP
+    (14) Dates -> . LP UNK NDY RP
+    (15) Dates -> . LP UNK DATE RP
+    (16) Dates -> . UNK
+
+    LP              shift and go to state 18
+    UNK             shift and go to state 15
+
+    Dates                          shift and go to state 17
+
+state 12
+
+    (9) Person -> Names Dates .
+
+    PLUS            reduce using rule 9 (Person -> Names Dates .)
+    NEWLINE         reduce using rule 9 (Person -> Names Dates .)
+
+
+state 13
+
+    (2) Names -> Names NAME .
+
+    NAME            reduce using rule 2 (Names -> Names NAME .)
+    LP              reduce using rule 2 (Names -> Names NAME .)
+    UNK             reduce using rule 2 (Names -> Names NAME .)
+    RP              reduce using rule 2 (Names -> Names NAME .)
+
+
+state 14
+
+    (21) Nickname -> LP . Names RP
+    (11) Dates -> LP . DATE DATE RP
+    (12) Dates -> LP . DATE NDY RP
+    (13) Dates -> LP . DATE UNK RP
+    (14) Dates -> LP . UNK NDY RP
+    (15) Dates -> LP . UNK DATE RP
+    (2) Names -> . Names NAME
+    (3) Names -> . NAME
+    (4) Names -> . empty
+    (22) empty -> .
+
+  ! shift/reduce conflict for NAME resolved as shift
+    DATE            shift and go to state 20
+    UNK             shift and go to state 21
+    NAME            shift and go to state 7
+    RP              reduce using rule 22 (empty -> .)
+
+  ! NAME            [ reduce using rule 22 (empty -> .) ]
+
+    Names                          shift and go to state 19
+    empty                          shift and go to state 8
+
+state 15
+
+    (16) Dates -> UNK .
+
+    PLUS            reduce using rule 16 (Dates -> UNK .)
+    NEWLINE         reduce using rule 16 (Dates -> UNK .)
+
+
+state 16
+
+    (7) Couple -> Person PLUS Person . NEWLINE Children NEWLINE
+
+    NEWLINE         shift and go to state 22
+
+
+state 17
+
+    (8) Person -> Names Nickname Dates .
+
+    PLUS            reduce using rule 8 (Person -> Names Nickname Dates .)
+    NEWLINE         reduce using rule 8 (Person -> Names Nickname Dates .)
+
+
+state 18
+
+    (11) Dates -> LP . DATE DATE RP
+    (12) Dates -> LP . DATE NDY RP
+    (13) Dates -> LP . DATE UNK RP
+    (14) Dates -> LP . UNK NDY RP
+    (15) Dates -> LP . UNK DATE RP
+
+    DATE            shift and go to state 20
+    UNK             shift and go to state 21
+
+
+state 19
+
+    (21) Nickname -> LP Names . RP
+    (2) Names -> Names . NAME
+
+    RP              shift and go to state 23
+    NAME            shift and go to state 13
+
+
+state 20
+
+    (11) Dates -> LP DATE . DATE RP
+    (12) Dates -> LP DATE . NDY RP
+    (13) Dates -> LP DATE . UNK RP
+
+    DATE            shift and go to state 24
+    NDY             shift and go to state 25
+    UNK             shift and go to state 26
+
+
+state 21
+
+    (14) Dates -> LP UNK . NDY RP
+    (15) Dates -> LP UNK . DATE RP
+
+    NDY             shift and go to state 27
+    DATE            shift and go to state 28
+
+
+state 22
+
+    (7) Couple -> Person PLUS Person NEWLINE . Children NEWLINE
+    (17) Children -> . Children Child
+    (18) Children -> . Child
+    (19) Children -> . empty
+    (20) Child -> . POINT Person NEWLINE
+    (22) empty -> .
+
+  ! shift/reduce conflict for POINT resolved as shift
+    POINT           shift and go to state 32
+    NEWLINE         reduce using rule 22 (empty -> .)
+
+  ! POINT           [ reduce using rule 22 (empty -> .) ]
+
+    Children                       shift and go to state 29
+    Child                          shift and go to state 30
+    empty                          shift and go to state 31
+
+state 23
+
+    (21) Nickname -> LP Names RP .
+
+    LP              reduce using rule 21 (Nickname -> LP Names RP .)
+    UNK             reduce using rule 21 (Nickname -> LP Names RP .)
+
+
+state 24
+
+    (11) Dates -> LP DATE DATE . RP
+
+    RP              shift and go to state 33
+
+
+state 25
+
+    (12) Dates -> LP DATE NDY . RP
+
+    RP              shift and go to state 34
+
+
+state 26
+
+    (13) Dates -> LP DATE UNK . RP
+
+    RP              shift and go to state 35
+
+
+state 27
+
+    (14) Dates -> LP UNK NDY . RP
+
+    RP              shift and go to state 36
+
+
+state 28
+
+    (15) Dates -> LP UNK DATE . RP
+
+    RP              shift and go to state 37
+
+
+state 29
+
+    (7) Couple -> Person PLUS Person NEWLINE Children . NEWLINE
+    (17) Children -> Children . Child
+    (20) Child -> . POINT Person NEWLINE
+
+    NEWLINE         shift and go to state 38
+    POINT           shift and go to state 32
+
+    Child                          shift and go to state 39
+
+state 30
+
+    (18) Children -> Child .
+
+    NEWLINE         reduce using rule 18 (Children -> Child .)
+    POINT           reduce using rule 18 (Children -> Child .)
+
+
+state 31
+
+    (19) Children -> empty .
+
+    NEWLINE         reduce using rule 19 (Children -> empty .)
+    POINT           reduce using rule 19 (Children -> empty .)
+
+
+state 32
+
+    (20) Child -> POINT . Person NEWLINE
+    (8) Person -> . Names Nickname Dates
+    (9) Person -> . Names Dates
+    (10) Person -> . UND
+    (2) Names -> . Names NAME
+    (3) Names -> . NAME
+    (4) Names -> . empty
+    (22) empty -> .
+
+  ! shift/reduce conflict for NAME resolved as shift
+    UND             shift and go to state 6
+    NAME            shift and go to state 7
+    LP              reduce using rule 22 (empty -> .)
+    UNK             reduce using rule 22 (empty -> .)
+
+  ! NAME            [ reduce using rule 22 (empty -> .) ]
+
+    Person                         shift and go to state 40
+    Names                          shift and go to state 5
+    empty                          shift and go to state 8
+
+state 33
+
+    (11) Dates -> LP DATE DATE RP .
+
+    PLUS            reduce using rule 11 (Dates -> LP DATE DATE RP .)
+    NEWLINE         reduce using rule 11 (Dates -> LP DATE DATE RP .)
+
+
+state 34
+
+    (12) Dates -> LP DATE NDY RP .
+
+    PLUS            reduce using rule 12 (Dates -> LP DATE NDY RP .)
+    NEWLINE         reduce using rule 12 (Dates -> LP DATE NDY RP .)
+
+
+state 35
+
+    (13) Dates -> LP DATE UNK RP .
+
+    PLUS            reduce using rule 13 (Dates -> LP DATE UNK RP .)
+    NEWLINE         reduce using rule 13 (Dates -> LP DATE UNK RP .)
+
+
+state 36
+
+    (14) Dates -> LP UNK NDY RP .
+
+    PLUS            reduce using rule 14 (Dates -> LP UNK NDY RP .)
+    NEWLINE         reduce using rule 14 (Dates -> LP UNK NDY RP .)
+
+
+state 37
+
+    (15) Dates -> LP UNK DATE RP .
+
+    PLUS            reduce using rule 15 (Dates -> LP UNK DATE RP .)
+    NEWLINE         reduce using rule 15 (Dates -> LP UNK DATE RP .)
+
+
+state 38
+
+    (7) Couple -> Person PLUS Person NEWLINE Children NEWLINE .
+
+    UND             reduce using rule 7 (Couple -> Person PLUS Person NEWLINE Children NEWLINE .)
+    NAME            reduce using rule 7 (Couple -> Person PLUS Person NEWLINE Children NEWLINE .)
+    LP              reduce using rule 7 (Couple -> Person PLUS Person NEWLINE Children NEWLINE .)
+    UNK             reduce using rule 7 (Couple -> Person PLUS Person NEWLINE Children NEWLINE .)
+    $end            reduce using rule 7 (Couple -> Person PLUS Person NEWLINE Children NEWLINE .)
+
+
+state 39
+
+    (17) Children -> Children Child .
+
+    NEWLINE         reduce using rule 17 (Children -> Children Child .)
+    POINT           reduce using rule 17 (Children -> Children Child .)
+
+
+state 40
+
+    (20) Child -> POINT Person . NEWLINE
+
+    NEWLINE         shift and go to state 41
+
+
+state 41
+
+    (20) Child -> POINT Person NEWLINE .
+
+    NEWLINE         reduce using rule 20 (Child -> POINT Person NEWLINE .)
+    POINT           reduce using rule 20 (Child -> POINT Person NEWLINE .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for NAME in state 0 resolved as shift
+WARNING: shift/reduce conflict for NAME in state 2 resolved as shift
+WARNING: shift/reduce conflict for NAME in state 10 resolved as shift
+WARNING: shift/reduce conflict for NAME in state 14 resolved as shift
+WARNING: shift/reduce conflict for POINT in state 22 resolved as shift
+WARNING: shift/reduce conflict for NAME in state 32 resolved as shift

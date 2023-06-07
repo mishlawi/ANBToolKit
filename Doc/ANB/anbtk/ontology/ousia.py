@@ -274,6 +274,11 @@ def add_parent_children(parent1,parent2,child,graph):
     graph.add((child, FAMILY['hasParent'], parent2))
 
 
+def update_individual(old_name,new_name,old_bd="",new_bd=""):
+    family = Namespace("http://example.org/family#")
+    if old_bd == "" and new_bd == "":
+        pass
+
 
 ############## files
 

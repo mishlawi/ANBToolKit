@@ -1,8 +1,9 @@
 import subprocess
 import os 
-import time
 
+from rdflib import Graph
 import DSL.family.gramma
+
 
 def get_file():
     #change to the seed file
@@ -24,7 +25,7 @@ def list_and_num_families(dictionary):
 
 
 def edit_block(config_data):
-    print("Launching text editor for modification...")
+
 
     temp_filename = "temp_config.txt"
     with open(temp_filename, "w") as temp_file:
@@ -50,40 +51,25 @@ def edit_block(config_data):
 def check_errors(modified_config_data):
     DSL.family.gramma.check_parsing(modified_config_data)
 
-def get_changes(original_dict, updated_dict):
-    changes = {}
+def changed(dict1,dict2):
+    if len(dict1)>1:
+        raise Exception("Something went wrong")
+    changed_values = {}
 
-    for key in original_dict:
-        if key not in updated_dict:
-            changes[key] = 'Key removed'
-        else:
-            original_values = original_dict[key]
-            updated_values = updated_dict[key]
+    if list(dict1.keys())[0]!=list(dict2.keys())[0]:
+        changed_key = {'new': list(dict2.keys())[0], 'old' : list(dict1.keys())[0]}
 
-            if original_values != updated_values:
-                added_values = [value for value in updated_values if value not in original_values]
-                removed_values = [value for value in original_values if value not in updated_values]
-
-                if added_values or removed_values:
-                    changes[key] = {
-                        'Added values': added_values,
-                        'Removed values': removed_values
-                    }
-
-    for key in updated_dict:
-        if key not in original_dict:
-            changes[key] = 'Key added'
-
-    return changes
-
-
-
-
-def convert_dictionary(dictionary):
-    for key, values in dictionary.items():
-        print(key)
-        for value in values:
-            print(f". {value}")
+        removed = [elem for elem in list(dict1.values())[0] if elem not in list(dict2.values())[0]] 
+        added = [elem for elem in list(dict2.values())[0] if elem not in  list(dict1.values())[0]]
+        #changed_values = { 'added':added, 'added':removed }
+    else:
+        changed_key = {}
+        removed = [elem for elem in list(dict1.values())[0] if elem not in list(dict2.values())[0]] 
+        added = [elem for elem in list(dict2.values())[0] if elem not in  list(dict1.values())[0]]
+    changed_values['removed'] = removed
+    changed_values['added'] = added
+    return changed_values,changed_key
+   
 
 def interaction(og_family):
 
@@ -105,39 +91,145 @@ def interaction(og_family):
 def write_dictionary_to_file(dictionary):
     string = ''
     for key, values in dictionary.items():
-        string += key + '\n'
+        string += key
         for value in values:
-            string += '.' + value + '\n'
+            string += value
     return string
 
+
+
 def retrieve_content_by_name(file_path, name):
+    name1,name2 = name.split("+")
     with open(file_path, 'r') as file:
         lines = file.readlines()
         found = False
-        content = []
+        content = {}
+        children = []
         for line in lines:
-            line = line.strip()
-            if line == name:
+            if name1 in line and name2 in line:
                 found = True
+                save = line
             elif found and line.startswith('.'):
-                content.append(line[2:])
+                children.append(line)
             elif found:
-                break
-    return '\n'.join(content)
+                content[save] = children
+                return write_dictionary_to_file(content)
+                
+    
+    return 
 
 
-def action():
-    with open('complexfam.txt', 'r') as file:
-        original_config_data = file.read()
+def id_changes(dict1,dict2):
+    
+    removed = list(set(dict1.keys()) - set(dict2.keys()))
 
+# Find keys present in dict2 but not in dict1
+    added = list(set(dict2.keys()) - set(dict1.keys()))
+
+    # Find keys present in both dictionaries
+    common = list(set(dict1.keys()).intersection(dict2.keys()))
+
+    # Find differences in values for common keys
+    differences = {}
+    for key in common:
+        if dict1[key] != dict2[key]:
+            differences[key] = (dict1[key], dict2[key])
+    return {'added': added, 'removed' : removed , 'common' : common, 'differences' : differences }
+    return added,removed, common, differences
+    
+
+
+# José Augusto Santos (1947 2019) + Susana Rodrigues  (1956 -)
+# .Rui Miguel Santos Ferreira (1970 -)
+# .Silvana Isabel Santos Ferreira (1973 -)
+
+
+#{'added': ['Esteves Cardoso', 'Bordalo Santos'], 'removed': ['undiscovered_3', 'Ricardo Esteves Cardoso'], 'common': ['Pedro Esteves', 'José Augusto Santos', 'Ana Sofia Mendes', 'Luciana Abreu Loureiro'], 'differences': {}}
+
+# {'removed': ['undiscovered_3'], 'added': ['Bordalo Santos']}
+# {'new': 'Esteves Cardoso+Luciana Abreu Loureiro', 'old': 'Ricardo Esteves Cardoso+Luciana Abreu Loureiro'}
+def updates(before_block,changed_ids,before_ids, values , keys):
+    print(before_block)
+    new_parent = []
+    updated_parent = []
+    if keys!={}:
+        new_key = keys['new']
+        old_key = keys['old']
+
+        new_p1, new_p2 = new_key.split("+")
+        old_p1 , old_p2 = old_key.split("+")
+        if new_p1 == old_p1 and new_p2 != old_p2:
+            new_parent = [{new_p2 : changed_ids[new_p2]}]
+        elif new_p1 != old_p1 and new_p2 == old_p2:
+            new_parent = [{new_p1 : changed_ids[new_p1]}]
+        elif new_p1 != old_p1 and new_p2 != old_p2:
+            new_parent = [{new_p1 : changed_ids[new_p1]},{new_p2 : changed_ids[new_p2]}]
+    else:
+        p1,p2 = list(before_block.keys())[0].split("+")
+        if before_ids[p1]!=changed_ids[p1]:
+            updated_parent.append({p1:changed_ids[p1]})
+        if before_ids[p2]!=changed_ids[p2]:
+            updated_parent.append({p2:changed_ids[p2]})
+    updated_children = [] 
+    added_children = []
+    removed_children = []
+    if (added := values['added']) != []:
+        for child in added:
+            added_children.append({child:changed_ids[child]})
+    if (removed := values['removed']) != []:
+        for child in removed:
+            removed_children.append(child)
+    if (removed := values['removed']) != [] and (added := values['added']) != [] :
+        for elem in before_ids.keys():
+            print(elem)
+            if before_ids[elem] != changed_ids[elem]:
+                updated_children.append({elem:changed_ids[elem]})
+
+    return new_parent,updated_parent,added_children,removed_children
+            
+
+
+def add_newlines(string):
+    string = string.rstrip('\n')
+    return string + '\n\n'
+
+
+def action(g):
+    # with open('complexfam.txt', 'r') as file:
+    #     original_config_data = file.read()
+    print(g)
     og_family, og_dates = DSL.family.gramma.parsing('complexfam.txt')
+    print(og_family)
     block_number = interaction(og_family)
     key = list(og_family.keys())[block_number-1]
-
-
+    block = add_newlines(retrieve_content_by_name('complexfam.txt',key))
+    before_block,before_ids = DSL.family.gramma.check_parsing(block)
+    modified_config_data = edit_block(block)
+    modified_config_data = add_newlines(modified_config_data)
+    changed_block,changed_ids = DSL.family.gramma.check_parsing(modified_config_data)
+    
+    
+    del before_ids['total']
+    del before_ids['undiscovered']
+    del changed_ids['total']
+    del changed_ids['undiscovered']
+    
+    # print(id_changes(before_ids,changed_ids))
+    values,keys = changed(before_block,changed_block)
+    print(updates(before_block,changed_ids,before_ids,values,keys))
+    # if keys == {}:
+    #     #update values only
+    #     for elem in values['added'] , changed_ids:
+        
+        
+     
+    # else:
+    #     #keys and values update
+    #     pass
 
     
-    print(block)
+    
+    
     
 
     
@@ -151,6 +243,21 @@ def action():
     #print(changes)
     #check_errors(modified_config_data)
 
+### to be passed to genealogia
+def adapt_name(name):
+    
+    name = name.replace(" ","-")
+    return name
+    
 
 
-action()
+def read_onto_file(filename):
+    g = Graph()
+    g.parse(filename,format="xml")
+
+    return g 
+
+ 
+
+g = read_onto_file('anbsafeonto.rdf')
+action(g)

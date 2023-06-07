@@ -194,9 +194,6 @@ def gen_parents_folders(couple,children,graph,path):
     elif os.path.exists(p2):
         os.symlink(f'../.{couple}',f'{p2}/.{couple}')
         
-
-    
-
     for son in children:           
         son = adapt_name(son)     
         if not os.path.exists(son) and not son.startswith('undiscovered'):

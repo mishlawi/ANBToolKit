@@ -54,8 +54,7 @@ from .dgu import dguObject as dgu
 # * revise the command for dgu generation for generic dgus
 # * gedcom
 # * template html
-
-
+# * verificar a existencia de erros 1o, e só depois executar efetivamente as coisas, senao pastas sao geradas mesmo quando é dado um mau input
 # ! individual dgubook not working
 
 ##############################################################################################################

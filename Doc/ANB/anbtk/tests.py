@@ -113,13 +113,3 @@ Ricardo Esteves Cardoso ? + Luciana Abreu Loureiro (1932 ?)
 .Ana Sofia Mendes (1950 -)
 .Pedro Esteves ?
 """
-import re
- # Escape special characters in c
-
-# x = re.sub(escaped_c, b, a, flags=re.DOTALL)
-
-
-
-
-x = a.replace(c,b)
-# print(x)

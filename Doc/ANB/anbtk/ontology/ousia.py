@@ -265,6 +265,37 @@ def delete_individual(individual, graph):
     graph.remove((individual, None, None))
     graph.remove((None,None,individual))
 
+def delete_children_individual(individual,graph):
+    #delete a individual that is children of a couple
+    individual = FAMILY[individual]
+
+    is_parent = False
+    for s, p, o in graph.triples((individual, None, None)):
+        if p == FAMILY['hasChild']:
+            is_parent = True
+
+    if is_parent:
+        # it is not someone's children anymore, so all the connections regarding that can be removed
+        print("here")
+        graph.remove((individual,FAMILY['hasParent'],None))
+        # if it is not a parent it doesnt exist in other instances
+    else:
+        print("here!!")
+        graph.remove((individual, None, None))
+        graph.remove((None,None,individual))
+
+def delete_parent_individual(individual,graph):
+
+    individual = FAMILY[individual]
+ 
+
+    if 'hasParent' in individual:
+        graph.remove(individual,FAMILY['hasChild'],None)
+    
+    else:
+        graph.remove((individual, None, None))
+        graph.remove((None,None,individual))
+
 
 ############# relations
 

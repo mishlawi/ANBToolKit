@@ -180,7 +180,7 @@ def handle_children(removed_children,added_children,changed_block,g):
     p1,p2 = list(changed_block.keys())[0].split("+")
 
     for elem in removed_children:
-        ousia.delete_individual(elem,g)
+        ousia.delete_children_individual(genealogia.adapt_name(elem),g)
     for elem in added_children:
         og_name = list(elem.keys())[0]
         bd = elem[og_name]['birthDate']
@@ -281,8 +281,9 @@ def action():
 
         g = genealogia.read_onto_file(onto_file)
         
+
         handle_new_parents(new_parent,g)
-        handle_children(removed_children,added_children,changed_block,g)
+        handle_children(removed_children,added_children,changed_block,g)        
         handle_updates(updated_parents,updated_children,g)
 
         block_before = dict_to_file(before_ids,before_block)
@@ -305,3 +306,7 @@ def action():
 # alter the anbtemp file
 # alter the ontology
 # alter the file system configuration
+
+#ontology changes:
+# necessary to update the children's ontology reference when they are removed and be careful cuz they can be parents in other instance of the anbtemp file
+# necessary to update the parents's ontology reference  when they are removed and also be careful cuz they can be child in other instance of the anbtemp file

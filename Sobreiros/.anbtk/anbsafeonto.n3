@@ -1,0 +1,258 @@
+@prefix : <http://example.org/family#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.com/dgu#hasAbout> a owl:DatatypeProperty ;
+    rdfs:label "has about" ;
+    rdfs:domain <http://example.com/dgu#hasPath> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasAuthor> a owl:DatatypeProperty ;
+    rdfs:label "has Author" ;
+    rdfs:domain <http://example.com/dgu#hasStory> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasBirthday> a owl:DatatypeProperty ;
+    rdfs:label "has Birthday" ;
+    rdfs:domain <http://example.com/dgu#hasBiography> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasBirthplace> a owl:DatatypeProperty ;
+    rdfs:label "has Birthplace" ;
+    rdfs:domain <http://example.com/dgu#hasBiography> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasDate> a owl:DatatypeProperty ;
+    rdfs:label "has Date" ;
+    rdfs:domain <http://example.com/dgu#hasFoto>,
+        <http://example.com/dgu#hasStory> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasDeath> a owl:DatatypeProperty ;
+    rdfs:label "has Death" ;
+    rdfs:domain <http://example.com/dgu#hasBiography> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasFormat> a owl:DatatypeProperty ;
+    rdfs:label "has format" ;
+    rdfs:domain <http://example.com/dgu#hasPath> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasName> a owl:DatatypeProperty ;
+    rdfs:label "has Name",
+        "has name" ;
+    rdfs:domain <http://example.com/dgu#hasBiography>,
+        <http://example.com/dgu#hasPath> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasNote> a owl:DatatypeProperty ;
+    rdfs:label "has Note" ;
+    rdfs:domain <http://example.com/dgu#hasFoto> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasOccupation> a owl:DatatypeProperty ;
+    rdfs:label "has Occupation" ;
+    rdfs:domain <http://example.com/dgu#hasBiography> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasTitle> a owl:DatatypeProperty ;
+    rdfs:label "has Title" ;
+    rdfs:domain <http://example.com/dgu#hasStory> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasType> a owl:DatatypeProperty ;
+    rdfs:label "has type" ;
+    rdfs:domain <http://example.com/dgu#hasPath> ;
+    rdfs:range xsd:string .
+
+:Family a owl:Class ;
+    rdfs:label "Family" .
+
+:birthDate a owl:DatatypeProperty ;
+    rdfs:label "birth date" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:deathDate a owl:DatatypeProperty ;
+    rdfs:label "death date" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:family-ontology a owl:Ontology ;
+    rdfs:label "Family Ontology" .
+
+:hasFilePath a owl:DatatypeProperty ;
+    rdfs:label "has file path" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:hasFolder a owl:DatatypeProperty ;
+    rdfs:label "has path" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:hasSubfolder a owl:ObjectProperty ;
+    rdfs:label "has subfolder" ;
+    rdfs:domain :Subfolder ;
+    rdfs:range :Subfolder .
+
+:hasChild a owl:ObjectProperty ;
+    rdfs:label "has child" ;
+    rdfs:domain :Person ;
+    rdfs:range :Person ;
+    owl:inverseOf :hasParent .
+
+:hasParent a owl:ObjectProperty ;
+    rdfs:label "has parent" ;
+    rdfs:domain :Person ;
+    rdfs:range :Person ;
+    owl:inverseOf :hasChild .
+
+:hasSpouse a owl:ObjectProperty ;
+    rdfs:label "has spouse" ;
+    rdfs:domain :Person ;
+    rdfs:range :Person ;
+    owl:inverseOf :hasSpouse .
+
+<http://example.com/dgu#hasFoto> a owl:Class ;
+    rdfs:label "Foto" ;
+    rdfs:subClassOf <http://example.com/dgu#hasPath> .
+
+:Ana-Sofia-Mendes a :Person ;
+    rdfs:label "Ana Sofia Mendes" ;
+    :birthDate "1950"^^xsd:string ;
+    :deathDate "-"^^xsd:string ;
+    :hasFolderPath "Sobreiros/Ana-Sofia-Mendes"^^xsd:string ;
+    :hasParent :Lucas-Esteves-Cardoso,
+        :Luciana-Abreu-Loureiro .
+
+:Pedro-Esteves a :Person ;
+    rdfs:label "Pedro Esteves" ;
+    :birthDate "?"^^xsd:string ;
+    :deathDate "?"^^xsd:string ;
+    :hasFolderPath "Sobreiros/Pedro-Esteves"^^xsd:string ;
+    :hasParent :Lucas-Esteves-Cardoso,
+        :Luciana-Abreu-Loureiro .
+
+:Pedro-Miguel-Santos-Ferreira a :Person ;
+    rdfs:label "Pedro Miguel Santos Ferreira" ;
+    :birthDate "1970"^^xsd:string ;
+    :deathDate "-"^^xsd:string ;
+    :hasParent :José-Augusto-Santos,
+        :Susana-Rodrigues .
+
+:Rodrigo-Diogo-Almeida-Santos-Ferreira a :Person ;
+    rdfs:label "Rodrigo Diogo Almeida Santos Ferreira" ;
+    :birthDate "1998"^^xsd:string ;
+    :deathDate "-"^^xsd:string ;
+    :hasFolderPath "Sobreiros/Rodrigo-Diogo-Almeida-Santos-Ferreira"^^xsd:string ;
+    :hasParent :Mariana-da-Costa-Almeida,
+        :Rui-Miguel-Santos-Ferreira .
+
+:Silvana-Isabel-Santos-Ferreira a :Person ;
+    rdfs:label "Silvana Isabel Santos Ferreira" ;
+    :birthDate "1973"^^xsd:string ;
+    :deathDate "-"^^xsd:string ;
+    :hasFolderPath "Sobreiros/Silvana-Isabel-Santos-Ferreira"^^xsd:string ;
+    :hasParent :José-Augusto-Santos,
+        :Susana-Rodrigues .
+
+:Silvestre-Tiago-Almeida-Santos-Ferreira a :Person ;
+    rdfs:label "Silvestre Tiago Almeida Santos Ferreira" ;
+    :birthDate "1995"^^xsd:string ;
+    :deathDate "-"^^xsd:string ;
+    :hasFolderPath "Sobreiros/Silvestre-Tiago-Almeida-Santos-Ferreira"^^xsd:string ;
+    :hasParent :Mariana-da-Costa-Almeida,
+        :Rui-Miguel-Santos-Ferreira .
+
+:Subfolder a owl:Class ;
+    rdfs:label "Subfolder" ;
+    rdfs:subClassOf :Person .
+
+:undiscovered_3 a :Person ;
+    rdfs:label "undiscovered_3" ;
+    :birthDate "?"^^xsd:string ;
+    :deathDate "?"^^xsd:string ;
+    :hasParent :Lucas-Esteves-Cardoso,
+        :Luciana-Abreu-Loureiro .
+
+<http://example.com/dgu#hasStory> a owl:Class ;
+    rdfs:label "Story" ;
+    rdfs:subClassOf <http://example.com/dgu#hasPath> .
+
+:Mariana-da-Costa-Almeida a :Person ;
+    rdfs:label "Mariana da Costa Almeida" ;
+    :birthDate "1972"^^xsd:string ;
+    :deathDate "-"^^xsd:string ;
+    :hasChild :Rodrigo-Diogo-Almeida-Santos-Ferreira,
+        :Silvestre-Tiago-Almeida-Santos-Ferreira ;
+    :hasFolderPath "Sobreiros/Mariana-da-Costa-Almeida"^^xsd:string ;
+    :hasSpouse :Rui-Miguel-Santos-Ferreira .
+
+:Susana-Rodrigues a :Person ;
+    rdfs:label "Susana Rodrigues" ;
+    :birthDate "1956"^^xsd:string ;
+    :deathDate "-"^^xsd:string ;
+    :hasChild :Pedro-Miguel-Santos-Ferreira,
+        :Rui-Miguel-Santos-Ferreira,
+        :Silvana-Isabel-Santos-Ferreira ;
+    :hasFolderPath "Sobreiros/Susana-Rodrigues"^^xsd:string ;
+    :hasSpouse :José-Augusto-Santos .
+
+<http://example.com/dgu#hasBiography> a owl:Class ;
+    rdfs:label "Biography" ;
+    rdfs:subClassOf <http://example.com/dgu#hasPath> .
+
+:Lucas-Esteves-Cardoso a :Person ;
+    rdfs:label "Lucas Esteves Cardoso" ;
+    :birthDate "?"^^xsd:string ;
+    :hasChild :Ana-Sofia-Mendes,
+        :José-Augusto-Santos,
+        :Pedro-Esteves,
+        :undiscovered_3 ;
+    :hasFolderPath "Sobreiros/Ricardo-Esteves-Cardoso"^^xsd:string ;
+    :hasSpouse :Luciana-Abreu-Loureiro .
+
+:Luciana-Abreu-Loureiro a :Person ;
+    rdfs:label "Luciana Abreu Loureiro" ;
+    :birthDate "1932"^^xsd:string ;
+    :deathDate "?"^^xsd:string ;
+    :hasChild :Ana-Sofia-Mendes,
+        :José-Augusto-Santos,
+        :Pedro-Esteves,
+        :undiscovered_3 ;
+    :hasFolderPath "Sobreiros/Luciana-Abreu-Loureiro"^^xsd:string ;
+    :hasSpouse :Lucas-Esteves-Cardoso .
+
+:Rui-Miguel-Santos-Ferreira a :Person ;
+    rdfs:label "Rui Miguel Santos Ferreira" ;
+    :birthDate "1970"^^xsd:string ;
+    :deathDate "-"^^xsd:string ;
+    :hasChild :Rodrigo-Diogo-Almeida-Santos-Ferreira,
+        :Silvestre-Tiago-Almeida-Santos-Ferreira ;
+    :hasFolderPath "Sobreiros/Rui-Miguel-Santos-Ferreira"^^xsd:string ;
+    :hasParent :José-Augusto-Santos,
+        :Susana-Rodrigues ;
+    :hasSpouse :Mariana-da-Costa-Almeida .
+
+:José-Augusto-Santos a :Person ;
+    rdfs:label "José Augusto Santos" ;
+    :birthDate "1947"^^xsd:string ;
+    :deathDate "2019"^^xsd:string ;
+    :hasChild :Pedro-Miguel-Santos-Ferreira,
+        :Rui-Miguel-Santos-Ferreira,
+        :Silvana-Isabel-Santos-Ferreira ;
+    :hasFolderPath "Sobreiros/José-Augusto-Santos"^^xsd:string ;
+    :hasParent :Lucas-Esteves-Cardoso,
+        :Luciana-Abreu-Loureiro ;
+    :hasSpouse :Susana-Rodrigues .
+
+<http://example.com/dgu#hasPath> a owl:Class ;
+    rdfs:label "File" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:Person a owl:Class ;
+    rdfs:label "Person" .
+

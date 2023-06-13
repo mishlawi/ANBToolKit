@@ -20,5 +20,6 @@ dgubook = "anbtk:dgubook"
 genStory = "anbtk:genStory"
 genBio = "anbtk:genBio"
 genDguImage = "anbtk:genDguImage"
+anbpe = "anbtk:anbpe"
 anb = "anbtk:anb"
 

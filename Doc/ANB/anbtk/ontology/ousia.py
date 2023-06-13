@@ -234,10 +234,21 @@ def add_birthdate(name,date,graph):
 
     graph.add((individual, FAMILY['birthDate'], Literal(date, datatype=XSD.string)))
 
+def update_birthdate(name,date,graph):
+    individual = FAMILY[name]
+    graph.remove((individual,FAMILY['birthDate'],None))
+    add_birthdate(name,date,graph)
+
 def add_deathdate(name,date,graph):
     individual = FAMILY[name]
 
     graph.add((individual, FAMILY['deathDate'], Literal(date, datatype=XSD.string)))
+
+def update_deathdate(name,date,graph):
+    individual = FAMILY[name]
+    graph.remove((individual,FAMILY['deathDate'],None))
+    add_deathdate(name,date,graph)
+
 
 def add_individual(individual,OgName, graph):
 
@@ -252,6 +263,7 @@ def delete_individual(individual, graph):
     individual = FAMILY[individual]
     
     graph.remove((individual, None, None))
+    graph.remove((None,None,individual))
 
 
 ############# relations
@@ -274,11 +286,32 @@ def add_parent_children(parent1,parent2,child,graph):
     graph.add((child, FAMILY['hasParent'], parent2))
 
 
-def update_individual(old_name,new_name,old_bd="",new_bd=""):
-    family = Namespace("http://example.org/family#")
-    if old_bd == "" and new_bd == "":
-        pass
+def update_individual(old_individual, new_individual, name,db,dd, graph):
+       
 
+    for s, p, o in graph.triples((FAMILY[old_individual], None, None)):
+        if s == FAMILY[old_individual]:
+            graph.add((FAMILY[new_individual], p, o))
+        else:
+            graph.add((s, p, FAMILY[new_individual]))
+    
+    for s, p, o in graph.triples((None, None, FAMILY[old_individual])):
+        if s == FAMILY[old_individual]:
+            graph.add((FAMILY[new_individual], p, o))
+        else:
+            graph.add((s, p, FAMILY[new_individual]))
+
+    graph.remove((FAMILY[old_individual], None, None))
+    graph.remove((None, None, FAMILY[old_individual]))
+
+    graph.remove((FAMILY[new_individual], FAMILY['birthDate'], None))
+    graph.add((FAMILY[new_individual], FAMILY['birthDate'], Literal(db, datatype=XSD.string)))
+
+    graph.remove((FAMILY[new_individual], FAMILY['deathDate'], None))
+    graph.add((FAMILY[new_individual], FAMILY['birthDate'], Literal(dd, datatype=XSD.string)))
+
+    graph.remove((FAMILY[new_individual], RDFS.label, None))
+    graph.add((FAMILY[new_individual], RDFS.label, Literal(name)))
 
 ############## files
 

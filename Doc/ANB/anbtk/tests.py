@@ -43,4 +43,83 @@ def test2():
 
     relative_path = get_relative_path(path2, path1)
     print(relative_path)
-test2()
+
+
+dict1 = {'Pedro Esteves Cardoso+Luciana Abreu Loureiro': ['undiscovered_3', 'José Augusto Santos', 'Ana Sofia Mendes', 'Pedro Esteves']}
+dict2 = {'total': 6, 'undiscovered': 1, 'Pedro Esteves Cardoso': {'birthDate': '?', 'deathDate': '?', 'id': 1}, 'Luciana Abreu Loureiro': {'birthDate': '1932', 'deathDate': '?', 'id': 2}, 'undiscovered_3': {'birthDate': '?', 'deathDate': '?'}, 'José Augusto Santos': {'birthDate': '1947', 'deathDate': '2019', 'id': 4}, 'Ana Sofia Mendes': {'birthDate': '1950', 'deathDate': '-', 'id': 5}, 'Pedro Esteves': {'birthDate': '?', 'deathDate': '?', 'id': 6}}
+
+def dict_to_file(ids,block):
+    del ids['total']
+    del ids['undiscovered']
+    string = ''
+    for key,value in block.items():
+        p1,p2 = key.split("+")
+        if p1.startswith("undiscovered"):
+            p1 = p1.split("_")[1]
+        if p2.startswith("undiscovered"):
+            p2 = p2.split("_")[1]
+        bd_p1 = ids[p1]["birthDate"]
+        dd_p1 = ids[p1]["deathDate"]
+        bd_p2 = ids[p2]["birthDate"]
+        dd_p2 = ids[p2]["deathDate"]
+        if bd_p1 == dd_p1 and bd_p1 == "?":
+            string = string + f"{p1} ? +"
+        else:
+            string = string + f"{p1} ({bd_p1} {dd_p1}) +"
+        if bd_p2 == dd_p2 and bd_p2 == "?":
+            string = string + f" {p2} ?\n"
+        else:
+            string = string + f" {p2} ({bd_p2} {dd_p2})\n"
+        for child in value:
+            if child.startswith("undiscovered"):
+                string = string + '.#' + child.split("_")[1] + '\n'
+            else:
+                bd = ids[child]["birthDate"]
+                dd = ids[child]["deathDate"]
+                if bd == dd and bd == "?":
+                    string = string + f".{child} ?\n"
+                else:
+                    string = string + f".{child} ({bd} {dd})\n"
+    string += '\n'
+    return string
+
+print(dict_to_file(dict2,dict1))
+a = """
+Ricardo Esteves Cardoso ? + Luciana Abreu Loureiro (1932 ?)
+.#3
+.José Augusto Santos (1947 2019)
+.Ana Sofia Mendes (1950 -)
+.Pedro Esteves ?
+
+José Augusto Santos (1947 2019)+ Susana Rodrigues  (1956 -)
+.Rui Miguel Santos Ferreira (1970 -)
+.Silvana Isabel Santos Ferreira (1973 -)
+
+Rui Miguel Santos Ferreira (1970 -) + Mariana da Costa Almeida (1972 -)
+.Silvestre Tiago Almeida Santos Ferreira (1995 -)
+.Rodrigo Diogo Almeida Santos Ferreira (1998 -)"""
+
+b= """Luis Pedro Esteves Cardoso ? + Luciana Abreu Loureiro ?
+.#3
+.José Augusto Santos (1947 2019)
+.Ana Sofia Mendes (1950 -)
+.Pedro Esteves ?
+"""
+
+c= """
+Ricardo Esteves Cardoso ? + Luciana Abreu Loureiro (1932 ?)
+.#3
+.José Augusto Santos (1947 2019)
+.Ana Sofia Mendes (1950 -)
+.Pedro Esteves ?
+"""
+import re
+ # Escape special characters in c
+
+# x = re.sub(escaped_c, b, a, flags=re.DOTALL)
+
+
+
+
+x = a.replace(c,b)
+# print(x)

@@ -11,6 +11,28 @@ from .auxiliar import dgu_helper
 
 
 
+def find_anb():
+    
+    """
+    Returns the absolute path of the .anbtk directory if found, else returns None.
+    
+    The function recursively searches the current working directory and all its parent directories
+    until it finds the .anbtk directory. If the .anbtk directory is found, its absolute path is returned.
+    If the root directory is reached without finding the .anbtk directory, the function returns None.
+    
+    """
+    
+    current_dir = os.getcwd()
+    while True:
+        if os.path.isdir(os.path.join(current_dir, '.anbtk')):
+            # .anb folder found
+            return os.path.abspath(os.path.join(current_dir, '.anbtk'))
+        new_dir = os.path.dirname(current_dir)
+        if new_dir == current_dir:
+            # reached root directory without finding .anb folder
+            return None
+        current_dir = new_dir
+
 
 def get_root():
     if (anbtk_path:=find_anb())!=None:
@@ -31,22 +53,21 @@ def relative_to_anbtk(path):
 def initanb(grampath="",folderpath=""):
     cwd = os.getcwd()
     if os.path.exists(cwd + '/.anbtk'):
-        
-        raise Exception("This folder was already initialized as an Ancestors Notebook.")
+        print("✗ This folder was already initialized as an Ancestors Notebook or there might be an existing anb with the default name.")
+        exit(1)
     elif find_anb() is not None:
-        raise Exception("You are already in an Ancestors Notebook")  
+        print("✗ You are already in an Ancestors Notebook")  
+        exit(1)
     else:
         os.mkdir(filepath := (cwd + '/.anbtk'))
         os.chdir(filepath)
         initData()
         
-
         if grampath=="":
             FSGram.initializer()
         else:
             if os.path.dirname(grampath)!='':
                 os.chdir(os.path.dirname(os.path.abspath(grampath)))
-            print(grampath)
             temp = open(grampath,'r').read()
             os.chdir(filepath)
             FSGram.initializer(temp)
@@ -124,27 +145,6 @@ def templateGen():
         f.write(constants.templateLatex)
 
 
-def find_anb():
-    
-    """
-    Returns the absolute path of the .anbtk directory if found, else returns None.
-    
-    The function recursively searches the current working directory and all its parent directories
-    until it finds the .anbtk directory. If the .anbtk directory is found, its absolute path is returned.
-    If the root directory is reached without finding the .anbtk directory, the function returns None.
-    
-    """
-    
-    current_dir = os.getcwd()
-    while True:
-        if os.path.isdir(os.path.join(current_dir, '.anbtk')):
-            # .anb folder found
-            return os.path.abspath(os.path.join(current_dir, '.anbtk'))
-        new_dir = os.path.dirname(current_dir)
-        if new_dir == current_dir:
-            # reached root directory without finding .anb folder
-            return None
-        current_dir = new_dir
 
 
 def search_anbtk():

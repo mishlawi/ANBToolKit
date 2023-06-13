@@ -1,16 +1,11 @@
 import subprocess
 import os 
 
-from rdflib import Graph
-import DSL.family.gramma
+from .DSL.family import gramma
+from .ontology import ousia
+from . import dataControl
+from . import genealogia
 
-
-def get_file():
-    #change to the seed file
-    #with open(os.path.join(get_root(),'anbtemplate.txt')) as template:
-    with open('complexfam.txt') as template:
-        file = template.read()
-    print(file)
 
 def list_and_num_families(dictionary):
     
@@ -20,8 +15,6 @@ def list_and_num_families(dictionary):
             print(f"        * {element}")
         print("\n")
     print("0. Leave\n")
-
-
 
 
 def edit_block(config_data):
@@ -41,15 +34,15 @@ def edit_block(config_data):
     # Read the modified config data from the temporary file
 
     with open(temp_filename, "r") as temp_file:
-        modified_config_data = temp_file.read()
+        modified_block = temp_file.read()
 
     # Remove the temporary file
     os.remove(temp_filename)
 
-    return modified_config_data
+    return modified_block
 
-def check_errors(modified_config_data):
-    DSL.family.gramma.check_parsing(modified_config_data)
+def check_errors(modified_block):
+    gramma.check_parsing(modified_block)
 
 def changed(dict1,dict2):
     if len(dict1)>1:
@@ -88,7 +81,7 @@ def interaction(og_family):
 
             print("\n> Invalid input. Please enter a number.")
     
-def write_dictionary_to_file(dictionary):
+def visual_dictionary_simple(dictionary):
     string = ''
     for key, values in dictionary.items():
         string += key
@@ -113,45 +106,17 @@ def retrieve_content_by_name(file_path, name):
                 children.append(line)
             elif found:
                 content[save] = children
-                return write_dictionary_to_file(content)
+                return visual_dictionary_simple(content)
                 
     
     return 
 
 
-def id_changes(dict1,dict2):
-    
-    removed = list(set(dict1.keys()) - set(dict2.keys()))
-
-# Find keys present in dict2 but not in dict1
-    added = list(set(dict2.keys()) - set(dict1.keys()))
-
-    # Find keys present in both dictionaries
-    common = list(set(dict1.keys()).intersection(dict2.keys()))
-
-    # Find differences in values for common keys
-    differences = {}
-    for key in common:
-        if dict1[key] != dict2[key]:
-            differences[key] = (dict1[key], dict2[key])
-    return {'added': added, 'removed' : removed , 'common' : common, 'differences' : differences }
-    return added,removed, common, differences
-    
-
-
-# José Augusto Santos (1947 2019) + Susana Rodrigues  (1956 -)
-# .Rui Miguel Santos Ferreira (1970 -)
-# .Silvana Isabel Santos Ferreira (1973 -)
-
-
-#{'added': ['Esteves Cardoso', 'Bordalo Santos'], 'removed': ['undiscovered_3', 'Ricardo Esteves Cardoso'], 'common': ['Pedro Esteves', 'José Augusto Santos', 'Ana Sofia Mendes', 'Luciana Abreu Loureiro'], 'differences': {}}
-
-# {'removed': ['undiscovered_3'], 'added': ['Bordalo Santos']}
-# {'new': 'Esteves Cardoso+Luciana Abreu Loureiro', 'old': 'Ricardo Esteves Cardoso+Luciana Abreu Loureiro'}
 def updates(before_block,changed_ids,before_ids, values , keys):
-    print(before_block)
+
     new_parent = []
     updated_parent = []
+    removed_parent = []
     if keys!={}:
         new_key = keys['new']
         old_key = keys['old']
@@ -159,17 +124,24 @@ def updates(before_block,changed_ids,before_ids, values , keys):
         new_p1, new_p2 = new_key.split("+")
         old_p1 , old_p2 = old_key.split("+")
         if new_p1 == old_p1 and new_p2 != old_p2:
-            new_parent = [{new_p2 : changed_ids[new_p2]}]
+            new_parent = [(old_p2,{new_p2 : changed_ids[new_p2]})]
+            removed_parent.append(old_p2)
         elif new_p1 != old_p1 and new_p2 == old_p2:
-            new_parent = [{new_p1 : changed_ids[new_p1]}]
+            new_parent = [(old_p1,{new_p1 : changed_ids[new_p1]})]
+            removed_parent.append(old_p1)
+
         elif new_p1 != old_p1 and new_p2 != old_p2:
-            new_parent = [{new_p1 : changed_ids[new_p1]},{new_p2 : changed_ids[new_p2]}]
+            new_parent = [(old_p1,{new_p1 : changed_ids[new_p1]}),(old_p2,{new_p2 : changed_ids[new_p2]})]
+            removed_parent.append(old_p1)
+            removed_parent.append(old_p2)
+
     else:
         p1,p2 = list(before_block.keys())[0].split("+")
         if before_ids[p1]!=changed_ids[p1]:
             updated_parent.append({p1:changed_ids[p1]})
         if before_ids[p2]!=changed_ids[p2]:
             updated_parent.append({p2:changed_ids[p2]})
+
     updated_children = [] 
     added_children = []
     removed_children = []
@@ -179,13 +151,12 @@ def updates(before_block,changed_ids,before_ids, values , keys):
     if (removed := values['removed']) != []:
         for child in removed:
             removed_children.append(child)
-    if (removed := values['removed']) != [] and (added := values['added']) != [] :
-        for elem in before_ids.keys():
-            print(elem)
+    if (removed := values['removed']) == [] and (added := values['added']) == [] :
+        for elem in list(before_block.values())[0]:
             if before_ids[elem] != changed_ids[elem]:
                 updated_children.append({elem:changed_ids[elem]})
 
-    return new_parent,updated_parent,added_children,removed_children
+    return new_parent,removed_parent,updated_parent,added_children,removed_children,updated_children
             
 
 
@@ -193,71 +164,144 @@ def add_newlines(string):
     string = string.rstrip('\n')
     return string + '\n\n'
 
+def handle_new_parents(new_parent,g):
+    for parent in new_parent:
+        old = genealogia.adapt_name(parent[0])
+        new  = parent[1]
+        parent_name = list(new.keys())[0]
+        parent_bd = new[parent_name]['birthDate']
+        parent_dd = new[parent_name]['deathDate']
 
-def action(g):
-    # with open('complexfam.txt', 'r') as file:
-    #     original_config_data = file.read()
-    print(g)
-    og_family, og_dates = DSL.family.gramma.parsing('complexfam.txt')
-    print(og_family)
+        ousia.update_individual(old,genealogia.adapt_name(parent_name),parent_name,parent_bd,parent_dd,g)
+
+#falta atualizar pastas, no filesystem e nas ontologias
+
+def handle_children(removed_children,added_children,changed_block,g):
+    p1,p2 = list(changed_block.keys())[0].split("+")
+
+    for elem in removed_children:
+        ousia.delete_individual(elem,g)
+    for elem in added_children:
+        og_name = list(elem.keys())[0]
+        bd = elem[og_name]['birthDate']
+        dd = elem[og_name]['deathDate']
+        individual = genealogia.adapt_name(og_name)
+        ousia.add_individual(individual,og_name,g)
+        ousia.add_birthdate(individual,bd,g)
+        ousia.add_deathdate(individual,dd,g)
+        ousia.add_parent_children(genealogia.adapt_name(p1),genealogia.adapt_name(p2),individual,g)
+
+
+def update_dates(elem,g):
+    og_name = list(elem.keys())[0]
+    bd = elem[og_name]['birthDate']
+    dd = elem[og_name]['deathDate']
+    individual = genealogia.adapt_name(og_name)
+    ousia.update_birthdate(individual,bd,g)
+    ousia.update_deathdate(individual,dd,g)
+
+def handle_updates(updated_parents, updated_children, g):
+    for elem in updated_parents:
+        update_dates(elem,g)
+    for elem in updated_children:
+        update_dates(elem,g)
+
+
+def dict_to_file(ids,block):
+    if 'total' in ids.keys():
+        del ids['total']
+    if 'undiscovered' in ids.keys():
+        del ids['undiscovered']
+    
+    string = ''
+    
+    for key,value in block.items():
+        p1,p2 = key.split("+")
+        if p1.startswith("undiscovered"):
+            p1 = p1.split("_")[1]
+        if p2.startswith("undiscovered"):
+            p2 = p2.split("_")[1]
+        bd_p1 = ids[p1]["birthDate"]
+        dd_p1 = ids[p1]["deathDate"]
+        bd_p2 = ids[p2]["birthDate"]
+        dd_p2 = ids[p2]["deathDate"]
+        if bd_p1 == dd_p1 and bd_p1 == "?":
+            string = string + f"{p1} ? +"
+        else:
+            string = string + f"{p1} ({bd_p1} {dd_p1}) +"
+        if bd_p2 == dd_p2 and bd_p2 == "?":
+            string = string + f" {p2} ?\n"
+        else:
+            string = string + f" {p2} ({bd_p2} {dd_p2})\n"
+        for child in value:
+            if child.startswith("undiscovered"):
+                string = string + '.#' + child.split("_")[1] + '\n'
+            else:
+                bd = ids[child]["birthDate"]
+                dd = ids[child]["deathDate"]
+                if bd == dd and bd == "?":
+                    string = string + f".{child} ?\n"
+                else:
+                    string = string + f".{child} ({bd} {dd})\n"
+        string += '\n'
+    return string
+
+        
+def replace_updated_block_file(file, before, after):
+    with open(file, 'r') as sf:
+        text = sf.read()
+    text = text.replace(before, after)
+
+    with open(file, 'w') as sf:
+        sf.write(text)
+
+
+def action():
+    onto_file = os.path.join(dataControl.get_root(),'.anbtk/anbsafeonto.rdf')
+    structure_file = os.path.join(dataControl.get_root(),'.anbtk/anbtemp.txt')
+    
+    og_family, og_dates = gramma.parsing(structure_file)
+
+
     block_number = interaction(og_family)
     key = list(og_family.keys())[block_number-1]
-    block = add_newlines(retrieve_content_by_name('complexfam.txt',key))
-    before_block,before_ids = DSL.family.gramma.check_parsing(block)
-    modified_config_data = edit_block(block)
-    modified_config_data = add_newlines(modified_config_data)
-    changed_block,changed_ids = DSL.family.gramma.check_parsing(modified_config_data)
+    block = retrieve_content_by_name(structure_file,key)
+    before_block,before_ids = gramma.check_parsing(add_newlines(block))
+    modified_block = edit_block(block)
+    modified_block = add_newlines(modified_block)
+    changed_block,changed_ids = gramma.check_parsing(modified_block)
     
-    
-    del before_ids['total']
-    del before_ids['undiscovered']
-    del changed_ids['total']
-    del changed_ids['undiscovered']
-    
-    # print(id_changes(before_ids,changed_ids))
+  
     values,keys = changed(before_block,changed_block)
-    print(updates(before_block,changed_ids,before_ids,values,keys))
-    # if keys == {}:
-    #     #update values only
-    #     for elem in values['added'] , changed_ids:
+    new_parent,_,updated_parents, added_children, removed_children, updated_children = updates(before_block,changed_ids,before_ids,values,keys)
+    
+
+    if new_parent != [] or updated_parents!= [] or added_children != [] or removed_children != [] or updated_children!=[]:
         
+
+        g = genealogia.read_onto_file(onto_file)
         
-     
-    # else:
-    #     #keys and values update
-    #     pass
+        handle_new_parents(new_parent,g)
+        handle_children(removed_children,added_children,changed_block,g)
+        handle_updates(updated_parents,updated_children,g)
 
-    
-    
-    
-    
+        block_before = dict_to_file(before_ids,before_block)
+        block_after = dict_to_file(changed_ids,changed_block)
 
-    
-    
-    
-    
-    
-    #new_family,new_dates = DSL.family.gramma.check_parsing(modified_config_data)
+        replace_updated_block_file(structure_file,block_before,block_after)
 
-    #changes = get_changes(og_family,new_family)
-    #print(changes)
-    #check_errors(modified_config_data)
-
-### to be passed to genealogia
-def adapt_name(name):
-    
-    name = name.replace(" ","-")
-    return name
-    
+        cwd = os.getcwd()
+        os.chdir(dataControl.find_anb())
+        genealogia.gen_onto_file(g,'anbsafeonto')
+        os.chdir(cwd)
 
 
-def read_onto_file(filename):
-    g = Graph()
-    g.parse(filename,format="xml")
-
-    return g 
-
- 
-
-g = read_onto_file('anbsafeonto.rdf')
-action(g)
+# get the family structure from the anbtemp file
+# from there dispose the couples as blocks for the user
+# enabling the user to chose a block to be changed
+# verify if the block is valid
+# get the block structure from the user modified block
+# compare the block that was changed with the original block
+# alter the anbtemp file
+# alter the ontology
+# alter the file system configuration

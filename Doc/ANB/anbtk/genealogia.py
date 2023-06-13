@@ -124,9 +124,9 @@ def defineOnto(family_structure,ages):
 
 
 
-def onto_folders_correspondence(file, family="anb-family", entities=""):
+def onto_folders_correspondence(file, family, entities=""):
     family_structure, ages = gramma.parsing(file)
-
+    
     if family_structure is None:
         print("✗ Failed to parse family structure. Some errors might exist in the anbtemplate")
         exit()
@@ -144,15 +144,16 @@ def onto_folders_correspondence(file, family="anb-family", entities=""):
         dataControl.initanb()
     else:
         dataControl.initanb(grampath=entities)
-
+    
     g = defineOnto(family_structure, ages)
-
     for couple, children in family_structure.items():
         gen_parents_folders(couple, children, g, family)
 
     os.chdir(cwd)
     controlsystem.version_control(family, g)
-    return g
+
+
+    return g,(family_structure,ages)
 
 
 

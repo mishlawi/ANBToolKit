@@ -10,6 +10,7 @@ import argparse
 from . import genealogia
 from . import dataControl
 from . import controlsystem
+from . import projectionEditor
 
 from .actions import latex
 from .actions import book
@@ -51,7 +52,8 @@ from .dgu import dguObject as dgu
 # * be careful with new couples for the same individual (ex spouse)
 # * auto sync when creating dgus
 # * revise the command for dgu generation for generic dgus
-# *
+# * gedcom
+# * template html
 
 
 # ! individual dgubook not working
@@ -91,7 +93,9 @@ def genBio():
 def genDgu(title, attributes, nameofthefile, dir):
     gen_dgus.genDgu(title,attributes,nameofthefile,dir)
 
-
+#check if .anbtk exists
+def anbpe():
+    projectionEditor.action()
 
 ############################## .anb ################################
 
@@ -110,9 +114,10 @@ def anb():
 
     genFolderStructure = subparsers.add_parser('genFolders',help="gen folder structure from seed file.")
     genFolderStructure.add_argument('--seed','-s',required=True, help="path to seed file to be converted.",nargs=1)
+    genFolderStructure.add_argument('--source','-src',help ="path to source fsgram file to generat ancestors notebook entities")
+    genFolderStructure.add_argument('--family','-fam',help ="name of the family to be created!",nargs=1)
     genFolderStructure.add_argument('--filename','-fn', help="give a custom name to the ontology file. If not used, only a safe hidden file will be generated.",nargs='?')
     genFolderStructure.add_argument('--out','-o',help="output the ontology file to a certain directory.",nargs='?')
-    genFolderStructure.add_argument('--source','-ent',help ="path to source fsgram file to generat ancestors notebook entities")
 
     args = parser.parse_args()
     currentdir = os.getcwd()
@@ -148,14 +153,34 @@ def anb():
 
     elif args.subcommand == 'genFolders':
         print(" --- Ancestors Notebook processing status: --- \n")
+        
         if args.source:
             fsgram = args.source[0]
         else:
             fsgram = ""
-        if args.seed:
-            seed = args.seed[0]
-            g = genealogia.onto_folders_correspondence(seed,entities=fsgram)
         
+
+        if args.seed:
+
+            seed = args.seed[0]
+        
+            if not os.path.exists(seed):
+                print("✗ The specified file does not exist.")
+                exit(1)
+        
+            else:
+                if args.family:
+                    family = args.family[0]
+                else:
+                    family= "anb-family"
+                g,(fam_structure,fam_ids) = genealogia.onto_folders_correspondence(seed,family=family,entities=fsgram)
+                #! error handling needed here for errors in the seed file
+            
+                file_structure = projectionEditor.dict_to_file(fam_ids,fam_structure)
+                
+                with open(os.path.join(dataControl.find_anb(),'anbtemp.txt'),'w') as anbtemp:             
+                    anbtemp.write(file_structure)
+
             
             if args.filename:
                 genealogia.gen_onto_file(g,args.filename[0])

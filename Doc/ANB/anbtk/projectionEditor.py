@@ -7,6 +7,9 @@ from . import dataControl
 from . import genealogia
 
 
+#! ver pedido de overwrite quando ha um pai que é filho
+# maybe do a onto to file-system generation
+
 def list_and_num_families(dictionary):
     
     for i, key in enumerate(dictionary, start=1):
@@ -157,14 +160,15 @@ def updates(before_block,changed_ids,before_ids, values , keys):
                 updated_children.append({elem:changed_ids[elem]})
 
     return new_parent,removed_parent,updated_parent,added_children,removed_children,updated_children
-            
+
 
 
 def add_newlines(string):
     string = string.rstrip('\n')
     return string + '\n\n'
 
-def handle_new_parents(new_parent,g):
+def handle_new_parents(new_parent,removed_parent,unedited_block,g):
+    # add checker for existing kids as parents, ask if it is worth it to overwrite
     for parent in new_parent:
         old = genealogia.adapt_name(parent[0])
         new  = parent[1]
@@ -172,7 +176,7 @@ def handle_new_parents(new_parent,g):
         parent_bd = new[parent_name]['birthDate']
         parent_dd = new[parent_name]['deathDate']
 
-        ousia.update_individual(old,genealogia.adapt_name(parent_name),parent_name,parent_bd,parent_dd,g)
+        ousia.switch_individual(old,genealogia.adapt_name(parent_name),parent_name,parent_bd,parent_dd,g)
 
 #falta atualizar pastas, no filesystem e nas ontologias
 
@@ -190,6 +194,14 @@ def handle_children(removed_children,added_children,changed_block,g):
         ousia.add_birthdate(individual,bd,g)
         ousia.add_deathdate(individual,dd,g)
         ousia.add_parent_children(genealogia.adapt_name(p1),genealogia.adapt_name(p2),individual,g)
+
+def handle_parent_folders(new_parents,removed_parents,g):
+    pass
+    # remove symlink connections children old_father/ spouse old_father // opposite for the new father
+    # relink children new_father
+    
+    #
+
 
 
 def update_dates(elem,g):
@@ -246,7 +258,6 @@ def dict_to_file(ids,block):
         string += '\n'
     return string
 
-        
 def replace_updated_block_file(file, before, after):
     with open(file, 'r') as sf:
         text = sf.read()
@@ -256,46 +267,73 @@ def replace_updated_block_file(file, before, after):
         sf.write(text)
 
 
-def action():
-    onto_file = os.path.join(dataControl.get_root(),'.anbtk/anbsafeonto.rdf')
-    structure_file = os.path.join(dataControl.get_root(),'.anbtk/anbtemp.txt')
+def remaining_blocks(structure_file_path,chosen_block):
+
+    blocks,_ = gramma.parsing(structure_file_path)
+    block_couple = list(chosen_block.keys())[0]
+
+    del blocks[block_couple]
+
+
+    return blocks
+
+def new_block(unedited_blocks,changed_block):
+
+    couple_name = list(changed_block.keys())[0]
+    couple_children = changed_block[couple_name]
+    unedited_blocks[couple_name] = couple_children
+
     
-    og_family, og_dates = gramma.parsing(structure_file)
+    return unedited_blocks
+
+def action():
+    onto_file_path = os.path.join(dataControl.get_root(),'.anbtk/anbsafeonto.rdf')
+    structure_file_path = os.path.join(dataControl.get_root(),'.anbtk/anbtemp.txt')
+    
+    og_family, og_dates = gramma.parsing(structure_file_path)
 
 
     block_number = interaction(og_family)
     key = list(og_family.keys())[block_number-1]
-    block = retrieve_content_by_name(structure_file,key)
+    block = retrieve_content_by_name(structure_file_path,key)
     before_block,before_ids = gramma.check_parsing(add_newlines(block))
     modified_block = edit_block(block)
     modified_block = add_newlines(modified_block)
     changed_block,changed_ids = gramma.check_parsing(modified_block)
-    
+
+    unedited_blocks = remaining_blocks(structure_file_path,before_block)
+
+    updated_block = new_block(unedited_blocks,changed_block)
+    print(updated_block)
   
     values,keys = changed(before_block,changed_block)
-    new_parent,_,updated_parents, added_children, removed_children, updated_children = updates(before_block,changed_ids,before_ids,values,keys)
+    new_parent,removed_parent,updated_parents, added_children, removed_children, updated_children = updates(before_block,changed_ids,before_ids,values,keys)
     
+
 
     if new_parent != [] or updated_parents!= [] or added_children != [] or removed_children != [] or updated_children!=[]:
         
 
-        g = genealogia.read_onto_file(onto_file)
+        g = genealogia.read_onto_file(onto_file_path)
         
 
-        handle_new_parents(new_parent,g)
+        handle_new_parents(new_parent,removed_parent,unedited_blocks,g)
+        handle_parent_folders(new_parent,updated_block,g)
         handle_children(removed_children,added_children,changed_block,g)        
         handle_updates(updated_parents,updated_children,g)
 
         block_before = dict_to_file(before_ids,before_block)
         block_after = dict_to_file(changed_ids,changed_block)
 
-        replace_updated_block_file(structure_file,block_before,block_after)
+        replace_updated_block_file(structure_file_path,block_before,block_after)
 
         cwd = os.getcwd()
         os.chdir(dataControl.find_anb())
         genealogia.gen_onto_file(g,'anbsafeonto')
         os.chdir(cwd)
 
+
+### NOTES:
 
 # get the family structure from the anbtemp file
 # from there dispose the couples as blocks for the user
@@ -307,6 +345,6 @@ def action():
 # alter the ontology
 # alter the file system configuration
 
-#ontology changes:
+# ontology changes:
 # necessary to update the children's ontology reference when they are removed and be careful cuz they can be parents in other instance of the anbtemp file
 # necessary to update the parents's ontology reference  when they are removed and also be careful cuz they can be child in other instance of the anbtemp file

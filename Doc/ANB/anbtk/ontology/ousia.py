@@ -172,8 +172,6 @@ def add_dgu_file(attributes,graph):
         if key != 'path':
             graph.add((dgu,DGU[f'has{onto_name}'],Literal(value,datatype=XSD.string)))
 
-    
-
 
 
 def add_dgu(params,graph):
@@ -249,9 +247,8 @@ def update_deathdate(name,date,graph):
     graph.remove((individual,FAMILY['deathDate'],None))
     add_deathdate(name,date,graph)
 
-
 def add_individual(individual,OgName, graph):
-
+    
     individual = FAMILY[individual]
     
     graph.add((individual,RDF.type,FAMILY['Person']))
@@ -265,6 +262,7 @@ def delete_individual(individual, graph):
     graph.remove((individual, None, None))
     graph.remove((None,None,individual))
 
+
 def delete_children_individual(individual,graph):
     #delete a individual that is children of a couple
     individual = FAMILY[individual]
@@ -276,25 +274,13 @@ def delete_children_individual(individual,graph):
 
     if is_parent:
         # it is not someone's children anymore, so all the connections regarding that can be removed
-        print("here")
+
         graph.remove((individual,FAMILY['hasParent'],None))
         # if it is not a parent it doesnt exist in other instances
     else:
-        print("here!!")
         graph.remove((individual, None, None))
         graph.remove((None,None,individual))
 
-def delete_parent_individual(individual,graph):
-
-    individual = FAMILY[individual]
- 
-
-    if 'hasParent' in individual:
-        graph.remove(individual,FAMILY['hasChild'],None)
-    
-    else:
-        graph.remove((individual, None, None))
-        graph.remove((None,None,individual))
 
 
 ############# relations
@@ -316,33 +302,35 @@ def add_parent_children(parent1,parent2,child,graph):
     graph.add((child, FAMILY['hasParent'], parent1))
     graph.add((child, FAMILY['hasParent'], parent2))
 
-
-def update_individual(old_individual, new_individual, name,db,dd, graph):
+#mistakes on parents, folders
+def switch_individual(old_individual, new_individual, name,db,dd, graph):
        
-
+    add_individual(new_individual,name,graph)
+    is_child = False
     for s, p, o in graph.triples((FAMILY[old_individual], None, None)):
-        if s == FAMILY[old_individual]:
-            graph.add((FAMILY[new_individual], p, o))
-        else:
-            graph.add((s, p, FAMILY[new_individual]))
+        if p == FAMILY['hasParent']:
+            is_child = True
+        elif is_child == True and p == FAMILY['hasChild'] :
+            graph.remove((s,p,o))
+            graph.remove((None,FAMILY['hasParent'],s))
+            graph.add((FAMILY[new_individual],p,o))
+            graph.add((o,FAMILY['hasParent'],FAMILY[new_individual]))
+        elif  is_child == True and p == FAMILY['hasSpouse'] :
+            graph.remove((s,p,o))
+            graph.remove((None,FAMILY['hasSpouse'],s))
+            graph.add((FAMILY[new_individual],p,o))
+            graph.add((o,FAMILY['hasSpouse'],FAMILY[new_individual]))
+
+   
+    if is_child == False:
+        graph.remove((None,None,FAMILY[old_individual]))    
+        graph.remove((FAMILY[old_individual],None,None))    
+
     
-    for s, p, o in graph.triples((None, None, FAMILY[old_individual])):
-        if s == FAMILY[old_individual]:
-            graph.add((FAMILY[new_individual], p, o))
-        else:
-            graph.add((s, p, FAMILY[new_individual]))
-
-    graph.remove((FAMILY[old_individual], None, None))
-    graph.remove((None, None, FAMILY[old_individual]))
-
-    graph.remove((FAMILY[new_individual], FAMILY['birthDate'], None))
     graph.add((FAMILY[new_individual], FAMILY['birthDate'], Literal(db, datatype=XSD.string)))
-
-    graph.remove((FAMILY[new_individual], FAMILY['deathDate'], None))
-    graph.add((FAMILY[new_individual], FAMILY['birthDate'], Literal(dd, datatype=XSD.string)))
-
-    graph.remove((FAMILY[new_individual], RDFS.label, None))
+    graph.add((FAMILY[new_individual], FAMILY['deathDate'], Literal(dd, datatype=XSD.string)))
     graph.add((FAMILY[new_individual], RDFS.label, Literal(name)))
+    # missing folderpath path
 
 ############## files
 
@@ -359,3 +347,4 @@ def remove_file_special(path, graph):
     for triple in triples_to_remove:
         graph.remove(triple)
 
+#SISTEMA DE REPRESENTACAO DE CONHECIMENTO

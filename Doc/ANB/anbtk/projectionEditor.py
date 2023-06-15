@@ -307,6 +307,7 @@ def handle_removed_parent_folders(removed_parents,og_family):
                 p1 = genealogia.adapt_name(p1)
                 p2 = genealogia.adapt_name(p2)
                 os.unlink(genealogia.adapt_name(rm_parent)+'/'+ f'.{p1}+{p2}')
+                os.unlinl(p2+'/'+ f'.{p1}+{p2}')
                 for child in children:
                     os.unlink(f".{p1}+{p2}"+'/'+genealogia.adapt_name(child))
                 os.rmdir(f".{p1}+{p2}")

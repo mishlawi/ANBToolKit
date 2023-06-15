@@ -186,14 +186,14 @@ def gen_parents_folders(couple,children,graph,path):
         gen_parental_folder_connections(p1,couple,graph,path)
 
     elif os.path.exists(p1):
-        os.symlink(f'../.{couple}',f'{p1}/.{couple}')
+        os.symlink(f'../.{p1}+{p2}',f'{p1}/.{p1}+{p2}')
 
     
     if not os.path.exists(p2) and not p2.startswith('undiscovered'):
         gen_parental_folder_connections(p2,couple,graph,path)
     
     elif os.path.exists(p2):
-        os.symlink(f'../.{couple}',f'{p2}/.{couple}')
+        os.symlink(f'../.{p1}+{p2}',f'{p2}/.{p1}+{p2}')
         
     for son in children:           
         son = adapt_name(son)     
@@ -208,11 +208,15 @@ def gen_parents_folders(couple,children,graph,path):
 
 
 def gen_parental_folder_connections(individual,couple,graph,path):
-    os.mkdir(individual)  
+    os.mkdir(individual)
+    p1,p2 = couple.split("+")
+    
+    p1 = adapt_name(p1)
+    p2 = adapt_name(p2)  
     relpath = os.path.join(path,individual)
     ousia.add_folder(individual,relpath,graph)
 
-    os.symlink(f'../.{couple}',f'{individual}/.{couple}')
+   # os.symlink(f'../.{p1}+{p2}',f'{individual}/.{p1}+{p2}')
 
 
 def gen_onto_file(g,filename):

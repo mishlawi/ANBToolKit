@@ -53,8 +53,14 @@ from .dgu import dguObject as dgu
 # * auto sync when creating dgus
 # * revise the command for dgu generation for generic dgus
 # * gedcom
+# * add two ontologies
+# * gen filesystem structure through ontology
 # * template html
 # * verificar a existencia de erros 1o, e só depois executar efetivamente as coisas, senao pastas sao geradas mesmo quando é dado um mau input
+# * "anb individuo" e aparecerem elementos relativos ao individuo 
+
+
+# ! check symlinks from individual to couple
 # ! individual dgubook not working
 
 ##############################################################################################################

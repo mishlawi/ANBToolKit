@@ -6,6 +6,7 @@ from .ontology import ousia
 from . import dataControl
 from . import genealogia
 
+# dbfile for db 
 
 #! ver pedido de overwrite quando ha um pai que é filho
 # maybe do a onto to file-system generation
@@ -195,12 +196,6 @@ def handle_children(removed_children,added_children,changed_block,g):
         ousia.add_deathdate(individual,dd,g)
         ousia.add_parent_children(genealogia.adapt_name(p1),genealogia.adapt_name(p2),individual,g)
 
-def handle_parent_folders(new_parents,removed_parents,g):
-    pass
-    # remove symlink connections children old_father/ spouse old_father // opposite for the new father
-    # relink children new_father
-    
-    #
 
 
 
@@ -277,14 +272,68 @@ def remaining_blocks(structure_file_path,chosen_block):
 
     return blocks
 
-def new_block(unedited_blocks,changed_block):
+def new_block(unedited_geral_block,changed_block):
 
     couple_name = list(changed_block.keys())[0]
     couple_children = changed_block[couple_name]
-    unedited_blocks[couple_name] = couple_children
+    unedited_geral_block[couple_name] = couple_children
 
     
-    return unedited_blocks
+    return unedited_geral_block
+
+
+def handle_add_new_parent_folders(new_parents,updated_block,g):
+    path = dataControl.get_root()
+    cwd = os.getcwd()
+    os.chdir(path)
+    print(path)
+    for new_parent in new_parents:
+        for couple in updated_block.keys():
+            if list(new_parent[1].keys())[0] in couple:
+                genealogia.gen_parents_folders(couple,updated_block[couple],g,path)
+
+
+def handle_removed_parent_folders(removed_parents,og_family):
+    path = dataControl.get_root()
+    cwd = os.getcwd()
+    is_child = False
+    os.chdir(path)
+    for rm_parent in removed_parents:
+        for parents,children in og_family.items():
+            if rm_parent in children:
+                is_child = True
+            if rm_parent in parents:
+                p1,p2 = parents.split("+")
+                p1 = genealogia.adapt_name(p1)
+                p2 = genealogia.adapt_name(p2)
+                os.unlink(genealogia.adapt_name(rm_parent)+'/'+ f'.{p1}+{p2}')
+                for child in children:
+                    os.unlink(f".{p1}+{p2}"+'/'+genealogia.adapt_name(child))
+                os.rmdir(f".{p1}+{p2}")
+        if not is_child:
+            os.rmdir(genealogia.adapt_name(rm_parent))
+            
+
+            
+
+
+
+
+
+
+
+ 
+
+        
+
+
+
+        
+    # remove symlink connections children old_father/ spouse old_father // opposite for the new father
+    # relink children new_father
+    
+    #
+
 
 def action():
     onto_file_path = os.path.join(dataControl.get_root(),'.anbtk/anbsafeonto.rdf')
@@ -301,14 +350,16 @@ def action():
     modified_block = add_newlines(modified_block)
     changed_block,changed_ids = gramma.check_parsing(modified_block)
 
-    unedited_blocks = remaining_blocks(structure_file_path,before_block)
-
-    updated_block = new_block(unedited_blocks,changed_block)
-    print(updated_block)
-  
+    
     values,keys = changed(before_block,changed_block)
     new_parent,removed_parent,updated_parents, added_children, removed_children, updated_children = updates(before_block,changed_ids,before_ids,values,keys)
     
+    unedited_geral_block = remaining_blocks(structure_file_path,before_block)
+    updated_geral_block = new_block(unedited_geral_block,changed_block)
+
+    
+
+
 
 
     if new_parent != [] or updated_parents!= [] or added_children != [] or removed_children != [] or updated_children!=[]:
@@ -317,8 +368,10 @@ def action():
         g = genealogia.read_onto_file(onto_file_path)
         
 
-        handle_new_parents(new_parent,removed_parent,unedited_blocks,g)
-        handle_parent_folders(new_parent,updated_block,g)
+        handle_new_parents(new_parent,removed_parent,unedited_geral_block,g)
+        handle_add_new_parent_folders(new_parent,updated_geral_block,g)
+        handle_removed_parent_folders(removed_parent,og_family)
+
         handle_children(removed_children,added_children,changed_block,g)        
         handle_updates(updated_parents,updated_children,g)
 

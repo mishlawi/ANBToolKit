@@ -8,8 +8,7 @@ from . import genealogia
 
 # dbfile for db 
 
-#! ver pedido de overwrite quando ha um pai que é filho
-# maybe do a onto to file-system generation
+
 
 def list_and_num_families(dictionary):
     
@@ -293,6 +292,25 @@ def handle_add_new_parent_folders(new_parents,updated_block,g):
                 genealogia.gen_parents_folders(couple,updated_block[couple],g,path)
 
 
+
+from pathlib import Path
+import shutil 
+
+def move_files_and_folders(source_dir, destination_dir):
+    shutil.move(source_dir, destination_dir)
+
+def is_folder_empty(folder_path):
+    folder = Path(folder_path)
+    for entry in folder.iterdir():
+        if entry.is_file() or entry.is_dir():
+            return False
+    return True
+
+def warning(folder_path):
+    if not is_folder_empty(folder_path):
+        print(f"There is still data in {folder_path} folder. Please move or remove it and manually delete the folder.") 
+
+
 def handle_removed_parent_folders(removed_parents,og_family):
     path = dataControl.get_root()
     cwd = os.getcwd()
@@ -307,33 +325,17 @@ def handle_removed_parent_folders(removed_parents,og_family):
                 p1 = genealogia.adapt_name(p1)
                 p2 = genealogia.adapt_name(p2)
                 os.unlink(genealogia.adapt_name(rm_parent)+'/'+ f'.{p1}+{p2}')
-                os.unlinl(p2+'/'+ f'.{p1}+{p2}')
+                os.unlink(p2+'/'+ f'.{p1}+{p2}')
                 for child in children:
                     os.unlink(f".{p1}+{p2}"+'/'+genealogia.adapt_name(child))
                 os.rmdir(f".{p1}+{p2}")
         if not is_child:
-            os.rmdir(genealogia.adapt_name(rm_parent))
+            path = genealogia.adapt_name(rm_parent)
+            warning(path)
+        
             
 
-            
 
-
-
-
-
-
-
- 
-
-        
-
-
-
-        
-    # remove symlink connections children old_father/ spouse old_father // opposite for the new father
-    # relink children new_father
-    
-    #
 
 
 def action():
@@ -357,10 +359,6 @@ def action():
     
     unedited_geral_block = remaining_blocks(structure_file_path,before_block)
     updated_geral_block = new_block(unedited_geral_block,changed_block)
-
-    
-
-
 
 
     if new_parent != [] or updated_parents!= [] or added_children != [] or removed_children != [] or updated_children!=[]:

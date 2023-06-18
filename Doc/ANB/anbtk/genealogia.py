@@ -172,7 +172,6 @@ def gen_parents_folders(couple,children,graph,path):
     Returns:
         None
     """
-
     p1,p2 = couple.split("+")
     
     p1 = adapt_name(p1)
@@ -195,7 +194,9 @@ def gen_parents_folders(couple,children,graph,path):
     elif os.path.exists(p2):
         os.symlink(f'../.{p1}+{p2}',f'{p2}/.{p1}+{p2}')
         
-    for son in children:           
+    for son in children:
+    
+                 
         son = adapt_name(son)     
         if not os.path.exists(son) and not son.startswith('undiscovered'):
             os.mkdir(son)

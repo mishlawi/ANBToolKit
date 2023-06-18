@@ -1,12 +1,19 @@
 import subprocess
+import shutil 
 import os 
+
+from pathlib import Path
+
+
 
 from .DSL.family import gramma
 from .ontology import ousia
 from . import dataControl
 from . import genealogia
 
+
 # dbfile for db 
+
 
 
 
@@ -20,52 +27,7 @@ def list_and_num_families(dictionary):
     print("0. Leave\n")
 
 
-def edit_block(config_data):
-
-
-    temp_filename = "temp_config.txt"
-    with open(temp_filename, "w") as temp_file:
-        temp_file.write(config_data)
-
-
-    # editor_command = ["code", "--wait", temp_filename]
-    # editor_command = ["vi", temp_filename]
-    editor_command = ["vim", temp_filename]
-
-    subprocess.run(editor_command)
-
-    # Read the modified config data from the temporary file
-
-    with open(temp_filename, "r") as temp_file:
-        modified_block = temp_file.read()
-
-    # Remove the temporary file
-    os.remove(temp_filename)
-
-    return modified_block
-
-def check_errors(modified_block):
-    gramma.check_parsing(modified_block)
-
-def changed(dict1,dict2):
-    if len(dict1)>1:
-        raise Exception("Something went wrong")
-    changed_values = {}
-
-    if list(dict1.keys())[0]!=list(dict2.keys())[0]:
-        changed_key = {'new': list(dict2.keys())[0], 'old' : list(dict1.keys())[0]}
-
-        removed = [elem for elem in list(dict1.values())[0] if elem not in list(dict2.values())[0]] 
-        added = [elem for elem in list(dict2.values())[0] if elem not in  list(dict1.values())[0]]
-        #changed_values = { 'added':added, 'added':removed }
-    else:
-        changed_key = {}
-        removed = [elem for elem in list(dict1.values())[0] if elem not in list(dict2.values())[0]] 
-        added = [elem for elem in list(dict2.values())[0] if elem not in  list(dict1.values())[0]]
-    changed_values['removed'] = removed
-    changed_values['added'] = added
-    return changed_values,changed_key
-   
+  
 
 def interaction(og_family):
 
@@ -110,12 +72,35 @@ def retrieve_content_by_name(file_path, name):
             elif found:
                 content[save] = children
                 return visual_dictionary_simple(content)
-                
-    
+                 
     return 
 
 
-def updates(before_block,changed_ids,before_ids, values , keys):
+def check_errors(modified_block):
+    gramma.check_parsing(modified_block)
+
+def changed(dict1,dict2):
+    if len(dict1)>1:
+        raise Exception("Something went wrong ")
+    changed_values = {}
+
+    if list(dict1.keys())[0]!=list(dict2.keys())[0]:
+        changed_key = {'new': list(dict2.keys())[0], 'old' : list(dict1.keys())[0]}
+
+        removed = [elem for elem in list(dict1.values())[0] if elem not in list(dict2.values())[0]] 
+        added = [elem for elem in list(dict2.values())[0] if elem not in  list(dict1.values())[0]]
+        #changed_values = { 'added':added, 'added':removed }
+    else:
+        changed_key = {}
+        removed = [elem for elem in list(dict1.values())[0] if elem not in list(dict2.values())[0]] 
+        added = [elem for elem in list(dict2.values())[0] if elem not in  list(dict1.values())[0]]
+    changed_values['removed'] = removed
+    changed_values['added'] = added
+    return changed_values,changed_key
+ 
+
+
+def updates(before_block, changed_ids, before_ids, values, keys):
 
     new_parent = []
     updated_parent = []
@@ -285,16 +270,13 @@ def handle_add_new_parent_folders(new_parents,updated_block,g):
     path = dataControl.get_root()
     cwd = os.getcwd()
     os.chdir(path)
-    print(path)
     for new_parent in new_parents:
         for couple in updated_block.keys():
             if list(new_parent[1].keys())[0] in couple:
                 genealogia.gen_parents_folders(couple,updated_block[couple],g,path)
+    os.chdir(cwd)    
 
 
-
-from pathlib import Path
-import shutil 
 
 def move_files_and_folders(source_dir, destination_dir):
     shutil.move(source_dir, destination_dir)
@@ -334,6 +316,100 @@ def handle_removed_parent_folders(removed_parents,og_family):
             warning(path)
         
             
+
+def edit_block(config_data):
+
+    temp_filename = "temp_config.txt"
+    with open(temp_filename, "w") as temp_file:
+        temp_file.write(config_data)
+
+
+    # editor_command = ["code", "--wait", temp_filename]
+    # editor_command = ["vi", temp_filename]
+    editor_command = ["vim", temp_filename]
+
+    subprocess.run(editor_command)
+
+    # Read the modified config data from the temporary file
+
+    with open(temp_filename, "r") as temp_file:
+        modified_block = temp_file.read()
+
+    # Remove the temporary file
+    os.remove(temp_filename)
+
+    return modified_block
+
+def add_couple():
+    # arranjar forma de por este path com o nome da familia
+    path = dataControl.get_root()
+    cwd = os.getcwd()
+    os.chdir(path)
+    onto_file_path = os.path.join(dataControl.get_root(),'.anbtk/anbsafeonto.rdf')
+    structure_file_path = os.path.join(dataControl.get_root(),'.anbtk/anbtemp.txt')
+    g = genealogia.read_onto_file(onto_file_path)
+
+    new_couple_block = edit_block('')
+    new_couple_block = add_newlines(new_couple_block)
+    block, ids = gramma.check_parsing(new_couple_block)
+    
+    if block == None :
+        exit()
+        
+    parents = list(block.keys())[0]
+    children = list(block.values())[0]
+    print(children)
+    og_name_p1,og_name_p2 = parents.split("+")
+   
+    og_family, og_dates = gramma.parsing(structure_file_path)
+    p1_is_child = False
+    p2_is_child = False
+
+    for _,og_children in og_family.items():
+        if og_name_p1 in og_children:
+            p1_is_child = True
+            
+        elif og_name_p2 in og_children:
+            p2_is_child = True
+        if og_name_p1 in parents:
+            pass
+        elif og_name_p2 in parents:
+            pass
+
+    
+    p1 = genealogia.adapt_name(og_name_p1)
+    p2 = genealogia.adapt_name(og_name_p2)
+
+    if not p1_is_child and not p2_is_child:
+        print("unique parents")    
+        genealogia.populate_graph(block,g)
+        genealogia.gen_parents_folders(parents,children,g,path)
+    else:
+        if p1_is_child:
+            print("parent 1 is a child")
+            ousia.add_individual(p2,og_name_p2,g)
+            ousia.add_hasSpouse(p1,p2,g)
+            genealogia.gen_parents_folders(parents,children,g,path)
+            
+        elif p2_is_child:
+            print("parent 2 is a child")
+            ousia.add_individual(p1,og_name_p1,g)
+            ousia.add_hasSpouse(p2,p1,g)
+            genealogia.gen_parents_folders(parents,children,g,path)
+
+        
+        for child in children:
+                child = genealogia.adapt_name(child)
+                ousia.add_parent_children(p1,p2,child,g)
+        
+        cwd = os.getcwd()
+        os.chdir(dataControl.find_anb())
+        genealogia.gen_onto_file(g,'anbsafeonto')
+        os.chdir(cwd)
+
+
+# paths are not okay; should be relative
+# 
 
 
 

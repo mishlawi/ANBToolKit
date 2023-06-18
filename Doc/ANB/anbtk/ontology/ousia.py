@@ -330,7 +330,6 @@ def switch_individual(old_individual, new_individual, name,db,dd, graph):
     graph.add((FAMILY[new_individual], FAMILY['birthDate'], Literal(db, datatype=XSD.string)))
     graph.add((FAMILY[new_individual], FAMILY['deathDate'], Literal(dd, datatype=XSD.string)))
     graph.add((FAMILY[new_individual], RDFS.label, Literal(name)))
-    # missing folderpath path
 
 ############## files
 

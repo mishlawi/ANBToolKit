@@ -103,6 +103,9 @@ def genDgu(title, attributes, nameofthefile, dir):
 def anbpe():
     projectionEditor.action()
 
+def createCouple():
+    projectionEditor.add_couple()
+
 ############################## .anb ################################
 
 

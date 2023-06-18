@@ -11,6 +11,7 @@ from . import genealogia
 from . import dataControl
 from . import controlsystem
 from .anbPE import projectionEditor
+from .anbPE import blocks
 
 from .actions import latex
 from .actions import book
@@ -185,7 +186,7 @@ def anb():
                 g,(fam_structure,fam_ids) = genealogia.onto_folders_correspondence(seed,family=family,entities=fsgram)
                 #! error handling needed here for errors in the seed file
             
-                file_structure = projectionEditor.dict_to_file(fam_ids,fam_structure)
+                file_structure = blocks.dict_to_file(fam_ids,fam_structure)
                 
                 with open(os.path.join(dataControl.find_anb(),'anbtemp.txt'),'w') as anbtemp:             
                     anbtemp.write(file_structure)

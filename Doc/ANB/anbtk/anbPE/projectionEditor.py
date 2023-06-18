@@ -148,7 +148,7 @@ def add_couple():
     p2 = genealogia.adapt_name(og_name_p2)
 
     if not p1_is_child and not p2_is_child:
-        print("unique parents")    
+        print("unique parents")
         genealogia.populate_graph(block,g)
         genealogia.gen_parents_folders(parents,children,g,path)
     else:
@@ -179,10 +179,10 @@ def add_couple():
                 ousia.add_complete_individual(child,og_child,bd,dd,g)
                 ousia.add_parent_children(p1,p2,child,g)
         
-        cwd = os.getcwd()
-        os.chdir(dataControl.find_anb())
-        genealogia.gen_onto_file(g,'anbsafeonto')
-        os.chdir(cwd)
+    cwd = os.getcwd()
+    os.chdir(dataControl.find_anb())
+    genealogia.gen_onto_file(g,'anbsafeonto')
+    os.chdir(cwd)
 
 
 # paths are not okay; should be relative

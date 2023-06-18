@@ -227,6 +227,12 @@ def add_folder(name, path,graph):
 ########### individuals
 
 
+def add_complete_individual(name,og_name,bd,dd,graph):
+    add_individual(name,og_name,graph)
+    add_birthdate(name,bd,graph)
+    add_deathdate(name,dd,graph)
+
+
 def add_birthdate(name,date,graph):
     individual = FAMILY[name]
 

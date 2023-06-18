@@ -10,7 +10,7 @@ import argparse
 from . import genealogia
 from . import dataControl
 from . import controlsystem
-from . import projectionEditor
+from .anbPE import projectionEditor
 
 from .actions import latex
 from .actions import book

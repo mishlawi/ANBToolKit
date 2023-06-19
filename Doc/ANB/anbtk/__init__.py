@@ -38,7 +38,6 @@ from .dgu import dguObject as dgu
 # ! FIX TEX2DGU regarding the UTF8
 # * ( ls ) search through the folders
 # * cd folders
-# * create parent-children connections and folders
 # * i want it so that story and bio (and others) are default formats but the users can create their ones 
 # * maybe add specs to dont do anything if there are no differences in the sync command
 # * update the onto file so that new entities can be added
@@ -60,9 +59,10 @@ from .dgu import dguObject as dgu
 # * verificar a existencia de erros 1o, e só depois executar efetivamente as coisas, senao pastas sao geradas mesmo quando é dado um mau input
 # * "anb individuo" e aparecerem elementos relativos ao individuo 
 # * maybe do a onto to file-system generation
+# * add comments for the seed file and entities file
+# * testar projection editor (check individual function annotations)
 
 
-# ! check symlinks from individual to couple
 # ! individual dgubook not working
 
 ##############################################################################################################

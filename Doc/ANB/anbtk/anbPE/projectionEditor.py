@@ -77,6 +77,7 @@ def is_folder_empty(folder_path):
 def warning(folder_path):
     if not is_folder_empty(folder_path):
         print(f"There is still data in {folder_path} folder. Please move or remove it and manually delete the folder.") 
+        exit()
 
 
 def handle_removed_parent_folders(removed_parents,og_family):
@@ -104,13 +105,14 @@ def handle_removed_parent_folders(removed_parents,og_family):
         
             
 
-
+#! elements that already exist are still not handled, except when they are children of someone
+#! do a changer that checks the dates for "inconsistencias" if they are, change for the originals, as it is intended
 def add_couple():
-    # arranjar forma de por este path com o nome da familia
     path = dataControl.get_root()
     cwd = os.getcwd()
     os.chdir(path)
-    path = os.path.dirname(path)
+    path = os.path.basename(path)
+
     onto_file_path = os.path.join(dataControl.get_root(),'.anbtk/anbsafeonto.rdf')
     structure_file_path = os.path.join(dataControl.get_root(),'.anbtk/anbtemp.txt')
     g = genealogia.read_onto_file(onto_file_path)
@@ -150,7 +152,23 @@ def add_couple():
     if not p1_is_child and not p2_is_child:
         print("unique parents")
         genealogia.populate_graph(block,g)
+        p1_bd = ids[og_name_p1]['birthDate']
+        p1_dd = ids[og_name_p1]['deathDate']
+        p2_bd = ids[og_name_p2]['birthDate']
+        p2_dd = ids[og_name_p2]['deathDate']
+        
+        ousia.add_birthdate(p1,p1_bd,g)
+        ousia.add_deathdate(p1,p1_dd,g)
+        ousia.add_birthdate(p2,p2_bd,g)
+        ousia.add_deathdate(p2,p2_dd,g)
         genealogia.gen_parents_folders(parents,children,g,path)
+
+        for og_child in children:
+                child = genealogia.adapt_name(og_child)
+                bd = ids[og_child]['birthDate']
+                dd = ids[og_child]['deathDate']
+                ousia.add_birthdate(child,bd,g)
+                ousia.add_deathdate(child,dd,g)              
     else:
         if p1_is_child:
             if ids[og_name_p1]['birthDate']!=og_dates[og_name_p1]['birthDate'] or ids[og_name_p1]['deathDate']!=og_dates[og_name_p1]['deathDate']:
@@ -185,10 +203,7 @@ def add_couple():
     os.chdir(cwd)
 
 
-# paths are not okay; should be relative
-# 
-
-
+#! needs more testing
 def action():
     onto_file_path = os.path.join(dataControl.get_root(),'.anbtk/anbsafeonto.rdf')
     structure_file_path = os.path.join(dataControl.get_root(),'.anbtk/anbtemp.txt')

@@ -245,6 +245,17 @@ def replace_updated_block_file(file, before, after):
         sf.write(text)
 
 
+def add_new_block_file(file,block,ids):
+    with open(file, 'r') as sf:
+        text = sf.read()
+
+    text += dict_to_file(ids,block)
+
+    with open(file, 'w') as sf:
+        sf.write(text)
+
+
+
 def remaining_blocks(structure_file_path,chosen_block):
     """
     Retrieves the remaining blocks after removing the chosen block.

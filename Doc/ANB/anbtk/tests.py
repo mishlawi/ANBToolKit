@@ -1,6 +1,8 @@
 import ontology.ousia
 from rdflib import Graph
 
+import DSL.family.gramma
+
 def test1():
     def parse_text(input):
         start_index = input.find('---')
@@ -83,9 +85,8 @@ def dict_to_file(ids,block):
     string += '\n'
     return string
 
-print(dict_to_file(dict2,dict1))
-a = """
-Ricardo Esteves Cardoso ? + Luciana Abreu Loureiro (1932 ?)
+#print(dict_to_file(dict2,dict1))
+a = """Ricardo Esteves Cardoso ? + Luciana Abreu Loureiro (1932 ?)
 .#3
 .José Augusto Santos (1947 2019)
 .Ana Sofia Mendes (1950 -)
@@ -97,7 +98,9 @@ José Augusto Santos (1947 2019)+ Susana Rodrigues  (1956 -)
 
 Rui Miguel Santos Ferreira (1970 -) + Mariana da Costa Almeida (1972 -)
 .Silvestre Tiago Almeida Santos Ferreira (1995 -)
-.Rodrigo Diogo Almeida Santos Ferreira (1998 -)"""
+.Rodrigo Diogo Almeida Santos Ferreira (1998 -)
+
+"""
 
 b= """Luis Pedro Esteves Cardoso ? + Luciana Abreu Loureiro ?
 .#3
@@ -113,3 +116,22 @@ Ricardo Esteves Cardoso ? + Luciana Abreu Loureiro (1932 ?)
 .Ana Sofia Mendes (1950 -)
 .Pedro Esteves ?
 """
+f_t,x = DSL.family.gramma.check_parsing(a)
+print(f_t)
+
+def parents_kids(block):
+    status = {'parents': [], 'children': []}
+    for couple, kids in block.items():
+        if status['parents'] == []:
+            status['parents'] = couple.split("+")
+        else:
+            for elem in couple.split("+"):
+                if elem not in status['parents']:
+                    status['parents'].append(elem)
+        status['children'] += kids
+
+    return status
+
+
+print("***")
+print(parents_kids(f_t))

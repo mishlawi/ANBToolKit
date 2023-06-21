@@ -206,6 +206,11 @@ def gen_parents_folders(couple,children,graph,path):
             ousia.add_folder(son,relpath,graph)
             os.symlink(f'../{son}',f'.{p1}+{p2}/{son}')
 
+        #! this was added see if doesnt cause problems
+        elif os.path.exists(son):
+            os.symlink(f'../{son}',f'.{p1}+{p2}/{son}')
+        
+
 
 
 def gen_parental_folder_connections(individual,couple,graph,path):

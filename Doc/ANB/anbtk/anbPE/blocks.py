@@ -245,7 +245,7 @@ def replace_updated_block_file(file, before, after):
         sf.write(text)
 
 
-def add_new_block_file(file,block,ids):
+def add_new_dict_block_file(file,block,ids):
     with open(file, 'r') as sf:
         text = sf.read()
 

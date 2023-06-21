@@ -19,7 +19,6 @@ def update_dates(elem,g):
     ousia.update_birthdate(individual,bd,g)
     ousia.update_deathdate(individual,dd,g)
 
-
 def handle_updates(updated_parents, updated_children, g):
     for elem in updated_parents:
         update_dates(elem,g)
@@ -38,6 +37,7 @@ def parents_kids(block):
         status['children'] += kids
 
     return status
+
             
 def get_parents(individual,block):
     for parents,children in block.items():
@@ -78,21 +78,19 @@ def handle_children(removed_children,added_children,changed_block,og_block,g):
         p2 = genealogia.adapt_name(p2)
         if os.path.exists(f".{p1}+{p2}"):
             elem = genealogia.adapt_name(elem)
-            os.unlink(f".{p1}+{p2}/{elem}")
-        
-            
+            os.unlink(f".{p1}+{p2}/{elem}")      
 
     for elem in added_children:
         og_name = list(elem.keys())[0]
         bd = elem[og_name]['birthDate']
         dd = elem[og_name]['deathDate']
         individual = genealogia.adapt_name(og_name)
-        ousia.add_individual(individual,og_name,g)
-        ousia.add_birthdate(individual,bd,g)
-        ousia.add_deathdate(individual,dd,g)
+        ousia.add_complete_individual(individual,og_name,bd,dd,g)
         ousia.add_parent_children(genealogia.adapt_name(p1),genealogia.adapt_name(p2),individual,g)
         # add folder
     os.chdir(cwd)
+
+
 def handle_add_new_parent_folders(new_parents,updated_block,g):
     path = dataControl.get_root()
     cwd = os.getcwd()
@@ -148,6 +146,8 @@ def handle_removed_parent_folders(removed_parents,og_family):
 
 #! elements that already exist are still not handled, except when they are children of someone
 #! do a changer that checks the dates for "inconsistencias" if they are, change for the originals, as it is intended
+
+
 def add_couple():
     path = dataControl.get_root()
     cwd = os.getcwd()
@@ -160,8 +160,7 @@ def add_couple():
 
     new_couple_block = blocks.edit_block('')
     new_couple_block = blocks.add_newlines(new_couple_block)
-    block, ids = gramma.check_parsing(new_couple_block)
-    
+    block, ids = gramma.check_parsing(new_couple_block)    
     if block == None :
         exit()
         
@@ -169,29 +168,32 @@ def add_couple():
     children = list(block.values())[0]
 
     og_name_p1,og_name_p2 = parents.split("+")
-   
     og_family, og_dates = gramma.parsing(structure_file_path)
 
-    p1_is_child = False
-    p2_is_child = False
+    p1_is_child,p2_is_child,p1_is_parent,p2_is_parent = False
 
-    for _,og_children in og_family.items():
-        if og_name_p1 in og_children:
-            p1_is_child = True
-            
-        elif og_name_p2 in og_children:
-            p2_is_child = True
+    parent_children = parents_kids(og_family)
 
-        if og_name_p1 in parents:
-            pass
-        elif og_name_p2 in parents:
-            pass
+    if og_name_p1 in parent_children['parents']:
+        print("is in another couple")
+        p1_is_parent = True
+    if og_name_p1 in parent_children['children']:
+        print("was child")
+        p1_is_child = True
+    if og_name_p2 in parent_children['parents']:
+        p2_is_parent = True
+        print("p2 is in another couple")
+    if og_name_p2 in parent_children['children']:
+        print("p2 was child")
+        p2_is_child = True
 
+    print(p1_is_child)
+    print(p2_is_child)
     
     p1 = genealogia.adapt_name(og_name_p1)
     p2 = genealogia.adapt_name(og_name_p2)
 
-    if not p1_is_child and not p2_is_child:
+    if not p1_is_child and not p2_is_child and not p1_is_parent and not p2_is_parent:
         print("unique parents")
         genealogia.populate_graph(block,g)
         p1_bd = ids[og_name_p1]['birthDate']
@@ -214,7 +216,7 @@ def add_couple():
     else:
         if p1_is_child:
             if ids[og_name_p1]['birthDate']!=og_dates[og_name_p1]['birthDate'] or ids[og_name_p1]['deathDate']!=og_dates[og_name_p1]['deathDate']:
-                print(f"There are some date differences for {og_name_p1}, the original birthdate and deathdate will be preserved. To change use the projection editor - anbpe.")
+                print(f"There are year differences for {og_name_p1}, the original birthdate and deathdate will be preserved. To change use the projection editor - anbpe.")
             print("parent 1 is a child")
             bd = ids[og_name_p2]['birthDate']
             dd = ids[og_name_p2]['deathDate']
@@ -223,7 +225,7 @@ def add_couple():
             
         elif p2_is_child:
             if ids[og_name_p1]['birthDate']!=og_dates[og_name_p1]['birthDate'] or ids[og_name_p1]['deathDate']!=og_dates[og_name_p1]['deathDate']:
-                print(f"There are some date differences for {og_name_p1}, the original birthdate and deathdate will be preserved. To change use the projection editor - anbpe.")
+                print(f"There are year differences for {og_name_p1}, the original birthdate and deathdate will be preserved. To change use the projection editor - anbpe.")
 
             print("parent 2 is a child")
             bd = ids[og_name_p1]['birthDate']
@@ -245,15 +247,24 @@ def add_couple():
     genealogia.gen_onto_file(g,'anbsafeonto')
     os.chdir(cwd)
 
+def handle_changes(new_parent,removed_parent,updated_parents,added_children,removed_children,updated_children,updated_geral_block,changed_block,og_family,g):
+    if new_parent != []:
+        handle_new_parents(new_parent,g)
+        handle_add_new_parent_folders(new_parent,updated_geral_block,g)
+    if removed_parent!=[]:
+        handle_removed_parent_folders(removed_parent,og_family)
+    if added_children != [] or removed_children!=[]:    
+        handle_children(removed_children,added_children,changed_block,og_family,g)        
+    if updated_parents != [] or updated_children != []:
+        handle_updates(updated_parents,updated_children,g)
 
 #! needs more testing
 def action():
     onto_file_path = os.path.join(dataControl.get_root(),'.anbtk/anbsafeonto.rdf')
     structure_file_path = os.path.join(dataControl.get_root(),'.anbtk/anbtemp.txt')
     
+
     og_family, og_dates = gramma.parsing(structure_file_path)
-
-
     block_number = view.interaction(og_family)
     key = list(og_family.keys())[block_number-1]
     block = view.retrieve_content_by_name(structure_file_path,key)
@@ -281,29 +292,19 @@ def action():
     print(removed_children)
     print("****** updated children ******")
     print(updated_children)
+    
+    g = genealogia.read_onto_file(onto_file_path)
+    handle_changes(new_parent,removed_parent,updated_parents,added_children,removed_children,updated_children,updated_geral_block,changed_block,og_family,g)
 
-    if new_parent != [] or updated_parents!= [] or added_children != [] or removed_children != [] or updated_children!=[]:
-        
+    block_before = blocks.dict_to_file(before_ids,before_block)
+    block_after = blocks.dict_to_file(changed_ids,changed_block)
 
-        g = genealogia.read_onto_file(onto_file_path)
-        
+    blocks.replace_updated_block_file(structure_file_path,block_before,block_after)
 
-        handle_new_parents(new_parent,g)
-        handle_add_new_parent_folders(new_parent,updated_geral_block,g)
-        handle_removed_parent_folders(removed_parent,og_family)
-
-        handle_children(removed_children,added_children,changed_block,og_family,g)        
-        handle_updates(updated_parents,updated_children,g)
-
-        block_before = blocks.dict_to_file(before_ids,before_block)
-        block_after = blocks.dict_to_file(changed_ids,changed_block)
-
-        blocks.replace_updated_block_file(structure_file_path,block_before,block_after)
-
-        cwd = os.getcwd()
-        os.chdir(dataControl.find_anb())
-        genealogia.gen_onto_file(g,'anbsafeonto')
-        os.chdir(cwd)
+    cwd = os.getcwd()
+    os.chdir(dataControl.find_anb())
+    genealogia.gen_onto_file(g,'anbsafeonto')
+    os.chdir(cwd)
 
 
 ### NOTES:

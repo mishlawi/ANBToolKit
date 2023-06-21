@@ -9,7 +9,6 @@ from .auxiliar import dgu_helper
 #todo:
 # about is being passed as none in the yaml, that should be changed
 
-
 def check_file_structure(path):
     dirs = []
     dir_dicts = {}  # create a new list to store directory dictionaries

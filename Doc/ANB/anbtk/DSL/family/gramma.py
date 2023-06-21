@@ -80,7 +80,6 @@ def p_couple(p):
     Couple : Person PLUS Person NEWLINE Children NEWLINE
     '''
     
-
     p[0] = {f'{p[1]}+{p[3]}': p[5]}
 
 

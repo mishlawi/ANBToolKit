@@ -63,12 +63,10 @@ def handle_children(removed_children,added_children,changed_block,og_block,g):
     cwd = os.getcwd()
     path = dataControl.get_root()
     os.chdir(path)
-    p1,p2 = list(changed_block.keys())[0].split("+")
-
+    #p1,p2 = list(changed_block.keys())[0].split("+")
     p_k = parents_kids(changed_block)
     for elem in removed_children:
         ousia.delete_children_individual(genealogia.adapt_name(elem),g)
-
         if elem not in p_k['parents']:
             print("not a parent")
             warning(genealogia.adapt_name(elem))
@@ -88,7 +86,11 @@ def handle_children(removed_children,added_children,changed_block,og_block,g):
         individual = genealogia.adapt_name(og_name)
         ousia.add_complete_individual(individual,og_name,bd,dd,g)
         ousia.add_parent_children(genealogia.adapt_name(p1),genealogia.adapt_name(p2),individual,g)
-        genealogia.gen_parental_folder_connections(individual,parents,g,path)
+        os.mkdir(individual)
+        relpath = os.path.join(path,individual)
+        ousia.add_folder(individual,relpath,g)
+        os.symlink(f'../{individual}',f'.{p1}+{p2}/{individual}')
+
     os.chdir(cwd)
 
 
@@ -112,9 +114,10 @@ def is_folder_empty(folder_path):
     return True
 
 def warning(folder_path):
-    if not is_folder_empty(folder_path):
-        print(f"There is still data in {folder_path} folder. Please move or remove it and manually delete the folder.") 
-        exit()
+    if os.path.exists(folder_path):
+        if not is_folder_empty(folder_path):
+            print(f"There is still data in {folder_path} folder. Please move or remove it and manually delete the folder.") 
+            exit()
 
 
 def handle_removed_parent_folders(removed_parents,og_family):

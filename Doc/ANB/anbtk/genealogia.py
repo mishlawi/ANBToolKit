@@ -221,7 +221,6 @@ def gen_parental_folder_connections(individual,couple,graph,path):
     p2 = adapt_name(p2)  
     relpath = os.path.join(path,individual)
     ousia.add_folder(individual,relpath,graph)
-
     # os.symlink(f'../.{p1}+{p2}',f'{individual}')
     os.symlink(f'../.{p1}+{p2}',f'{individual}/.{p1}+{p2}')
 

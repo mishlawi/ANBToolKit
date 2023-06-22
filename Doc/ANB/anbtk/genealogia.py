@@ -201,7 +201,7 @@ def gen_parents_folders(couple,children,graph,path):
         if not os.path.exists(son) and not son.startswith('undiscovered'):
             os.mkdir(son)
             
-            # ousia.add_folder(son,os.path.relpath(son, f'.{couple}'),graph)
+            #ousia.add_folder(son,os.path.relpath(son, f'.{couple}'),graph)
             relpath = os.path.join(path,son)
             ousia.add_folder(son,relpath,graph)
             os.symlink(f'../{son}',f'.{p1}+{p2}/{son}')

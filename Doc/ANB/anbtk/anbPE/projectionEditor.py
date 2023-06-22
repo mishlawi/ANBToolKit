@@ -1,6 +1,5 @@
 import os 
 
-from pathlib import Path
 
 from ..DSL.family import gramma
 from ..ontology import ousia
@@ -8,145 +7,10 @@ from .. import dataControl
 from .. import genealogia
 from . import blocks
 from . import view
+from . import handlers
 
 # dbfile for db 
-
-def update_dates(elem,g):
-    og_name = list(elem.keys())[0]
-    bd = elem[og_name]['birthDate']
-    dd = elem[og_name]['deathDate']
-    individual = genealogia.adapt_name(og_name)
-    ousia.update_birthdate(individual,bd,g)
-    ousia.update_deathdate(individual,dd,g)
-
-def handle_updates(updated_parents, updated_children, g):
-    for elem in updated_parents:
-        update_dates(elem,g)
-    for elem in updated_children:
-        update_dates(elem,g)
-
-def parents_kids(block):
-    status = {'parents': [], 'children': []}
-    for couple, kids in block.items():
-        if status['parents'] == []:
-            status['parents'] = couple.split("+")
-        else:
-            for elem in couple.split("+"):
-                if elem not in status['parents']:
-                    status['parents'].append(elem)
-        status['children'] += kids
-
-    return status
-
-            
-def get_parents(individual,block):
-    for parents,children in block.items():
-        if individual in children:
-            return parents.split("+")
-
-
-def handle_new_parents(new_parent,g):
-    for parent in new_parent:
-        old = genealogia.adapt_name(parent[0])
-        new  = parent[1]
-        parent_name = list(new.keys())[0]
-        parent_bd = new[parent_name]['birthDate']
-        parent_dd = new[parent_name]['deathDate']
-
-        ousia.switch_individual(old,genealogia.adapt_name(parent_name),parent_name,parent_bd,parent_dd,g)
-
-# add folders
-# remove folders from removed children and symlinks
-#
-def handle_children(removed_children,added_children,changed_block,og_block,g):
-    
-    cwd = os.getcwd()
-    path = dataControl.get_root()
-    os.chdir(path)
-    #p1,p2 = list(changed_block.keys())[0].split("+")
-    p_k = parents_kids(changed_block)
-    for elem in removed_children:
-        ousia.delete_children_individual(genealogia.adapt_name(elem),g)
-        if elem not in p_k['parents']:
-            print("not a parent")
-            warning(genealogia.adapt_name(elem))
-            os.rmdir(genealogia.adapt_name(elem))
-        parents = get_parents(elem,og_block)
-        p1,p2 = parents
-        p1 = genealogia.adapt_name(p1)
-        p2 = genealogia.adapt_name(p2)
-        if os.path.exists(f".{p1}+{p2}"):
-            elem = genealogia.adapt_name(elem)
-            os.unlink(f".{p1}+{p2}/{elem}")      
-
-    for elem in added_children:
-        og_name = list(elem.keys())[0]
-        bd = elem[og_name]['birthDate']
-        dd = elem[og_name]['deathDate']
-        individual = genealogia.adapt_name(og_name)
-        ousia.add_complete_individual(individual,og_name,bd,dd,g)
-        ousia.add_parent_children(genealogia.adapt_name(p1),genealogia.adapt_name(p2),individual,g)
-        os.mkdir(individual)
-        relpath = os.path.join(path,individual)
-        ousia.add_folder(individual,relpath,g)
-        os.symlink(f'../{individual}',f'.{p1}+{p2}/{individual}')
-
-    os.chdir(cwd)
-
-
-def handle_add_new_parent_folders(new_parents,updated_block,g):
-    path = dataControl.get_root()
-    cwd = os.getcwd()
-    os.chdir(path)
-    for new_parent in new_parents:
-        for couple in updated_block.keys():
-            if list(new_parent[1].keys())[0] in couple:
-                genealogia.gen_parents_folders(couple,updated_block[couple],g,path)
-
-    os.chdir(cwd)    
-
-
-def is_folder_empty(folder_path):
-    folder = Path(folder_path)
-    for entry in folder.iterdir():
-        if entry.is_file() or entry.is_dir():
-            return False
-    return True
-
-def warning(folder_path):
-    if os.path.exists(folder_path):
-        if not is_folder_empty(folder_path):
-            print(f"There is still data in {folder_path} folder. Please move or remove it and manually delete the folder.") 
-            exit()
-
-
-def handle_removed_parent_folders(removed_parents,og_family):
-    path = dataControl.get_root()
-    cwd = os.getcwd()
-    is_child = False
-    os.chdir(path)
-    for rm_parent in removed_parents:
-        for parents,children in og_family.items():
-            if rm_parent in children:
-                is_child = True
-            if rm_parent in parents:
-                print("yess")
-                p1,p2 = parents.split("+")
-                p1 = genealogia.adapt_name(p1)
-                p2 = genealogia.adapt_name(p2)
-                os.unlink(genealogia.adapt_name(rm_parent)+'/'+ f'.{p1}+{p2}')
-                os.unlink(p2+'/'+ f'.{p1}+{p2}')
-                for child in children:
-                    if not child.startswith("undiscovered"):
-                        os.unlink(f".{p1}+{p2}"+'/'+genealogia.adapt_name(child))
-                os.rmdir(f".{p1}+{p2}")
-        if not is_child:
-            path = genealogia.adapt_name(rm_parent)
-            warning(path)
-            os.rmdir(genealogia.adapt_name(rm_parent))
-    os.chdir(cwd)
-        
-            
+       
 
 #! elements that already exist are still not handled, except when they are children of someone
 #! do a changer that checks the dates for "inconsistencias" if they are, change for the originals, as it is intended
@@ -196,8 +60,7 @@ def add_couple():
     new_couple_block = blocks.add_newlines(new_couple_block)
     block, ids = gramma.check_parsing(new_couple_block)    
     if block == None :
-        exit()
-        
+        exit()        
     parents = list(block.keys())[0]
     children = list(block.values())[0]
 
@@ -206,7 +69,7 @@ def add_couple():
 
     p1_is_child,p2_is_child,p1_is_parent,p2_is_parent = False
 
-    parent_children = parents_kids(og_family)
+    parent_children = handlers.parents_kids(og_family)
 
     if og_name_p1 in parent_children['parents']:
         p1_is_parent = True
@@ -245,14 +108,14 @@ def add_couple():
 
 def handle_changes(new_parent,removed_parent,updated_parents,added_children,removed_children,updated_children,updated_geral_block,changed_block,og_family,g):
     if new_parent != []:
-        handle_new_parents(new_parent,g)
-        handle_add_new_parent_folders(new_parent,updated_geral_block,g)
+        handlers.handler_new_parents(new_parent,g)
+        handlers.handler_add_new_parent_folders(new_parent,updated_geral_block,g)
     if removed_parent!=[]:
-        handle_removed_parent_folders(removed_parent,og_family)
+        handlers.handler_removed_parent_folders(removed_parent,og_family)
     if added_children != [] or removed_children!=[]:    
-        handle_children(removed_children,added_children,changed_block,og_family,g)        
+        handlers.handler_children(removed_children,added_children,changed_block,og_family,g)        
     if updated_parents != [] or updated_children != []:
-        handle_updates(updated_parents,updated_children,g)
+        handlers.handler_updates(updated_parents,updated_children,g)
 
 #! needs more testing
 def action():

@@ -46,6 +46,7 @@ def p_family(p):
     '''
     p[0] = p[1]
 
+
 def p_names(p):
     '''
     Names : Names NAME
@@ -82,14 +83,23 @@ def p_couple(p):
     
     p[0] = {f'{p[1]}+{p[3]}': p[5]}
 
-
+# Names Nickname Dates
 def p_person(p):
     '''
-    Person : Names Nickname Dates
-           | Names Dates
+    Person : Names Dates
            | UND
     '''
-    if len(p)>2:
+    # if len(p) == 4:
+    #     if p[1] in meta.keys():
+    #         print(p[3])
+    #         if meta[p[1]]['birthDate'] != p[3]['birthDate'] or meta[p[1]]['deathDate'] != p[3]['deathDate']:
+    #             print(f"WARNING: {p[1]} is referenced in the document with 2 different dates.")
+    #     else:
+    #         meta[p[1]] = p[3]
+    
+
+    if len(p)==3:
+
         if p[1] in meta.keys():
             if meta[p[1]]['birthDate'] != p[2]['birthDate'] or meta[p[1]]['deathDate'] != p[2]['deathDate']:
                 print(f"WARNING: {p[1]} is referenced in the document with 2 different dates.")
@@ -98,6 +108,7 @@ def p_person(p):
     
         meta[p[1]]['id'] = meta['total'] + 1
         p[0] = p[1] 
+
     if len(p)==2:
         
         meta[f"undiscovered_{p[1][1:]}"] = {'birthDate': '?', 'deathDate': '?'}
@@ -159,12 +170,17 @@ def p_child(p):
     '''
     p[0] = p[2]
 
-# todo 
-def p_nickname(p):
 
-    '''
-    Nickname : LP Names RP
-    '''
+# todo 
+# def p_nickname(p):
+
+#     '''
+#     Nickname : LP Names RP
+#              | empty
+#     '''
+#     if len(p)>2:
+#         p[0] = p[2]
+
 
     
 

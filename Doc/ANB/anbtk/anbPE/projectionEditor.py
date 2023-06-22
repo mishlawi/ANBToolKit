@@ -61,7 +61,8 @@ def handle_new_parents(new_parent,g):
 def handle_children(removed_children,added_children,changed_block,og_block,g):
     
     cwd = os.getcwd()
-    os.chdir(dataControl.get_root())
+    path = dataControl.get_root()
+    os.chdir(path)
     p1,p2 = list(changed_block.keys())[0].split("+")
 
     p_k = parents_kids(changed_block)
@@ -87,7 +88,7 @@ def handle_children(removed_children,added_children,changed_block,og_block,g):
         individual = genealogia.adapt_name(og_name)
         ousia.add_complete_individual(individual,og_name,bd,dd,g)
         ousia.add_parent_children(genealogia.adapt_name(p1),genealogia.adapt_name(p2),individual,g)
-        # add folder
+        genealogia.gen_parental_folder_connections(individual,parents,g,path)
     os.chdir(cwd)
 
 
@@ -147,7 +148,37 @@ def handle_removed_parent_folders(removed_parents,og_family):
 #! elements that already exist are still not handled, except when they are children of someone
 #! do a changer that checks the dates for "inconsistencias" if they are, change for the originals, as it is intended
 
+def unique_parent_creation(p1,p2,og_name_p1,og_name_p2,parents,children,block,ids,path,g):
+    print("unique parents")
+    genealogia.populate_graph(block,g)
+    p1_bd = ids[og_name_p1]['birthDate']
+    p1_dd = ids[og_name_p1]['deathDate']
+    p2_bd = ids[og_name_p2]['birthDate']
+    p2_dd = ids[og_name_p2]['deathDate']
+    
+    ousia.add_birthdate(p1,p1_bd,g)
+    ousia.add_deathdate(p1,p1_dd,g)
+    ousia.add_birthdate(p2,p2_bd,g)
+    ousia.add_deathdate(p2,p2_dd,g)
+    genealogia.gen_parents_folders(parents,children,g,path)
 
+    for og_child in children:
+            child = genealogia.adapt_name(og_child)
+            bd = ids[og_child]['birthDate']
+            dd = ids[og_child]['deathDate']
+            ousia.add_birthdate(child,bd,g)
+            ousia.add_deathdate(child,dd,g) 
+
+def child_to_parent(individual1,og_name1,individual2,og_name2,ids,og_dates,g):
+    if ids[og_name1]['birthDate']!=og_dates[og_name1]['birthDate'] or ids[og_name1]['deathDate']!=og_dates[og_name1]['deathDate']:
+            print(f"There are year differences for {og_name1}, the original birthdate and deathdate will be preserved. To change use the projection editor - anbpe.")
+            print("parent 1 is a child")
+            bd = ids[og_name2]['birthDate']
+            dd = ids[og_name2]['deathDate']
+            ousia.add_complete_individual(individual2,og_name2,bd,dd,g)
+            ousia.add_hasSpouse(individual1,individual2,g)
+
+# check for existing parents
 def add_couple():
     path = dataControl.get_root()
     cwd = os.getcwd()
@@ -175,63 +206,25 @@ def add_couple():
     parent_children = parents_kids(og_family)
 
     if og_name_p1 in parent_children['parents']:
-        print("is in another couple")
         p1_is_parent = True
     if og_name_p1 in parent_children['children']:
-        print("was child")
         p1_is_child = True
     if og_name_p2 in parent_children['parents']:
         p2_is_parent = True
-        print("p2 is in another couple")
     if og_name_p2 in parent_children['children']:
-        print("p2 was child")
         p2_is_child = True
-
-    print(p1_is_child)
-    print(p2_is_child)
-    
+   
     p1 = genealogia.adapt_name(og_name_p1)
     p2 = genealogia.adapt_name(og_name_p2)
 
     if not p1_is_child and not p2_is_child and not p1_is_parent and not p2_is_parent:
-        print("unique parents")
-        genealogia.populate_graph(block,g)
-        p1_bd = ids[og_name_p1]['birthDate']
-        p1_dd = ids[og_name_p1]['deathDate']
-        p2_bd = ids[og_name_p2]['birthDate']
-        p2_dd = ids[og_name_p2]['deathDate']
-        
-        ousia.add_birthdate(p1,p1_bd,g)
-        ousia.add_deathdate(p1,p1_dd,g)
-        ousia.add_birthdate(p2,p2_bd,g)
-        ousia.add_deathdate(p2,p2_dd,g)
-        genealogia.gen_parents_folders(parents,children,g,path)
-
-        for og_child in children:
-                child = genealogia.adapt_name(og_child)
-                bd = ids[og_child]['birthDate']
-                dd = ids[og_child]['deathDate']
-                ousia.add_birthdate(child,bd,g)
-                ousia.add_deathdate(child,dd,g)              
+        unique_parent_creation(p1,p2,og_name_p1,og_name_p2,parents,children,block,ids,path,g)             
     else:
-        if p1_is_child:
-            if ids[og_name_p1]['birthDate']!=og_dates[og_name_p1]['birthDate'] or ids[og_name_p1]['deathDate']!=og_dates[og_name_p1]['deathDate']:
-                print(f"There are year differences for {og_name_p1}, the original birthdate and deathdate will be preserved. To change use the projection editor - anbpe.")
-            print("parent 1 is a child")
-            bd = ids[og_name_p2]['birthDate']
-            dd = ids[og_name_p2]['deathDate']
-            ousia.add_complete_individual(p2,og_name_p2,bd,dd,g)
-            ousia.add_hasSpouse(p1,p2,g)
-            
-        elif p2_is_child:
-            if ids[og_name_p1]['birthDate']!=og_dates[og_name_p1]['birthDate'] or ids[og_name_p1]['deathDate']!=og_dates[og_name_p1]['deathDate']:
-                print(f"There are year differences for {og_name_p1}, the original birthdate and deathdate will be preserved. To change use the projection editor - anbpe.")
-
-            print("parent 2 is a child")
-            bd = ids[og_name_p1]['birthDate']
-            dd = ids[og_name_p1]['deathDate']
-            ousia.add_complete_individual(p1,og_name_p1,bd,dd,g)
-            ousia.add_hasSpouse(p2,p1,g)
+        if p1_is_child and not p1_is_parent:
+            child_to_parent(p1,og_name_p1,p2,og_name_p2,ids,og_dates,g)
+           
+        elif p2_is_child and not p2_is_parent:
+            child_to_parent(p2,og_name_p2,p1,og_name_p1,ids,og_dates,g)
 
         genealogia.gen_parents_folders(parents,children,g,path)        
         for og_child in children:

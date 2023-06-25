@@ -43,14 +43,18 @@ def handler_children(removed_children,added_children,changed_block,og_block,g):
                 warning(genealogia.adapt_name(elem))
                 os.rmdir(genealogia.adapt_name(elem))     
     ### e preciso encontrar os pais do filho caso nao existam filhos removidos
-
+    if removed_children == []:
+        parents = list(changed_block.keys())[0]    
+        p1,p2 = parents.split("+")
+        p1 = genealogia.adapt_name(p1)
+        p2 = genealogia.adapt_name(p2)
     for elem in added_children:
         og_name = list(elem.keys())[0]
         bd = elem[og_name]['birthDate']
         dd = elem[og_name]['deathDate']
         individual = genealogia.adapt_name(og_name)
         ousia.add_complete_individual(individual,og_name,bd,dd,g)
-        ousia.add_parent_children(genealogia.adapt_name(p1),genealogia.adapt_name(p2),individual,g)
+        ousia.add_parent_children(p1,p2,individual,g)
         if not os.path.exists(individual):
             os.mkdir(individual)
             path=os.path.basename(path)

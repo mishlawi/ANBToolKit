@@ -67,7 +67,7 @@ def add_couple():
     og_name_p1,og_name_p2 = parents.split("+")
     og_family, og_dates = gramma.parsing(structure_file_path)
 
-    p1_is_child,p2_is_child,p1_is_parent,p2_is_parent = False
+    p1_is_child,p2_is_child,p1_is_parent,p2_is_parent = False,False,False,False
 
     parent_children = handlers.parents_kids(og_family)
 

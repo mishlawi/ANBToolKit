@@ -7,7 +7,17 @@ essence == Ουσία == ousia
 
 .greek
 
+
+ SISTEMA DE REPRESENTACAO DE CONHECIMENTO
+
 '''
+
+"""
+==========================================================================================
+================== ONTOLOGY INITIALIZATION AND PROPERTIES DEFINITION =====================
+==========================================================================================
+"""
+
 
 FAMILY = Namespace('http://example.org/family#')
 RDFS = Namespace('http://www.w3.org/2000/01/rdf-schema#')
@@ -27,12 +37,20 @@ def ontology():
     g.add((family_class, RDF.type, OWL.Class))
     g.add((family_class, RDFS.label, Literal('Family')))
 
+
+    relationships_ontology(g)
+
+    dgu_ontology(g)
+
+    return g
+
+def relationships_ontology(g):
+
     # Define the person class
     person_class = FAMILY['Person']
     g.add((person_class, RDF.type, OWL.Class))
     g.add((person_class, RDFS.label, Literal('Person')))
 
-    # has parent
     has_parent_property = FAMILY['hasParent']
     g.add((has_parent_property, RDF.type, OWL.ObjectProperty))
     g.add((has_parent_property, RDFS.label,Literal('has parent')))
@@ -100,9 +118,6 @@ def ontology():
     g.add((has_child_property, OWL.inverseOf, has_parent_property))
     g.add((has_parent_property, OWL.inverseOf, has_child_property))
 
-    dgu_ontology(g)
-
-    return g
 
 def dgu_ontology(g):
     
@@ -138,12 +153,14 @@ def dgu_ontology(g):
     g.add((has_about_property, RDFS.domain, file_class))
     g.add((has_about_property, RDFS.range, XSD.string))
 
+
+
+
 """
-
-Triple insertions to the graph are represented from this point foward.
-
+==========================================================================================
+========================================== DGUS ==========================================
+==========================================================================================
 """
-
 
 def dgu_base(entities,g):
 
@@ -173,24 +190,31 @@ def add_dgu_file(attributes,graph):
             graph.add((dgu,DGU[f'has{onto_name}'],Literal(value,datatype=XSD.string)))
 
 
-
 def add_dgu(params,graph):
     dgu = DGU[params['path']]
     for key,value in params.items():
         graph.add(dgu,DGU[f'has{key}'], Literal(value, datatype=XSD.string))
 
-def add_fileBio(name,db,dd,path,about,graph):
+
+# def add_fileBio(name,db,dd,path,about,graph):
     
-    dgu = DGU[path]
-    graph.add((dgu, DGU['hasName'], Literal(name, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasDateOfBirth'], Literal(db, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasDateOfDeath'], Literal(dd, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasFormat'], Literal('Latex', datatype=XSD.string)))
-    graph.add((dgu, DGU['hasType'], Literal('Biography', datatype=XSD.string)))
-    graph.add((dgu, DGU['hasAbout'], Literal(about, datatype=XSD.string)))
-    graph.add((dgu, DGU['hasFilePath'],Literal(path, datatype=XSD.string)))
+#     dgu = DGU[path]
+#     graph.add((dgu, DGU['hasName'], Literal(name, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasDateOfBirth'], Literal(db, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasDateOfDeath'], Literal(dd, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasFormat'], Literal('Latex', datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasType'], Literal('Biography', datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasAbout'], Literal(about, datatype=XSD.string)))
+#     graph.add((dgu, DGU['hasFilePath'],Literal(path, datatype=XSD.string)))
 
 ########### folders
+"""
+==========================================================================================
+======================================= FOLDERS ==========================================
+==========================================================================================
+
+
+"""
 
 def add_subfolder(parent_folder_name, subfolder_name, subfolder_path, graph):
     parent_folder_uri = FAMILY[parent_folder_name]
@@ -223,8 +247,11 @@ def add_folder(name, path,graph):
     
     graph.add((FAMILY[name], FAMILY['hasFolderPath'], Literal(path, datatype=XSD.string))) 
 
-
-########### individuals
+"""
+==========================================================================================
+==================================== INDIVIDUALS =========================================
+==========================================================================================
+"""
 
 
 def add_complete_individual(name,og_name,bd,dd,graph):
@@ -287,9 +314,12 @@ def delete_children_individual(individual,graph):
         graph.remove((individual, None, None))
         graph.remove((None,None,individual))
 
+"""
+==========================================================================================
+==================================== RELATIONS =========================================
+==========================================================================================
+"""
 
-
-############# relations
 
 def add_hasSpouse(individual1,individual2,graph):
     individual1 = FAMILY[individual1]
@@ -337,7 +367,11 @@ def switch_individual(old_individual, new_individual, name,db,dd, graph):
     graph.add((FAMILY[new_individual], FAMILY['deathDate'], Literal(dd, datatype=XSD.string)))
     graph.add((FAMILY[new_individual], RDFS.label, Literal(name)))
 
-############## files
+"""
+==========================================================================================
+======================================= FILES ============================================
+==========================================================================================
+"""
 
 def add_file(folder,path,graph):
     graph.add((FAMILY[folder], FAMILY['hasFile'], DGU[path]))
@@ -351,5 +385,3 @@ def remove_file_special(path, graph):
     triples_to_remove = list(graph.triples((dgu, None, None))) + list(graph.triples((None, None, dgu)))
     for triple in triples_to_remove:
         graph.remove(triple)
-
-#SISTEMA DE REPRESENTACAO DE CONHECIMENTO

@@ -116,8 +116,8 @@ Ricardo Esteves Cardoso ? + Luciana Abreu Loureiro (1932 ?)
 .Ana Sofia Mendes (1950 -)
 .Pedro Esteves ?
 """
-f_t,x = DSL.family.gramma.check_parsing(a)
-print(f_t)
+# f_t,x = DSL.family.gramma.check_parsing(a)
+# print(f_t)
 
 def parents_kids(block):
     status = {'parents': [], 'children': []}
@@ -133,5 +133,41 @@ def parents_kids(block):
     return status
 
 
-print("***")
-print(parents_kids(f_t))
+##############################3
+
+dict1 = {
+        'Pedro Esteves Cardoso+Luciana Abreu Loureiro': ['undiscovered_3', 'José Augusto Santos', 'Ana Sofia Mendes', 'Pedro Esteves']
+    }
+def print_family_tree(dict1):
+    
+
+    for key, value in dict1.items():
+        print_family_member(key, value, "")
+
+def print_family_member(parents, children, prefix):
+    if "+" not in parents:
+        print(prefix + parents)
+        return
+
+    parents = parents.split("+")
+    father = parents[0]
+    mother = parents[1]
+    
+    print(prefix + father + " ─┬─ " + mother)
+    
+    for i, child in enumerate(children):
+        if i == len(children) - 1:
+            new_prefix = prefix + "   "
+            sub_prefix = prefix + "│  "
+        else:
+            new_prefix = prefix + "│  "
+            sub_prefix = prefix + "│  "
+        
+        if child.startswith('undiscovered'):
+            print(prefix + new_prefix + "└─" + child)
+        else:
+            print(prefix + new_prefix + "├─" + child)
+        
+        print_family_member(child, [], sub_prefix)
+
+print_family_tree(dict1)

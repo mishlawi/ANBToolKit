@@ -80,8 +80,15 @@ def p_couple(p):
     '''
     Couple : Person PLUS Person NEWLINE Children NEWLINE
     '''
-    
+
     p[0] = {f'{p[1]}+{p[3]}': p[5]}
+
+
+# def p_couple_missing_parent_error_1(p):
+#     'Couple : error'
+#     print("Bonkers. Bad expression")
+
+
 
 # Names Nickname Dates
 def p_person(p):
@@ -163,6 +170,8 @@ def p_children(p):
             p[0] = []
 
 
+
+
 def p_child(p):
     
     '''
@@ -224,6 +233,7 @@ def t_error(t):
 
 parser = yacc.yacc()
 gramma_lexer = lex.lex()
+#lexer = lex.lex(debug=True)    
 check_lexer = lex.lex()
 meta = {'total': 0, 'undiscovered': 0}
 

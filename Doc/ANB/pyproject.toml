@@ -22,5 +22,6 @@ genBio = "anbtk:genBio"
 genDguImage = "anbtk:genDguImage"
 anbpe = "anbtk:anbpe"
 anbadd = "anbtk:createCouple"
+anbquery = "anbtk:query"
 anb = "anbtk:anb"
 

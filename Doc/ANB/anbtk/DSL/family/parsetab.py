@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'DATE LP NAME NDY NEWLINE PLUS POINT RP UND UNK\n    Family : Couples \n\n    \n    Names : Names NAME\n          | NAME\n          | empty\n    \n    Couples : Couples Couple \n            | Couple \n    \n    Couple : Person PLUS Person NEWLINE Children NEWLINE\n    \n    Person : Names Nickname Dates\n           | Names Dates\n           | UND\n    \n    Dates : LP DATE DATE RP   \n          | LP DATE NDY RP    \n          | LP DATE UNK RP   \n          | LP UNK NDY RP   \n          | LP UNK DATE RP   \n          | UNK\n    \n    Children : Children Child\n             | Child\n             | empty\n\n             \n    \n    Child : POINT Person NEWLINE\n    \n    Nickname : LP Names RP\n    \n    empty :\n    '
+_lr_signature = 'DATE LP NAME NDY NEWLINE PLUS POINT RP UND UNK\n    Family : Couples \n\n    \n    Names : Names NAME\n          | NAME\n          | empty\n    \n    Couples : Couples Couple \n            | Couple \n    \n    Couple : Person PLUS Person NEWLINE Children NEWLINE\n    \n    Person : Names Dates\n           | UND\n    \n    Dates : LP DATE DATE RP   \n          | LP DATE NDY RP    \n          | LP DATE UNK RP   \n          | LP UNK NDY RP   \n          | LP UNK DATE RP   \n          | UNK\n    \n    Children : Children Child\n             | Child\n             | empty\n\n             \n    \n    Child : POINT Person NEWLINE\n    \n    empty :\n    '
     
-_lr_action_items = {'UND':([0,2,3,9,10,32,38,],[6,6,-6,-5,6,6,-7,]),'NAME':([0,2,3,5,7,8,9,10,13,14,19,32,38,],[7,7,-6,13,-3,-4,-5,7,-2,7,13,7,-7,]),'LP':([0,2,3,5,7,8,9,10,11,13,23,32,38,],[-22,-22,-6,14,-3,-4,-5,-22,18,-2,-21,-22,-7,]),'UNK':([0,2,3,5,7,8,9,10,11,13,14,18,20,23,32,38,],[-22,-22,-6,15,-3,-4,-5,-22,15,-2,21,21,26,-21,-22,-7,]),'$end':([1,2,3,9,38,],[0,-1,-6,-5,-7,]),'PLUS':([4,6,12,15,17,33,34,35,36,37,],[10,-10,-9,-16,-8,-11,-12,-13,-14,-15,]),'NEWLINE':([6,12,15,16,17,22,29,30,31,33,34,35,36,37,39,40,41,],[-10,-9,-16,22,-8,-22,38,-18,-19,-11,-12,-13,-14,-15,-17,41,-20,]),'RP':([7,8,13,14,19,24,25,26,27,28,],[-3,-4,-2,-22,23,33,34,35,36,37,]),'DATE':([14,18,20,21,],[20,20,24,28,]),'NDY':([20,21,],[25,27,]),'POINT':([22,29,30,31,39,41,],[32,32,-18,-19,-17,-20,]),}
+_lr_action_items = {'UND':([0,2,3,9,10,27,33,],[6,6,-6,-5,6,6,-7,]),'NAME':([0,2,3,5,7,8,9,10,12,27,33,],[7,7,-6,12,-3,-4,-5,7,-2,7,-7,]),'LP':([0,2,3,5,7,8,9,10,12,27,33,],[-20,-20,-6,13,-3,-4,-5,-20,-2,-20,-7,]),'UNK':([0,2,3,5,7,8,9,10,12,13,16,27,33,],[-20,-20,-6,14,-3,-4,-5,-20,-2,17,21,-20,-7,]),'$end':([1,2,3,9,33,],[0,-1,-6,-5,-7,]),'PLUS':([4,6,11,14,28,29,30,31,32,],[10,-9,-8,-15,-10,-11,-12,-13,-14,]),'NEWLINE':([6,11,14,15,18,24,25,26,28,29,30,31,32,34,35,36,],[-9,-8,-15,18,-20,33,-17,-18,-10,-11,-12,-13,-14,-16,36,-19,]),'DATE':([13,16,17,],[16,19,23,]),'NDY':([16,17,],[20,22,]),'POINT':([18,24,25,26,34,36,],[27,27,-17,-18,-16,-19,]),'RP':([19,20,21,22,23,],[28,29,30,31,32,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'Family':([0,],[1,]),'Couples':([0,],[2,]),'Couple':([0,2,],[3,9,]),'Person':([0,2,10,32,],[4,4,16,40,]),'Names':([0,2,10,14,32,],[5,5,5,19,5,]),'empty':([0,2,10,14,22,32,],[8,8,8,8,31,8,]),'Nickname':([5,],[11,]),'Dates':([5,11,],[12,17,]),'Children':([22,],[29,]),'Child':([22,29,],[30,39,]),}
+_lr_goto_items = {'Family':([0,],[1,]),'Couples':([0,],[2,]),'Couple':([0,2,],[3,9,]),'Person':([0,2,10,27,],[4,4,15,35,]),'Names':([0,2,10,27,],[5,5,5,5,]),'empty':([0,2,10,18,27,],[8,8,8,26,8,]),'Dates':([5,],[11,]),'Children':([18,],[24,]),'Child':([18,24,],[25,34,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -28,25 +28,23 @@ del _lr_goto_items
 _lr_productions = [
   ("S' -> Family","S'",1,None,None,None),
   ('Family -> Couples','Family',1,'p_family','gramma.py',44),
-  ('Names -> Names NAME','Names',2,'p_names','gramma.py',51),
-  ('Names -> NAME','Names',1,'p_names','gramma.py',52),
-  ('Names -> empty','Names',1,'p_names','gramma.py',53),
-  ('Couples -> Couples Couple','Couples',2,'p_couples','gramma.py',64),
-  ('Couples -> Couple','Couples',1,'p_couples','gramma.py',65),
-  ('Couple -> Person PLUS Person NEWLINE Children NEWLINE','Couple',6,'p_couple','gramma.py',80),
-  ('Person -> Names Nickname Dates','Person',3,'p_person','gramma.py',89),
-  ('Person -> Names Dates','Person',2,'p_person','gramma.py',90),
-  ('Person -> UND','Person',1,'p_person','gramma.py',91),
-  ('Dates -> LP DATE DATE RP','Dates',4,'p_dates','gramma.py',114),
-  ('Dates -> LP DATE NDY RP','Dates',4,'p_dates','gramma.py',115),
-  ('Dates -> LP DATE UNK RP','Dates',4,'p_dates','gramma.py',116),
-  ('Dates -> LP UNK NDY RP','Dates',4,'p_dates','gramma.py',117),
-  ('Dates -> LP UNK DATE RP','Dates',4,'p_dates','gramma.py',118),
-  ('Dates -> UNK','Dates',1,'p_dates','gramma.py',119),
-  ('Children -> Children Child','Children',2,'p_children','gramma.py',140),
-  ('Children -> Child','Children',1,'p_children','gramma.py',141),
-  ('Children -> empty','Children',1,'p_children','gramma.py',142),
-  ('Child -> POINT Person NEWLINE','Child',3,'p_child','gramma.py',158),
-  ('Nickname -> LP Names RP','Nickname',3,'p_nickname','gramma.py',166),
-  ('empty -> <empty>','empty',0,'p_empty','gramma.py',174),
+  ('Names -> Names NAME','Names',2,'p_names','gramma.py',52),
+  ('Names -> NAME','Names',1,'p_names','gramma.py',53),
+  ('Names -> empty','Names',1,'p_names','gramma.py',54),
+  ('Couples -> Couples Couple','Couples',2,'p_couples','gramma.py',65),
+  ('Couples -> Couple','Couples',1,'p_couples','gramma.py',66),
+  ('Couple -> Person PLUS Person NEWLINE Children NEWLINE','Couple',6,'p_couple','gramma.py',81),
+  ('Person -> Names Dates','Person',2,'p_person','gramma.py',96),
+  ('Person -> UND','Person',1,'p_person','gramma.py',97),
+  ('Dates -> LP DATE DATE RP','Dates',4,'p_dates','gramma.py',131),
+  ('Dates -> LP DATE NDY RP','Dates',4,'p_dates','gramma.py',132),
+  ('Dates -> LP DATE UNK RP','Dates',4,'p_dates','gramma.py',133),
+  ('Dates -> LP UNK NDY RP','Dates',4,'p_dates','gramma.py',134),
+  ('Dates -> LP UNK DATE RP','Dates',4,'p_dates','gramma.py',135),
+  ('Dates -> UNK','Dates',1,'p_dates','gramma.py',136),
+  ('Children -> Children Child','Children',2,'p_children','gramma.py',157),
+  ('Children -> Child','Children',1,'p_children','gramma.py',158),
+  ('Children -> empty','Children',1,'p_children','gramma.py',159),
+  ('Child -> POINT Person NEWLINE','Child',3,'p_child','gramma.py',177),
+  ('empty -> <empty>','empty',0,'p_empty','gramma.py',198),
 ]

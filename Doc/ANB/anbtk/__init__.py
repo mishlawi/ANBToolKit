@@ -12,6 +12,7 @@ from . import dataControl
 from . import controlsystem
 from .anbPE import projectionEditor
 from .anbPE import blocks
+from .anbPE import sparql_queries
 
 from .actions import latex
 from .actions import book
@@ -106,6 +107,9 @@ def anbpe():
 
 def createCouple():
     projectionEditor.add_couple()
+
+def query():
+    sparql_queries.apply_query()
 
 ############################## .anb ################################
 

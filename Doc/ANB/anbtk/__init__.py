@@ -30,9 +30,8 @@ from .dgu import dguObject as dgu
 ##############################################################################################################
 
 #? DUVIDAS
-# * how important is that i have an ontology with the different specs of the dgus? 
-# * dgu path is being written as an absolute path, is that a problem?
-# * como fazer o visualizer?
+# * error handling nas gramáticas
+
 
 #*TODO
 

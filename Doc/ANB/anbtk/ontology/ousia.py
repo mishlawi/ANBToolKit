@@ -7,8 +7,7 @@ essence == Ουσία == ousia
 
 .greek
 
-
- SISTEMA DE REPRESENTACAO DE CONHECIMENTO
+SISTEMA DE REPRESENTACAO DE CONHECIMENTO
 
 '''
 
@@ -207,7 +206,6 @@ def add_dgu(params,graph):
 #     graph.add((dgu, DGU['hasAbout'], Literal(about, datatype=XSD.string)))
 #     graph.add((dgu, DGU['hasFilePath'],Literal(path, datatype=XSD.string)))
 
-########### folders
 """
 ==========================================================================================
 ======================================= FOLDERS ==========================================

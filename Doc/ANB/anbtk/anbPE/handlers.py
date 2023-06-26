@@ -8,7 +8,7 @@ from .. import genealogia
 
 """
 ===============================================================
-                        HANDLERS FUNCTIONS
+======================= HANDLERS FUNCTIONS ====================
 ===============================================================
 """
 
@@ -121,9 +121,12 @@ def handler_updates(updated_parents, updated_children, g):
         update_dates(elem,g)
     for elem in updated_children:
         update_dates(elem,g)
+
+
+
 """
 ===============================================================
-                        AUXILIAR FUNCTIONS
+=====================  AUXILIAR FUNCTIONS  ====================
 ===============================================================
 """
 

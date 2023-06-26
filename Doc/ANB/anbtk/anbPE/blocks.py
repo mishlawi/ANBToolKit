@@ -4,9 +4,6 @@ import os
 from ..DSL.family import gramma
 
 
-
-
-
 def edit_block(config_data):
     """
     Edits the block of configuration data.

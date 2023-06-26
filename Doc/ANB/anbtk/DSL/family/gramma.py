@@ -83,11 +83,25 @@ def p_couple(p):
 
     p[0] = {f'{p[1]}+{p[3]}': p[5]}
 
+def p_couple_error_plus(p):
+    '''
+    Couple : Person error Person NEWLINE Children NEWLINE
+    '''
+    print(f"\nMissing PLUS token between {p[1]} and {p[3]}")
 
-# def p_couple_missing_parent_error_1(p):
-#     'Couple : error'
-#     print("Bonkers. Bad expression")
 
+# def p_couple_error_newline_1(p):
+#     '''
+#     Couple : Person PLUS Person NEWLINE Children error
+#     '''
+#     print(f"\nMissing NEWLINE token after {p[5]}")
+
+
+def p_couple_error_newline_2(p):
+    '''
+    Couple : Person PLUS Person error Children NEWLINE
+    '''
+    print(f"\nMissing NEWLINE token between {p[3]} and {p[5]}")
 
 
 # Names Nickname Dates
@@ -201,6 +215,8 @@ def p_empty(p):
 
 
 def p_error(p):
+    print("==================================================================================")
+    print("===================================== ERRORS =====================================")
     if p:
         error_message = f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token {p.type} ({p.value})"
         
@@ -221,7 +237,9 @@ def p_error(p):
         error_line = lines[p.lineno-1]
         
         
-        print(error_line)
+        print("in:    ", error_line,"\n")
+        
+
     else:
         print("Syntax error: Unexpected end of input")
 
@@ -246,6 +264,10 @@ def parsing(filename):
     with open(filename) as file:
         data = file.read()
     family_tree = parser.parse(data,lexer=gramma_lexer)
+    if family_tree is None:
+        print("==================================================================================")
+        print("Error while processing the anbtemplate file.")
+        exit(-1)
 
     return family_tree, meta
 
@@ -256,6 +278,10 @@ def check_parsing(data):
 
 
     family_tree = parser.parse(data,lexer=check_lexer)
+    if family_tree is None:
+        print("==================================================================================")
+        print("Error while processing the anbtemplate file.")
+        exit(-1)
 
     return family_tree, meta
 

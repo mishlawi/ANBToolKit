@@ -4,7 +4,6 @@ from rdflib.plugins.sparql import prepareQuery
 
 
 
-
 def unclesQres(individual):
       
     """
@@ -171,6 +170,47 @@ def siblings_folderPath_Qres(individual):
     }}
     """
 
+def composeQueries(individual):
+    siblings_query = siblingsQres(individual)
+    grandparents_query = grandparentsQres(individual)
+    
+    composed_query = f"""
+    PREFIX family: <http://example.org/family#>
+    
+    {siblings_query}
+    
+    {grandparents_query}
+    """
+    
+    return composed_query
+
+
+
+
+def combine_queries_for_individual(individual, query1_func, query2_func):
+    """
+    Combines two SPARQL queries for retrieving folder paths related to an individual in a family RDF graph.
+
+    Parameters:
+        individual (str): The name of the individual.
+        query1_func (function): The function for the first query.
+        query2_func (function): The function for the second query.
+
+    Returns:
+        str: A string representing the combined SPARQL query.
+    """
+    query1 = query1_func(individual)
+    query2 = query2_func(individual)
+
+    combined_query = f"""
+    {query1}
+
+    {query2}
+    """
+    return combined_query
+
+
+
 def execute_sparql_query(query_string, graph):
     query = prepareQuery(query_string)
     result = graph.query(query)
@@ -184,7 +224,8 @@ def apply_query():
     if not result:
           print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
     for row in result:
-      print(row)
+      print(row[0].toPython())
+    
 
     print("**1 tios**")
     grandparents_query = grandparentsQres('Rui-Miguel-Santos-Ferreira')
@@ -225,13 +266,22 @@ def apply_query():
       print(row[0].value)
     print("**6 pasta irmaos**")
 
-    siblings_folderPath_Qres
+    
     siblings_folder_query = siblings_folderPath_Qres('Rui-Miguel-Santos-Ferreira')
     result = execute_sparql_query(siblings_folder_query,g)
     if not result:
           print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
     for row in result:
       print(row[0].value)
+    print("**that one**")
+  
+    compose_query = composeQueries('Rodrigo-Diogo-Almeida-Santos-Ferreira')
+    result = execute_sparql_query(compose_query,g)
+    combine_queries_for_individual('Rodrigo-Diogo-Almeida-Santos-Ferreira',)
+    if not result:
+          print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
+    for row in result:
+      print(row)
     print("****")
 
     

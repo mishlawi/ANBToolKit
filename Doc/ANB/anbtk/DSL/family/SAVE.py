@@ -5,7 +5,7 @@ import ply.yacc as yacc
 grammar = γράμμα
 '''
 #! finish the support of the nicknames
-
+#! THIS FILE IS TO BE DELETED
 
 # Lexer tokens
 tokens = (

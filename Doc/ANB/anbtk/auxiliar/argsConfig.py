@@ -94,7 +94,7 @@ def a_dgu2texbook():
 
 def a_image():
     parser = argparse.ArgumentParser(
-        prog = 'dgubook',
+        prog = 'dguImage',
         description = 'Generates DGU files for image files.')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
@@ -102,13 +102,30 @@ def a_image():
     return parser.parse_args()
 
 
+
 def a_foldercd():
+    
+    class CustomAction(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            if not 'ordered_args' in namespace:
+                setattr(namespace, 'ordered_args', [])
+            previous = namespace.ordered_args
+            previous.append((self.dest, values))
+            setattr(namespace, 'ordered_args', previous)
+
     parser = argparse.ArgumentParser(
-        prog = 'dgu2texbook',
-        description = 'Aglomerates a number of .dgu files in a latex book.',
-        epilog = 'In a latex file with diferent latex files aglutinated in one')
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
-    #parser.add_argument('-o','--out',help="output destination",nargs=1)
-    group.add_argument('-t','--tree',help="Iterates through the entire tree of document of the present directory.",action='store_true',default=False)
+        prog = 'anbget',
+        description = 'Allows to query informations regarding the different familiar connections of the current ancestors notebook.',
+        epilog = 'From folder A you go to folder B by specifying the familiar relation between A and B')
+    parser.add_argument('-s','--siblings',help="Certain individual's siblings.",nargs=0,action=CustomAction)
+    parser.add_argument('-p','--parents',help="Certain individual's parents.",nargs=0,action=CustomAction)
+    parser.add_argument('-ua','--unclesaunts',help="Certain individual's aunts and uncles (there is no gender neutral term).",nargs=0,action=CustomAction)
+    parser.add_argument('-gp','--grandparents',help="Certain individual's grandparents.",nargs=0,action=CustomAction)
+    parser.add_argument('-c','--children',help="Certain individual's children.",nargs=0,action=CustomAction)
+    parser.add_argument('-i','--individual',help="Individual to be queried.",nargs=1,required=True)
+    
+
     return parser.parse_args()
+
+
+  

@@ -249,6 +249,8 @@ def p_error(p):
 def t_error(t):
     print(f"Error: Illegal character '{t.value[0]}'")
 
+
+#! yacc.yacc(errorlog=yacc.NullLogger()) TO SURPRESS  WARNING MESSAGES
 parser = yacc.yacc()
 gramma_lexer = lex.lex()
 #lexer = lex.lex(debug=True)    

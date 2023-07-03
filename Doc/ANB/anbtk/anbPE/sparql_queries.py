@@ -1,10 +1,11 @@
 from .. import genealogia
 from .. import dataControl
+from ..auxiliar import argsConfig
 from rdflib.plugins.sparql import prepareQuery
+import os
 
 
-
-def unclesQres(individual):
+def unclesauntsQres(individual):
       
     """
     Returns a SPARQL query as a string to find all aunts/uncles of a given individual in an RDF graph using the family ontology.
@@ -50,6 +51,48 @@ SELECT ?grandparent WHERE {{
 
 """
 
+def parentsQres(individual):
+    """
+    Returns a SPARQL query as a string to find all parents of a given individual in an RDF graph using the family ontology.
+    
+    Parameters:
+    individual (str): The name of the individual to find parents for.
+    
+    Returns:
+    str: A SPARQL query string.
+    """
+
+    return f"""
+PREFIX family: <http://example.org/family#>
+
+SELECT ?parent WHERE {{
+  family:{individual} family:hasParent ?parent .
+  ?parent a family:Person .
+}}
+"""
+
+
+def childrenQres(individual):
+    """
+    Returns a SPARQL query as a string to find all children of a given individual in an RDF graph using the family ontology.
+    
+    Parameters:
+    individual (str): The name of the individual to find children for.
+    
+    Returns:
+    str: A SPARQL query string.
+    """
+
+    return f"""
+    PREFIX family: <http://example.org/family#>
+
+SELECT DISTINCT ?child
+WHERE {{
+  ?child family:hasParent family:{individual} .
+}}
+"""
+
+
 
 def siblingsQres(individual):
     
@@ -80,7 +123,7 @@ WHERE {{
 
 
 def gp_folderPath_Qres(individual):
-  """
+    """
     Returns a SPARQL query that retrieves the folders of the grandparents of an individual in a family RDF graph.
     
     Args:
@@ -88,10 +131,10 @@ def gp_folderPath_Qres(individual):
         
     Returns:
         str: A string representing the constructed SPARQL query.
-  """
+    """
 
 
-  return f"""
+    return f"""
 PREFIX family: <http://example.org/family#>
 
 SELECT ?folder
@@ -146,6 +189,9 @@ def children_folderPath_Qres(individual):
     """
 
 
+
+
+
 def siblings_folderPath_Qres(individual):
     """
     Returns a SPARQL query that retrieves the folders of the siblings of an individual in a family RDF graph.
@@ -170,44 +216,111 @@ def siblings_folderPath_Qres(individual):
     }}
     """
 
-def composeQueries(individual):
-    siblings_query = siblingsQres(individual)
-    grandparents_query = grandparentsQres(individual)
+def handle_namespace(namespace):
+    return namespace.split('#')[1]
+
+
+def apply_querie(function_type,individual,g,type):
+    res = []
+    if isinstance(individual,str): 
+        sparql_qry = function_type(individual)
+        result = execute_sparql_query(sparql_qry,g)
+        if not result:
+            res = []
+            # pass
+        else:
+            for row in result:
+                row[0].toPython()
+                res.append(handle_namespace(row[0].toPython()))
     
-    composed_query = f"""
-    PREFIX family: <http://example.org/family#>
-    
-    {siblings_query}
-    
-    {grandparents_query}
-    """
-    
-    return composed_query
+        return res
+    # elif isinstance(individual,list):
+    #     for elem in individual:
+    #         res.extend(handle_queries(type,elem,g))
+    # return res
 
 
 
+def handle_queries(type, individual, g):
+    if type == 'siblings':
+        return apply_querie(siblingsQres, individual, g, type)
+    elif type == 'grandparents':
+        return apply_querie(grandparentsQres, individual, g, type)
+    elif type == 'parents':
+        return apply_querie(parentsQres, individual, g, type)
+    elif type == 'unclesaunts':
+        return apply_querie(unclesauntsQres, individual, g, type)
+    elif type == 'children':
+        return apply_querie(childrenQres, individual, g, type)
 
-def combine_queries_for_individual(individual, query1_func, query2_func):
-    """
-    Combines two SPARQL queries for retrieving folder paths related to an individual in a family RDF graph.
+            
 
-    Parameters:
-        individual (str): The name of the individual.
-        query1_func (function): The function for the first query.
-        query2_func (function): The function for the second query.
+def query_composition(path,g):
+    args = argsConfig.a_foldercd()
+    inverted_args = args.ordered_args
+    inverted_args = inverted_args[::-1]
+    # initial = individual.replace("-"," ")
+    if args.individual[0] == ".":
+        individual = os.path.basename(path)
+        print(individual)
+        initial = individual.replace("-", " ")
+    else:
+        initial = args.individual[0].replace("-", " ")
 
-    Returns:
-        str: A string representing the combined SPARQL query.
-    """
-    query1 = query1_func(individual)
-    query2 = query2_func(individual)
+    header = "The "
+    for i, (argument, _) in enumerate(inverted_args):
+        if i == len(inverted_args) - 1:
+            if argument == 'unclesaunts':
+                header += f" uncles and aunts of {initial}:"
+            else:
+                header += argument + f" of {initial}:"    
+            
+            aux = {}
 
-    combined_query = f"""
-    {query1}
+            if isinstance(individual,list):
+                for elem in individual:
+                    aux[elem] = handle_queries(argument,elem,g)
+            elif isinstance(individual,str):
+                aux[individual] = handle_queries(argument,individual,g)
+            
+            if len(aux.keys())== 1 and list(aux.values())[0] == []:
+                print("Non existing info regarding this relationships.")
+                exit()
+            
+            print(header)
+            unique = set()
+            message = "Results come from:\n"
+            
+            
+            for person,relations in aux.items():
+                for p in relations:
+                    unique.add(p)
+                if relations != []:
+                    message += " " + person.replace("-"," ") + "\n"
+            for elem in unique:
+                print("*", elem.replace("-"," "))
+            
+            print("\n",message)
+        
+        else:
+            if argument == 'unclesaunts':
+                header += "uncles and aunts of the "
+            else:
+                header += argument + " of the "
+            if isinstance(individual,list):
+                aux = []
+                for elem in individual:
+                    aux.extend(handle_queries(argument,elem,g))
+                individual = aux
+            elif isinstance(individual,str):
+                aux = handle_queries(argument,individual,g)
+                individual = aux
 
-    {query2}
-    """
-    return combined_query
+
+        
+
+      
+
 
 
 
@@ -217,72 +330,65 @@ def execute_sparql_query(query_string, graph):
     return result
 
 def apply_query():
+    cwd =os.getcwd()
     dataControl.search_anbtk()
     g = genealogia.read_onto_file('anbsafeonto.rdf')
-    uncles_aunts_query  = unclesQres('Rui-Miguel-Santos-Ferreira')
-    result = execute_sparql_query(uncles_aunts_query,g)
-    if not result:
-          print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
-    for row in result:
-      print(row[0].toPython())
+    query_composition(cwd,g)
+    # uncles_aunts_query  = unclesauntsQres('Rui-Miguel-Santos-Ferreira')
+    # result = execute_sparql_query(uncles_aunts_query,g)
+    # if not result:
+    #       print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
+    # for row in result:
+    #   print(row[0].toPython())
     
 
-    print("**1 tios**")
-    grandparents_query = grandparentsQres('Rui-Miguel-Santos-Ferreira')
-    result = execute_sparql_query(grandparents_query,g)
-    if not result:
-          print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
-    for row in result:
-      print(row)
-    print("**2 irmaos**")
-    siblings_query = siblingsQres('Rui-Miguel-Santos-Ferreira')
-    result = execute_sparql_query(siblings_query,g)
-    if not result:
-          print("The individual does not exist in this Ancestors Notebook or it does not have any siblings.")
-    for row in result:
-      print(row)
-    print("**3 pasta avos**")
-    gp_folder_query = gp_folderPath_Qres('Rui-Miguel-Santos-Ferreira')
-    result = execute_sparql_query(gp_folder_query,g)
-    if not result:
-          print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
-    for row in result:
-      print(row[0].value)
-    print("**4 pasta pais**")
-    parents_folder_query = parents_folderPath_Qres('Rui-Miguel-Santos-Ferreira')
-    result = execute_sparql_query(parents_folder_query,g)
-    if not result:
-          print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
-    for row in result:
-      print(row[0].value)
-    print("**5 pasta filhos**")
+    # print("**1 tios**")
+    # grandparents_query = grandparentsQres('Rui-Miguel-Santos-Ferreira')
+    # result = execute_sparql_query(grandparents_query,g)
+    # if not result:
+    #       print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
+    # for row in result:
+    #   print(row)
+    # print("**2 irmaos**")
+    # siblings_query = siblingsQres('Rui-Miguel-Santos-Ferreira')
+    # result = execute_sparql_query(siblings_query,g)
+    # if not result:
+    #       print("The individual does not exist in this Ancestors Notebook or it does not have any siblings.")
+    # for row in result:
+    #   print(row)
+    # print("**3 pasta avos**")
+    # gp_folder_query = gp_folderPath_Qres('Rui-Miguel-Santos-Ferreira')
+    # result = execute_sparql_query(gp_folder_query,g)
+    # if not result:
+    #       print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
+    # for row in result:
+    #   print(row[0].value)
+    # print("**4 pasta pais**")
+    # parents_folder_query = parents_folderPath_Qres('Rui-Miguel-Santos-Ferreira')
+    # result = execute_sparql_query(parents_folder_query,g)
+    # if not result:
+    #       print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
+    # for row in result:
+    #   print(row[0].value)
+    # print("**5 pasta filhos**")
+
+    # children_folder_query = children_folderPath_Qres('Rui-Miguel-Santos-Ferreira')
+    # result = execute_sparql_query(children_folder_query,g)
+    # if not result:
+    #       print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
+    # for row in result:
+    #   print(row[0].value)
+    # print("**6 pasta irmaos**")
 
     
-    children_folder_query = children_folderPath_Qres('Rui-Miguel-Santos-Ferreira')
-    result = execute_sparql_query(children_folder_query,g)
-    if not result:
-          print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
-    for row in result:
-      print(row[0].value)
-    print("**6 pasta irmaos**")
-
-    
-    siblings_folder_query = siblings_folderPath_Qres('Rui-Miguel-Santos-Ferreira')
-    result = execute_sparql_query(siblings_folder_query,g)
-    if not result:
-          print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
-    for row in result:
-      print(row[0].value)
-    print("**that one**")
+    # siblings_folder_query = siblings_folderPath_Qres('Rui-Miguel-Santos-Ferreira')
+    # result = execute_sparql_query(siblings_folder_query,g)
+    # if not result:
+    #       print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
+    # for row in result:
+    #   print(row[0].value)
+    # print("**that one**")
   
-    compose_query = composeQueries('Rodrigo-Diogo-Almeida-Santos-Ferreira')
-    result = execute_sparql_query(compose_query,g)
-    combine_queries_for_individual('Rodrigo-Diogo-Almeida-Santos-Ferreira',)
-    if not result:
-          print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
-    for row in result:
-      print(row)
-    print("****")
 
     
     

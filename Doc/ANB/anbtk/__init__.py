@@ -58,7 +58,6 @@ from .dgu import dguObject as dgu
 # * template html
 # * verificar a existencia de erros 1o, e só depois executar efetivamente as coisas, senao pastas sao geradas mesmo quando é dado um mau input
 # * "anb individuo" e aparecerem elementos relativos ao individuo 
-# * maybe do a onto to file-system generation
 # * add comments for the seed file and entities file
 # * testar projection editor (check individual function annotations)
 

@@ -1,3 +1,4 @@
+from logging import raiseExceptions
 from .. import genealogia
 from .. import dataControl
 from ..auxiliar import argsConfig
@@ -234,37 +235,40 @@ def apply_querie(function_type,individual,g,type):
                 res.append(handle_namespace(row[0].toPython()))
     
         return res
-    # elif isinstance(individual,list):
-    #     for elem in individual:
-    #         res.extend(handle_queries(type,elem,g))
-    # return res
-
 
 
 def handle_queries(type, individual, g):
-    if type == 'siblings':
-        return apply_querie(siblingsQres, individual, g, type)
-    elif type == 'grandparents':
-        return apply_querie(grandparentsQres, individual, g, type)
-    elif type == 'parents':
-        return apply_querie(parentsQres, individual, g, type)
-    elif type == 'unclesaunts':
-        return apply_querie(unclesauntsQres, individual, g, type)
-    elif type == 'children':
-        return apply_querie(childrenQres, individual, g, type)
-
-            
+    try:
+        if type == 'siblings':
+            return apply_querie(siblingsQres, individual, g, type)
+        elif type == 'grandparents':
+            return apply_querie(grandparentsQres, individual, g, type)
+        elif type == 'parents':
+            return apply_querie(parentsQres, individual, g, type)
+        elif type == 'unclesaunts':
+            return apply_querie(unclesauntsQres, individual, g, type)
+        elif type == 'children':
+            return apply_querie(childrenQres, individual, g, type)
+    except raiseExceptions as e:
+        # Handle the ParseException here
+        print(f" Some error occurred. Individual might not exists.")
+        return None
 
 def query_composition(path,g):
     args = argsConfig.a_foldercd()
     inverted_args = args.ordered_args
+    if args == []:
+        print("You need to specify what flags you want. Use anbget -h for additional information.")
+        exit()
     inverted_args = inverted_args[::-1]
     # initial = individual.replace("-"," ")
     if args.individual[0] == ".":
         individual = os.path.basename(path)
-        print(individual)
         initial = individual.replace("-", " ")
     else:
+        if args.individual[0].endswith("/"):
+            args.individual[0]=args.individual[0][:-1]
+        individual = args.individual[0]
         initial = args.individual[0].replace("-", " ")
 
     header = "The "
@@ -283,9 +287,11 @@ def query_composition(path,g):
             elif isinstance(individual,str):
                 aux[individual] = handle_queries(argument,individual,g)
             
-            if len(aux.keys())== 1 and list(aux.values())[0] == []:
-                print("Non existing info regarding this relationships.")
+            all_empty = all(val == [] for val in aux.values())
+            if all_empty:
+                print("Non existing info regarding this relationship(s).")
                 exit()
+            
             
             print(header)
             unique = set()
@@ -334,61 +340,7 @@ def apply_query():
     dataControl.search_anbtk()
     g = genealogia.read_onto_file('anbsafeonto.rdf')
     query_composition(cwd,g)
-    # uncles_aunts_query  = unclesauntsQres('Rui-Miguel-Santos-Ferreira')
-    # result = execute_sparql_query(uncles_aunts_query,g)
-    # if not result:
-    #       print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
-    # for row in result:
-    #   print(row[0].toPython())
-    
 
-    # print("**1 tios**")
-    # grandparents_query = grandparentsQres('Rui-Miguel-Santos-Ferreira')
-    # result = execute_sparql_query(grandparents_query,g)
-    # if not result:
-    #       print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
-    # for row in result:
-    #   print(row)
-    # print("**2 irmaos**")
-    # siblings_query = siblingsQres('Rui-Miguel-Santos-Ferreira')
-    # result = execute_sparql_query(siblings_query,g)
-    # if not result:
-    #       print("The individual does not exist in this Ancestors Notebook or it does not have any siblings.")
-    # for row in result:
-    #   print(row)
-    # print("**3 pasta avos**")
-    # gp_folder_query = gp_folderPath_Qres('Rui-Miguel-Santos-Ferreira')
-    # result = execute_sparql_query(gp_folder_query,g)
-    # if not result:
-    #       print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
-    # for row in result:
-    #   print(row[0].value)
-    # print("**4 pasta pais**")
-    # parents_folder_query = parents_folderPath_Qres('Rui-Miguel-Santos-Ferreira')
-    # result = execute_sparql_query(parents_folder_query,g)
-    # if not result:
-    #       print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
-    # for row in result:
-    #   print(row[0].value)
-    # print("**5 pasta filhos**")
-
-    # children_folder_query = children_folderPath_Qres('Rui-Miguel-Santos-Ferreira')
-    # result = execute_sparql_query(children_folder_query,g)
-    # if not result:
-    #       print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
-    # for row in result:
-    #   print(row[0].value)
-    # print("**6 pasta irmaos**")
-
-    
-    # siblings_folder_query = siblings_folderPath_Qres('Rui-Miguel-Santos-Ferreira')
-    # result = execute_sparql_query(siblings_folder_query,g)
-    # if not result:
-    #       print("The individual does not exist in this Ancestors Notebook or it does not have any aunts/uncles.")
-    # for row in result:
-    #   print(row[0].value)
-    # print("**that one**")
-  
 
     
     

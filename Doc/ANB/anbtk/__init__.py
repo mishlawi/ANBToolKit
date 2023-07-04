@@ -110,6 +110,10 @@ def createCouple():
 def query():
     sparql_queries.anb_search()
 
+def folder_cd():
+    sparql_queries.anb_cd()
+
+
 ############################## .anb ################################
 
 

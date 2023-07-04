@@ -1,9 +1,12 @@
-
-from .. import genealogia
-from .. import dataControl
-from ..auxiliar import argsConfig
-from rdflib.plugins.sparql import prepareQuery
+import subprocess
 import os
+
+from rdflib.plugins.sparql import prepareQuery
+
+from ..auxiliar import argsConfig
+from .. import dataControl
+from .. import genealogia
+
 
 
 def unclesauntsQres(individual):
@@ -294,15 +297,14 @@ def handle_queries(type, individual, g):
             return apply_querie(childrenQres, individual, g)
     except Exception as e:
         # Handle the ParseException here
-        print(f" Some error occurred. Individual might not exist.")
+        print(f"✗ Some error occurred. Individual might not exist.")
         return None
 
-def query_composition(path,g):
-    args = argsConfig.a_search()
+def query_composition(path,g,args):
     if hasattr(args, 'ordered_args'):
         inverted_args = args.ordered_args
     else:
-        print("You need to specify what flags you want. Use anbget -h for additional information.")
+        print("✗ You need to specify what flags you want. Use anbget -h for additional information.")
         exit()
 
     inverted_args = inverted_args[::-1]
@@ -328,24 +330,17 @@ def query_composition(path,g):
             
             all_empty = all(val == [] for val in aux.values())
             if all_empty:
-                print("Non existing info regarding this relationship(s).")
+                print("✗ Non existing info regarding this relationship(s).")
                 exit()
             
-            
-            print(header)
             unique = set()
             message = "Results come from:\n"
-            
             
             for person,relations in aux.items():
                 for p in relations:
                     unique.add(p)
                 if relations != []:
                     message += " " + person.replace("-"," ") + "\n"
-            for elem in unique:
-                print("*", elem.replace("-"," "))
-            
-            print("\n",message)
         
         else:
             if isinstance(individual,list):
@@ -361,13 +356,40 @@ def query_composition(path,g):
 # remove prints and create the message itself in a separate function
 
 
+
+
+def show_data(unique,message,header):
+
+    print(header)
+    for elem in unique:
+        print("*", elem.replace("-"," "))
+    print("\n",message)
+
+
+
 def anb_search():
     cwd = os.getcwd()
     dataControl.search_anbtk()
     g = genealogia.read_onto_file('anbsafeonto.rdf')
-    unique = query_composition(cwd,g)
-    folder_cd_composition(unique,g)
+    args = argsConfig.a_search()
+    unique,message,header = query_composition(cwd,g,args)
+    show_data(unique,message,header)
 
+# def show_list(possibilities):
+#     for index, item in enumerate(possibilities):
+#         print(f"{index + 1}. {item}")
+
+#     user_choice = input("Select the folder: ")
+
+#     try:
+#         user_choice = int(user_choice)
+#         if 1 <= user_choice <= len(possibilities):
+#             chosen_element = possibilities[user_choice - 1]
+#             print(f"You chose: {chosen_element}")
+#         else:
+#             print("Invalid choice!")
+#     except ValueError:
+#         print("✗ Invalid input! You must enter a number.")
 
 
 def folder_cd_composition(unique,g):
@@ -376,22 +398,60 @@ def folder_cd_composition(unique,g):
         sparql_qry = individual_folderPath_Qres(value)
         result = execute_sparql_query(sparql_qry,g)
         if not result:
-            print("non existing folderpath")
+            print("✗ Non-existing folderpath.")
         else:
             for row in result:
                 possibilities.append(str(row["folderPath"].toPython()))
+    return possibilities
         
+import inquirer
 
-    
 
+def select_path(paths):
+    folder_names = [os.path.basename(path) for path in paths]
 
+    questions = [
+        inquirer.List('path',
+                      message="Select a folder:",
+                      choices=folder_names,
+                      ),
+    ]
+    answers = inquirer.prompt(questions)
+    selected_folder_name = answers['path']
+
+    # Get the corresponding full path for the selected folder name
+    selected_path = next(path for path in paths if os.path.basename(path) == selected_folder_name)
+
+    return selected_path
 
 
 def anb_cd():
     cwd = os.getcwd()
-    dataControl.search_anbtk()
-    g = genealogia.read_onto_file('anbsafeonto.rdf')
-    folder_cd_composition(cwd,g)
+    if not dataControl.search_anbtk():
+        print("✗ You are not in an Ancestors Notebook." )
+        exit()
+    else:
+        # dataControl.search_anbtk()
+        try:
+            g = genealogia.read_onto_file('anbsafeonto.rdf')
+        except FileNotFoundError:
+            print("No ontology was initialized.\nWas this ancestor notebook created from scratch? There doesn't seem to exist any .rdf file that defines the familiar connections.")
+            exit()
+        os.chdir(dataControl.get_root())
+        
+    print(os.getcwd())
+    args = argsConfig.a_cd()
+    unique,_,_ = query_composition(cwd,g,args)
+    possibilities = folder_cd_composition(unique,g)
+    selected_folder = select_path(possibilities)
+    selected_folder = selected_folder.split("/")[1]
+    try:
+        subprocess.check_call(f"cd {selected_folder} && exec $SHELL", shell=True)
+    except subprocess.CalledProcessError:
+            print("Some problem in finding the folder. Were any manual naming changes made to the Ancestors Notebook folder?.")
+            exit()
+    
+    
     
 
         

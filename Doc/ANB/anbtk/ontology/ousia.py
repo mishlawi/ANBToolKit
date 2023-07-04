@@ -336,7 +336,7 @@ def add_parent_children(parent1,parent2,child,graph):
     graph.add((child, FAMILY['hasParent'], parent1))
     graph.add((child, FAMILY['hasParent'], parent2))
 
-#mistakes on parents, folders
+
 def switch_individual(old_individual, new_individual, name,db,dd, graph):
        
     add_individual(new_individual,name,graph)

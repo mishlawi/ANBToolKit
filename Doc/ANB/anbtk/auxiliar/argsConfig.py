@@ -116,12 +116,12 @@ def a_search():
     parser = argparse.ArgumentParser(
         prog = 'anbsearch',
         description = 'Allows to query informations regarding the different familiar connections of the current ancestors notebook.',
-        epilog = 'From folder A you go to folder B by specifying the familiar relation between A and B')
-    parser.add_argument('-s','--siblings',help="Certain individual's siblings.",nargs=0,action=CustomAction)
-    parser.add_argument('-p','--parents',help="Certain individual's parents.",nargs=0,action=CustomAction)
-    parser.add_argument('-ua','--unclesaunts',help="Certain individual's aunts and uncles (there is no gender neutral term).",nargs=0,action=CustomAction)
-    parser.add_argument('-gp','--grandparents',help="Certain individual's grandparents.",nargs=0,action=CustomAction)
-    parser.add_argument('-c','--children',help="Certain individual's children.",nargs=0,action=CustomAction)
+        epilog = 'By chosing an individual A you can filter the different family members that have a specific (either direct or composed) connection - for visual purpouses only.')
+    parser.add_argument('-s','--siblings',help="Individual's siblings.",nargs=0,action=CustomAction)
+    parser.add_argument('-p','--parents',help="Individual's parents.",nargs=0,action=CustomAction)
+    parser.add_argument('-ua','--unclesaunts',help="Individual's uncles and aunts.",nargs=0,action=CustomAction)
+    parser.add_argument('-gp','--grandparents',help="Individual's grandparents.",nargs=0,action=CustomAction)
+    parser.add_argument('-c','--children',help="Individual's children.",nargs=0,action=CustomAction)
     parser.add_argument('-i','--individual',help="Individual to be queried.",nargs=1,required=True)
     
 
@@ -141,13 +141,13 @@ def a_cd():
 
     parser = argparse.ArgumentParser(
         prog = 'anbcd',
-        description = 'Allows to query informations regarding the different familiar connections of the current ancestors notebook.',
+        description = 'Allows to easily change directories inside the current Ancestors Notebook by taking into consideration the different familiar connections that exist.',
         epilog = 'From folder A you go to folder B by specifying the familiar relation between A and B')
-    parser.add_argument('-s','--siblings',help="Certain individual's siblings.",nargs=0,action=CustomAction)
-    parser.add_argument('-p','--parents',help="Certain individual's parents.",nargs=0,action=CustomAction)
-    parser.add_argument('-ua','--unclesaunts',help="Certain individual's aunts and uncles (there is no gender neutral term).",nargs=0,action=CustomAction)
-    parser.add_argument('-gp','--grandparents',help="Certain individual's grandparents.",nargs=0,action=CustomAction)
-    parser.add_argument('-c','--children',help="Certain individual's children.",nargs=0,action=CustomAction)
+    parser.add_argument('-s','--siblings',help="Individual's siblings.",nargs=0,action=CustomAction)
+    parser.add_argument('-p','--parents',help="Individual's parents.",nargs=0,action=CustomAction)
+    parser.add_argument('-ua','--unclesaunts',help="Individual's uncles and aunts.",nargs=0,action=CustomAction)
+    parser.add_argument('-gp','--grandparents',help="Individual's grandparents.",nargs=0,action=CustomAction)
+    parser.add_argument('-c','--children',help="Individual's children.",nargs=0,action=CustomAction)
     parser.add_argument('-i','--individual',help="Individual to be queried.",nargs=1,required=True)
     
 

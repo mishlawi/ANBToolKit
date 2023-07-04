@@ -23,5 +23,6 @@ genDguImage = "anbtk:genDguImage"
 anbpe = "anbtk:anbpe"
 anbadd = "anbtk:createCouple"
 anbsearch = "anbtk:query"
+anbcd = "anbtk:folder_cd"
 anb = "anbtk:anb"
 

@@ -103,7 +103,7 @@ def a_image():
 
 
 
-def a_foldercd():
+def a_search():
     
     class CustomAction(argparse.Action):
         def __call__(self, parser, namespace, values, option_string=None):
@@ -114,7 +114,7 @@ def a_foldercd():
             setattr(namespace, 'ordered_args', previous)
 
     parser = argparse.ArgumentParser(
-        prog = 'anbget',
+        prog = 'anbsearch',
         description = 'Allows to query informations regarding the different familiar connections of the current ancestors notebook.',
         epilog = 'From folder A you go to folder B by specifying the familiar relation between A and B')
     parser.add_argument('-s','--siblings',help="Certain individual's siblings.",nargs=0,action=CustomAction)
@@ -126,6 +126,34 @@ def a_foldercd():
     
 
     return parser.parse_args()
+
+
+
+def a_cd():
+    
+    class CustomAction(argparse.Action):
+        def __call__(self, parser, namespace, values, option_string=None):
+            if not 'ordered_args' in namespace:
+                setattr(namespace, 'ordered_args', [])
+            previous = namespace.ordered_args
+            previous.append((self.dest, values))
+            setattr(namespace, 'ordered_args', previous)
+
+    parser = argparse.ArgumentParser(
+        prog = 'anbcd',
+        description = 'Allows to query informations regarding the different familiar connections of the current ancestors notebook.',
+        epilog = 'From folder A you go to folder B by specifying the familiar relation between A and B')
+    parser.add_argument('-s','--siblings',help="Certain individual's siblings.",nargs=0,action=CustomAction)
+    parser.add_argument('-p','--parents',help="Certain individual's parents.",nargs=0,action=CustomAction)
+    parser.add_argument('-ua','--unclesaunts',help="Certain individual's aunts and uncles (there is no gender neutral term).",nargs=0,action=CustomAction)
+    parser.add_argument('-gp','--grandparents',help="Certain individual's grandparents.",nargs=0,action=CustomAction)
+    parser.add_argument('-c','--children',help="Certain individual's children.",nargs=0,action=CustomAction)
+    parser.add_argument('-i','--individual',help="Individual to be queried.",nargs=1,required=True)
+    
+
+    return parser.parse_args()
+
+
 
 
   

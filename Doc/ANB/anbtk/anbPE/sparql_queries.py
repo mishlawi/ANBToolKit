@@ -1,4 +1,4 @@
-from logging import raiseExceptions
+
 from .. import genealogia
 from .. import dataControl
 from ..auxiliar import argsConfig
@@ -217,18 +217,46 @@ def siblings_folderPath_Qres(individual):
     }}
     """
 
+
+def individual_folderPath_Qres(individual):
+    """
+    Returns a SPARQL query that retrieves the folder path of a specific individual in a family RDF graph.
+
+    Parameters:
+        individual (str): The name of the individual whose folder path should be retrieved.
+
+    Returns:
+        str: A string representing the constructed SPARQL query.
+    """
+    return f"""
+    PREFIX family: <http://example.org/family#>
+
+    SELECT ?folderPath
+    WHERE {{
+        family:{individual} family:hasFolderPath ?folderPath .
+    }}
+    """
+
+
+
 def handle_namespace(namespace):
     return namespace.split('#')[1]
 
 
-def apply_querie(function_type,individual,g,type):
+
+def execute_sparql_query(query_string, graph):
+    query = prepareQuery(query_string)
+    result = graph.query(query)
+    return result
+
+def apply_querie(function_type,individual,g):
     res = []
     if isinstance(individual,str): 
         sparql_qry = function_type(individual)
         result = execute_sparql_query(sparql_qry,g)
         if not result:
             res = []
-            # pass
+    
         else:
             for row in result:
                 row[0].toPython()
@@ -237,31 +265,47 @@ def apply_querie(function_type,individual,g,type):
         return res
 
 
+def compose_header(initial,arguments):
+    header = "The "
+    for (elem,_) in arguments[:-1]:
+        if elem == 'unclesaunts':
+            header += "uncles and aunts of the "
+        else:
+            header += elem + " of the "
+    elem,_ = arguments[-1]
+    if elem == 'unclesaunts':
+        header += f"uncles and aunts of {initial}:"
+    else:
+        header += elem + f" of {initial}:"
+    return header  
+
+
 def handle_queries(type, individual, g):
     try:
         if type == 'siblings':
-            return apply_querie(siblingsQres, individual, g, type)
+            return apply_querie(siblingsQres, individual, g)
         elif type == 'grandparents':
-            return apply_querie(grandparentsQres, individual, g, type)
+            return apply_querie(grandparentsQres, individual, g)
         elif type == 'parents':
-            return apply_querie(parentsQres, individual, g, type)
+            return apply_querie(parentsQres, individual, g)
         elif type == 'unclesaunts':
-            return apply_querie(unclesauntsQres, individual, g, type)
+            return apply_querie(unclesauntsQres, individual, g)
         elif type == 'children':
-            return apply_querie(childrenQres, individual, g, type)
-    except raiseExceptions as e:
+            return apply_querie(childrenQres, individual, g)
+    except Exception as e:
         # Handle the ParseException here
-        print(f" Some error occurred. Individual might not exists.")
+        print(f" Some error occurred. Individual might not exist.")
         return None
 
 def query_composition(path,g):
-    args = argsConfig.a_foldercd()
-    inverted_args = args.ordered_args
-    if args == []:
+    args = argsConfig.a_search()
+    if hasattr(args, 'ordered_args'):
+        inverted_args = args.ordered_args
+    else:
         print("You need to specify what flags you want. Use anbget -h for additional information.")
         exit()
+
     inverted_args = inverted_args[::-1]
-    # initial = individual.replace("-"," ")
     if args.individual[0] == ".":
         individual = os.path.basename(path)
         initial = individual.replace("-", " ")
@@ -271,14 +315,9 @@ def query_composition(path,g):
         individual = args.individual[0]
         initial = args.individual[0].replace("-", " ")
 
-    header = "The "
+    header = compose_header(initial,args.ordered_args) 
     for i, (argument, _) in enumerate(inverted_args):
         if i == len(inverted_args) - 1:
-            if argument == 'unclesaunts':
-                header += f" uncles and aunts of {initial}:"
-            else:
-                header += argument + f" of {initial}:"    
-            
             aux = {}
 
             if isinstance(individual,list):
@@ -309,10 +348,6 @@ def query_composition(path,g):
             print("\n",message)
         
         else:
-            if argument == 'unclesaunts':
-                header += "uncles and aunts of the "
-            else:
-                header += argument + " of the "
             if isinstance(individual,list):
                 aux = []
                 for elem in individual:
@@ -321,28 +356,42 @@ def query_composition(path,g):
             elif isinstance(individual,str):
                 aux = handle_queries(argument,individual,g)
                 individual = aux
+    return unique,message,header
+
+# remove prints and create the message itself in a separate function
 
 
-        
-
-      
-
-
-
-
-def execute_sparql_query(query_string, graph):
-    query = prepareQuery(query_string)
-    result = graph.query(query)
-    return result
-
-def apply_query():
-    cwd =os.getcwd()
+def anb_search():
+    cwd = os.getcwd()
     dataControl.search_anbtk()
     g = genealogia.read_onto_file('anbsafeonto.rdf')
-    query_composition(cwd,g)
+    unique = query_composition(cwd,g)
+    folder_cd_composition(unique,g)
 
+
+
+def folder_cd_composition(unique,g):
+    possibilities = []
+    for value in unique:
+        sparql_qry = individual_folderPath_Qres(value)
+        result = execute_sparql_query(sparql_qry,g)
+        if not result:
+            print("non existing folderpath")
+        else:
+            for row in result:
+                possibilities.append(str(row["folderPath"].toPython()))
+        
 
     
+
+
+
+
+def anb_cd():
+    cwd = os.getcwd()
+    dataControl.search_anbtk()
+    g = genealogia.read_onto_file('anbsafeonto.rdf')
+    folder_cd_composition(cwd,g)
     
 
         

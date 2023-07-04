@@ -63,6 +63,7 @@ from .dgu import dguObject as dgu
 
 
 # ! individual dgubook not working
+# ! todo : gedcom; show family tree
 
 ##############################################################################################################
 ##############################################################################################################
@@ -107,7 +108,7 @@ def createCouple():
     projectionEditor.add_couple()
 
 def query():
-    sparql_queries.apply_query()
+    sparql_queries.anb_search()
 
 ############################## .anb ################################
 

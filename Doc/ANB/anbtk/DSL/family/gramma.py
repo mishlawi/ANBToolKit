@@ -269,6 +269,7 @@ def parsing(filename):
     if family_tree is None:
         print("==================================================================================")
         print("Error while processing the anbtemplate file.")
+        print("Either bad input or no added elements.")
         exit(-1)
 
     return family_tree, meta
@@ -283,6 +284,7 @@ def check_parsing(data):
     if family_tree is None:
         print("==================================================================================")
         print("Error while processing the anbtemplate file.")
+        print("Either bad input or no added elements.")
         exit(-1)
 
     return family_tree, meta

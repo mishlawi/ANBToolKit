@@ -1,3 +1,5 @@
+        
+import inquirer
 import subprocess
 import os
 
@@ -403,12 +405,12 @@ def folder_cd_composition(unique,g):
             for row in result:
                 possibilities.append(str(row["folderPath"].toPython()))
     return possibilities
-        
-import inquirer
+
 
 
 def select_path(paths):
     folder_names = [os.path.basename(path) for path in paths]
+    folder_names.append("Leave")
 
     questions = [
         inquirer.List('path',
@@ -418,6 +420,9 @@ def select_path(paths):
     ]
     answers = inquirer.prompt(questions)
     selected_folder_name = answers['path']
+
+    if selected_folder_name == "Leave":
+        exit()
 
     # Get the corresponding full path for the selected folder name
     selected_path = next(path for path in paths if os.path.basename(path) == selected_folder_name)
@@ -439,7 +444,6 @@ def anb_cd():
             exit()
         os.chdir(dataControl.get_root())
         
-    print(os.getcwd())
     args = argsConfig.a_cd()
     unique,_,_ = query_composition(cwd,g,args)
     possibilities = folder_cd_composition(unique,g)

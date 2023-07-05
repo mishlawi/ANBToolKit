@@ -99,9 +99,10 @@ def add_dates_onto(ages,g):
 
     for individual in ages.items():
 
-        name,dates = individual
-        ousia.add_birthdate(adapt_name(name),dates['birthDate'],g)
-        ousia.add_deathdate(adapt_name(name),dates['deathDate'],g)
+        name,data = individual
+        ousia.add_birthdate(adapt_name(name),data['birthDate'],g)
+        ousia.add_deathdate(adapt_name(name),data['deathDate'],g)
+        ousia.add_nickname(adapt_name(name),data['nickname'],g)
 
 
 def read_onto_file(filename):

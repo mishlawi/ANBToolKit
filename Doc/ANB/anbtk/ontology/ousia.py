@@ -77,6 +77,14 @@ def relationships_ontology(g):
     g.add((has_path_property, RDFS.domain, person_class))
     g.add((has_path_property, RDFS.range, XSD.string))
 
+
+    nickname_property = FAMILY['hasNickname']
+    g.add((nickname_property, RDF.type, OWL.DatatypeProperty))
+    g.add((nickname_property, RDFS.label, Literal('nickname')))
+    g.add((nickname_property, RDFS.domain, person_class))
+    g.add((nickname_property, RDFS.range, XSD.string))
+
+
     # birth date
     birth_date_property = FAMILY['birthDate']
     g.add((birth_date_property, RDF.type, OWL.DatatypeProperty))
@@ -251,12 +259,21 @@ def add_folder(name, path,graph):
 ==========================================================================================
 """
 
-
 def add_complete_individual(name,og_name,bd,dd,graph):
     add_individual(name,og_name,graph)
     add_birthdate(name,bd,graph)
     add_deathdate(name,dd,graph)
 
+
+def add_nickname(name,nickname,graph):
+    individual = FAMILY[name]
+
+    graph.add((individual, FAMILY['nickname'], Literal(nickname, datatype=XSD.string)))
+
+def update_nickname(name,nickname,graph):
+    individual = FAMILY[name]
+    graph.remove((individual,FAMILY['nickname'],None))
+    add_birthdate(name,nickname,graph)
 
 def add_birthdate(name,date,graph):
     individual = FAMILY[name]

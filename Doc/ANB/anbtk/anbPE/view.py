@@ -1,23 +1,46 @@
-
+import inquirer
 
 
 
 def list_and_num_families(dictionary):
     """
-
-    This function takes the dictionary generated after processing the seed file.
-    It iterates over the dictionary, printing each couple and their children with its associated number.
+    This function takes a dictionary generated from processing a seed file.
+    It iterates over the dictionary and prints each family, along with its members and associated number.
 
     Args:
         dictionary (dict): The dictionary of families and their members.
     """
+
+    print("Families:")
+    print("---------")
     
     for i, key in enumerate(dictionary, start=1):
-        print(f"{i}.     {key}")
+        print(f"{i}. {key}")
+        
         for element in dictionary[key]:
-            print(f"        * {element}")
+            print(f"   - {element}")
+            
         print("\n")
+    
     print("0. Leave\n")
+
+
+# def list_and_num_families(dictionary):
+#     """
+
+#     This function takes the dictionary generated after processing the seed file.
+#     It iterates over the dictionary, printing each couple and their children with its associated number.
+
+#     Args:
+#         dictionary (dict): The dictionary of families and their members.
+#     """
+    
+#     for i, key in enumerate(dictionary, start=1):
+#         print(f"{i}.     {key}")
+#         for element in dictionary[key]:
+#             print(f"        * {element}")
+#         print("\n")
+#     print("0. Leave\n")
 
 
 

@@ -37,10 +37,10 @@ from .dgu import dguObject as dgu
 
 # ! FIX TEX2DGU regarding the UTF8
 # * ( ls ) search through the folders
-# * cd folders
-# * i want it so that story and bio (and others) are default formats but the users can create their ones 
+# * cd folders x 
+# * i want it so that story and bio (and others) are default formats but the users can create their ones x
 # * maybe add specs to dont do anything if there are no differences in the sync command
-# * update the onto file so that new entities can be added
+#!  update the onto file so that new entities can be added
 # * anbvc has the absolute path 
 # * update connections , and entities' attributes
 # * show commands : show entities, etc
@@ -64,6 +64,7 @@ from .dgu import dguObject as dgu
 
 # ! individual dgubook not working
 # ! todo : gedcom; show family tree
+# ! data updates and nickname updates should be presented in the anbtemplate when two references exist -> if i add a nickname to jose in the child position, it should appear in the parent position 
 
 ##############################################################################################################
 ##############################################################################################################
@@ -101,7 +102,7 @@ def genDgu(title, attributes, nameofthefile, dir):
     gen_dgus.genDgu(title,attributes,nameofthefile,dir)
 
 #check if .anbtk exists
-def anbpe():
+def anbedit():
     projectionEditor.action()
 
 def createCouple():
@@ -169,7 +170,7 @@ def anb():
 
 
     elif args.subcommand == 'genFolders':
-        print(" --- Ancestors Notebook processing status: --- \n")
+        print(" ---  Ancestors Notebook processing status  --- \n")
         
         if args.source:
             fsgram = args.source[0]
@@ -220,7 +221,7 @@ def anb():
             controlsystem.version_control(path,g)
             genealogia.gen_onto_file(g,'anbsafeonto')
         else:
-            print("✗ Not in any initialized folder.")
+            print("✗ Not in any initialized ANB folder.")
         
     else:
         args.func(args.name, args.attributes, args)

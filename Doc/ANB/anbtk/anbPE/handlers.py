@@ -78,6 +78,7 @@ def handler_add_new_parent_folders(new_parents,updated_block,g):
         os.chdir(cwd)    
 
 
+
 def handler_removed_parent_folders(removed_parents,og_family):
     path = dataControl.get_root()
     cwd = os.getcwd()
@@ -108,19 +109,21 @@ def handler_removed_parent_folders(removed_parents,og_family):
     os.chdir(cwd)
 
 
-def update_dates(elem,g):
+def update_data(elem,g):
     og_name = list(elem.keys())[0]
     bd = elem[og_name]['birthDate']
     dd = elem[og_name]['deathDate']
+    nickname = elem[og_name]['nickname']
     individual = genealogia.adapt_name(og_name)
     ousia.update_birthdate(individual,bd,g)
     ousia.update_deathdate(individual,dd,g)
+    ousia.update_nickname(individual,nickname,g)
 
 def handler_updates(updated_parents, updated_children, g):
     for elem in updated_parents:
-        update_dates(elem,g)
+        update_data(elem,g)
     for elem in updated_children:
-        update_dates(elem,g)
+        update_data(elem,g)
 
 
 

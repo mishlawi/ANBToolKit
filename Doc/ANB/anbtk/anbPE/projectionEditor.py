@@ -124,6 +124,7 @@ def action():
     
 
     og_family, og_dates = gramma.parsing(structure_file_path)
+
     block_number = view.interaction(og_family)
     key = list(og_family.keys())[block_number-1]
     block = view.retrieve_content_by_name(structure_file_path,key)
@@ -131,6 +132,8 @@ def action():
     modified_block = blocks.edit_block(block)
     modified_block = blocks.add_newlines(modified_block)
     changed_block,changed_ids = gramma.check_parsing(modified_block)
+    print(changed_block)
+    print(changed_ids)
 
     
     values,keys = blocks.changed(before_block,changed_block)
@@ -162,7 +165,8 @@ def action():
 
     cwd = os.getcwd()
     os.chdir(dataControl.find_anb())
-    genealogia.gen_onto_file(g,'anbsafeonto')
+    if new_parent!=[] or removed_parent!=[] or updated_parents!=[] or added_children!=[] or removed_children!=[] or updated_children !=[]:
+        genealogia.gen_onto_file(g,'anbsafeonto')
     os.chdir(cwd)
 
 

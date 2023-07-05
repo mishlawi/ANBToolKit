@@ -5,7 +5,7 @@ import ply.yacc as yacc
 grammar = γράμμα
 '''
 #! finish the support of the nicknames
-#! THIS FILE IS TO BE DELETED
+
 
 # Lexer tokens
 tokens = (
@@ -46,6 +46,7 @@ def p_family(p):
     '''
     p[0] = p[1]
 
+
 def p_names(p):
     '''
     Names : Names NAME
@@ -79,18 +80,47 @@ def p_couple(p):
     '''
     Couple : Person PLUS Person NEWLINE Children NEWLINE
     '''
-    
 
     p[0] = {f'{p[1]}+{p[3]}': p[5]}
 
+def p_couple_error_plus(p):
+    '''
+    Couple : Person error Person NEWLINE Children NEWLINE
+    '''
+    print(f"\nMissing PLUS token between {p[1]} and {p[3]}")
 
+
+# def p_couple_error_newline_1(p):
+#     '''
+#     Couple : Person PLUS Person NEWLINE Children error
+#     '''
+#     print(f"\nMissing NEWLINE token after {p[5]}")
+
+
+def p_couple_error_newline_2(p):
+    '''
+    Couple : Person PLUS Person error Children NEWLINE
+    '''
+    print(f"\nMissing NEWLINE token between {p[3]} and {p[5]}")
+
+
+# Names Nickname Dates
 def p_person(p):
     '''
-    Person : Names Nickname Dates
-           | Names Dates
+    Person : Names Dates
            | UND
     '''
-    if len(p)>2:
+    # if len(p) == 4:
+    #     if p[1] in meta.keys():
+    #         print(p[3])
+    #         if meta[p[1]]['birthDate'] != p[3]['birthDate'] or meta[p[1]]['deathDate'] != p[3]['deathDate']:
+    #             print(f"WARNING: {p[1]} is referenced in the document with 2 different dates.")
+    #     else:
+    #         meta[p[1]] = p[3]
+    
+
+    if len(p)==3:
+
         if p[1] in meta.keys():
             if meta[p[1]]['birthDate'] != p[2]['birthDate'] or meta[p[1]]['deathDate'] != p[2]['deathDate']:
                 print(f"WARNING: {p[1]} is referenced in the document with 2 different dates.")
@@ -99,6 +129,7 @@ def p_person(p):
     
         meta[p[1]]['id'] = meta['total'] + 1
         p[0] = p[1] 
+
     if len(p)==2:
         
         meta[f"undiscovered_{p[1][1:]}"] = {'birthDate': '?', 'deathDate': '?'}
@@ -153,6 +184,8 @@ def p_children(p):
             p[0] = []
 
 
+
+
 def p_child(p):
     
     '''
@@ -160,14 +193,30 @@ def p_child(p):
     '''
     p[0] = p[2]
 
+
 # todo 
-def p_nickname(p):
+# def p_nickname(p):
 
-    '''
-    Nickname : LP Names RP
-    '''
+#     '''
+#     Nickname : LP Names RP
+#              | empty
+#     '''
+#     if len(p)>2:
+#         p[0] = p[2]
 
+
+    #    if len(p)==3:
     
+        # if p[1] in meta.keys():
+        #     if meta[p[1]]['birthDate'] != p[2]['birthDate'] or meta[p[1]]['deathDate'] != p[2]['deathDate']:
+        #         print(f"WARNING: {p[1]} is referenced in the document with 2 different dates.")
+        #     if meta[p[1]]['nickname'] != p[2]:
+        #         print(f"WARNING: {p[1]} is referenced in the document with 2 different nickanmes.")
+        # else:
+        #     meta[p[1]] = p[2].update({'nickname':''})
+    
+        # meta[p[1]]['id'] = meta['total'] + 1
+        # p[0] = p[1] 
 
 def p_empty(p):
     '''
@@ -177,6 +226,8 @@ def p_empty(p):
 
 
 def p_error(p):
+    print("==================================================================================")
+    print("===================================== ERRORS =====================================")
     if p:
         error_message = f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token {p.type} ({p.value})"
         
@@ -197,7 +248,9 @@ def p_error(p):
         error_line = lines[p.lineno-1]
         
         
-        print(error_line)
+        print("in:    ", error_line,"\n")
+        
+
     else:
         print("Syntax error: Unexpected end of input")
 
@@ -207,8 +260,11 @@ def p_error(p):
 def t_error(t):
     print(f"Error: Illegal character '{t.value[0]}'")
 
+
+#! yacc.yacc(errorlog=yacc.NullLogger()) TO SURPRESS  WARNING MESSAGES
 parser = yacc.yacc()
 gramma_lexer = lex.lex()
+#lexer = lex.lex(debug=True)    
 check_lexer = lex.lex()
 meta = {'total': 0, 'undiscovered': 0}
 
@@ -221,6 +277,11 @@ def parsing(filename):
     with open(filename) as file:
         data = file.read()
     family_tree = parser.parse(data,lexer=gramma_lexer)
+    if family_tree is None:
+        print("==================================================================================")
+        print("Error while processing the anbtemplate file.")
+        print("Either bad input or no added elements.")
+        exit(-1)
 
     return family_tree, meta
 
@@ -231,6 +292,11 @@ def check_parsing(data):
 
 
     family_tree = parser.parse(data,lexer=check_lexer)
+    if family_tree is None:
+        print("==================================================================================")
+        print("Error while processing the anbtemplate file.")
+        print("Either bad input or no added elements.")
+        exit(-1)
 
     return family_tree, meta
 

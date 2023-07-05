@@ -355,18 +355,22 @@ def query_composition(path,g,args):
                 individual = aux
     return unique,message,header
 
-# remove prints and create the message itself in a separate function
 
+# def show_data(unique,message,header):
 
+#     print(header)
+#     for elem in unique:
+#         print("*", elem.replace("-"," "))
+#     print("\n",message)
 
+from prettytable import PrettyTable
 
-def show_data(unique,message,header):
-
-    print(header)
+def show_data(unique, message, header):
+    table = PrettyTable([header])
     for elem in unique:
-        print("*", elem.replace("-"," "))
-    print("\n",message)
-
+        table.add_row(["* " + elem.replace("-", " ")])
+    print(table)
+    print("\n" + message)
 
 
 def anb_search():
@@ -377,21 +381,6 @@ def anb_search():
     unique,message,header = query_composition(cwd,g,args)
     show_data(unique,message,header)
 
-# def show_list(possibilities):
-#     for index, item in enumerate(possibilities):
-#         print(f"{index + 1}. {item}")
-
-#     user_choice = input("Select the folder: ")
-
-#     try:
-#         user_choice = int(user_choice)
-#         if 1 <= user_choice <= len(possibilities):
-#             chosen_element = possibilities[user_choice - 1]
-#             print(f"You chose: {chosen_element}")
-#         else:
-#             print("Invalid choice!")
-#     except ValueError:
-#         print("✗ Invalid input! You must enter a number.")
 
 
 def folder_cd_composition(unique,g):

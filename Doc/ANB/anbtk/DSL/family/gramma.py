@@ -5,6 +5,7 @@ import ply.yacc as yacc
 grammar = γράμμα
 '''
 #! finish the support of the nicknames
+#! support of new couples
 
 
 # Lexer tokens
@@ -107,16 +108,24 @@ def p_couple_error_newline_2(p):
 # Names Nickname Dates
 def p_person(p):
     '''
-    Person : Names Dates
+    Person : Names Nickname Dates
+           | Names Dates
            | UND
     '''
-    # if len(p) == 4:
-    #     if p[1] in meta.keys():
-    #         print(p[3])
-    #         if meta[p[1]]['birthDate'] != p[3]['birthDate'] or meta[p[1]]['deathDate'] != p[3]['deathDate']:
-    #             print(f"WARNING: {p[1]} is referenced in the document with 2 different dates.")
-    #     else:
-    #         meta[p[1]] = p[3]
+    if len(p) == 4:
+        
+        if p[1] in meta.keys():
+            if meta[p[1]]['birthDate'] != p[3]['birthDate'] or meta[p[1]]['deathDate'] != p[3]['deathDate']:
+                print(f"WARNING: {p[1]} is referenced in the document with 2 different dates.")
+            if  meta[p[1]]['nickname'] != p[2]:
+                print(f"WARNING: {p[1]} is referenced in the document with 2 different nicknames.")
+        else:
+            p[3].update({'nickname':p[2]})
+            meta[p[1]] = p[3]
+            meta[p[1]]['id'] = meta['total'] + 1
+
+        p[0] = p[1]
+    
     
 
     if len(p)==3:
@@ -125,18 +134,20 @@ def p_person(p):
             if meta[p[1]]['birthDate'] != p[2]['birthDate'] or meta[p[1]]['deathDate'] != p[2]['deathDate']:
                 print(f"WARNING: {p[1]} is referenced in the document with 2 different dates.")
         else:
+
+            p[2].update({'nickname':''})
             meta[p[1]] = p[2]
-    
-        meta[p[1]]['id'] = meta['total'] + 1
+            meta[p[1]]['id'] = meta['total'] + 1
         p[0] = p[1] 
 
     if len(p)==2:
         
-        meta[f"undiscovered_{p[1][1:]}"] = {'birthDate': '?', 'deathDate': '?'}
+        meta[f"undiscovered_{p[1][1:]}"] = {'birthDate': '?', 'deathDate': '?','nickname':''}
         meta['undiscovered']+=1
         p[0] = f"undiscovered_{p[1][1:]}"
+    
+    
     meta['total'] += 1
-  
   
 
 
@@ -195,14 +206,11 @@ def p_child(p):
 
 
 # todo 
-# def p_nickname(p):
-
-#     '''
-#     Nickname : LP Names RP
-#              | empty
-#     '''
-#     if len(p)>2:
-#         p[0] = p[2]
+def p_nickname(p):
+    '''
+    Nickname : LP Names RP
+    '''
+    p[0] = p[2]
 
 
     
@@ -214,9 +222,20 @@ def p_empty(p):
     pass
 
 
+
+import shutil
+
+
+
 def p_error(p):
-    print("==================================================================================")
-    print("===================================== ERRORS =====================================")
+    terminal_width = shutil.get_terminal_size().columns
+    divider = "=" * terminal_width
+    error_title = "ERRORS".center(terminal_width)
+
+    print(divider)
+    print(error_title)
+    print(divider)
+
     if p:
         error_message = f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token {p.type} ({p.value})"
         
@@ -226,7 +245,7 @@ def p_error(p):
         elif p.type == 'DATE':
             error_message += " - Invalid date format"
         elif p.type == 'UND':
-            error_message += " - Invalid use of 'undeterminated' token"
+            error_message += " - Invalid use of 'undetermined' token"
         elif p.type == 'UNK':
             error_message += " - Invalid use of 'unknown' token"
         
@@ -234,14 +253,44 @@ def p_error(p):
         
         # Get the line where the error occurred
         lines = p.lexer.lexdata.split("\n")
-        error_line = lines[p.lineno-1]
+        error_line = lines[p.lineno]
         
-        
-        print("in:    ", error_line,"\n")
-        
+        print("in:", error_line)
+        print()
 
     else:
         print("Syntax error: Unexpected end of input")
+
+# def p_error(p):
+    
+#     
+#     print("==================================================================================")
+#     print("===================================== ERRORS =====================================")
+#     if p:
+#         error_message = f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token {p.type} ({p.value})"
+        
+#         # Additional error handling for specific cases
+#         if p.type == 'PLUS':
+#             error_message += " - Invalid use of '+' token"
+#         elif p.type == 'DATE':
+#             error_message += " - Invalid date format"
+#         elif p.type == 'UND':
+#             error_message += " - Invalid use of 'undeterminated' token"
+#         elif p.type == 'UNK':
+#             error_message += " - Invalid use of 'unknown' token"
+        
+#         print(error_message)
+        
+#         # Get the line where the error occurred
+#         lines = p.lexer.lexdata.split("\n")
+#         error_line = lines[p.lineno-1]
+        
+        
+#         print("in:    ", error_line,"\n")
+        
+
+#     else:
+#         print("Syntax error: Unexpected end of input")
 
 
 
@@ -266,8 +315,11 @@ def parsing(filename):
     with open(filename) as file:
         data = file.read()
     family_tree = parser.parse(data,lexer=gramma_lexer)
+
+    terminal_width = shutil.get_terminal_size().columns
+    divider = "=" * terminal_width
     if family_tree is None:
-        print("==================================================================================")
+        print(divider)
         print("Error while processing the anbtemplate file.")
         print("Either bad input or no added elements.")
         exit(-1)
@@ -281,12 +333,18 @@ def check_parsing(data):
 
 
     family_tree = parser.parse(data,lexer=check_lexer)
+
+    terminal_width = shutil.get_terminal_size().columns
+    divider = "=" * terminal_width
     if family_tree is None:
-        print("==================================================================================")
+        print(divider)
         print("Error while processing the anbtemplate file.")
         print("Either bad input or no added elements.")
         exit(-1)
-
+    # print("================================1111111============================================")
+    # print(family_tree)
+    # print("==================================================================================")
+    # print(meta)
     return family_tree, meta
 
 

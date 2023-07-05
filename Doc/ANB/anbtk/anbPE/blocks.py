@@ -101,10 +101,10 @@ def updates(before_block, changed_ids, before_ids, values, keys):
     """
     Updates the block based on the changes made.
 
-    This function takes in the original block, the changed IDs, the IDs before the changes,
-    the values that have changed, and the keys that have changed.
-    It determines the new parent, removed parent, updated parent, added children, removed children,
-    and updated children based on the changes made.
+    This function takes in the original block that was going to be changed, the changed ids (db,dd,nickname) that were changed, the ids before the changes,
+    the values that have changed and the keys that have changed.
+    It determines the changes that were made to the block, either new parents, removed parents, updated parents, added children, removed children,
+    and updated children.
 
     Args:
         before_block (dict): The original block.
@@ -165,7 +165,6 @@ def updates(before_block, changed_ids, before_ids, values, keys):
 
 
 
-
 def dict_to_file(ids,block):
     """
     Converts a dictionary to a string representation of a file.
@@ -197,6 +196,8 @@ def dict_to_file(ids,block):
         dd_p1 = ids[p1]["deathDate"]
         bd_p2 = ids[p2]["birthDate"]
         dd_p2 = ids[p2]["deathDate"]
+        n_p1 = ids[p1]["nickname"]
+        n_p2 = ids[p2]["nickname"]
         if bd_p1 == dd_p1 and bd_p1 == "?":
             string = string + f"{p1} ? +"
         else:

@@ -273,7 +273,7 @@ def add_nickname(name,nickname,graph):
 def update_nickname(name,nickname,graph):
     individual = FAMILY[name]
     graph.remove((individual,FAMILY['nickname'],None))
-    add_birthdate(name,nickname,graph)
+    add_nickname(name,nickname,graph)
 
 def add_birthdate(name,date,graph):
     individual = FAMILY[name]

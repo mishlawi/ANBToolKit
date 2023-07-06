@@ -1,4 +1,3 @@
-        
 import inquirer
 import subprocess
 import os
@@ -6,242 +5,9 @@ import os
 from rdflib.plugins.sparql import prepareQuery
 
 from ..auxiliar import argsConfig
+from . import sparql_queries
 from .. import dataControl
 from .. import genealogia
-
-
-
-def unclesauntsQres(individual):
-      
-    """
-    Returns a SPARQL query as a string to find all aunts/uncles of a given individual in an RDF graph using the family ontology.
-    
-    Parameters:
-    individual (str): The name of the individual to find aunts/uncles for.
-    
-    Returns:
-    str: A SPARQL query string.
-    """
-
-    return f"""PREFIX family: <http://example.org/family#>
-
-SELECT DISTINCT ?auntuncle WHERE {{
-  ?parent family:hasChild family:{individual} .
-  ?grandparent family:hasChild ?parent .
-  ?grandparent family:hasChild ?auntuncle .
-  FILTER(?auntuncle != family:{individual})
-  FILTER(?auntuncle != ?parent)
-}}"""
-
-
-def grandparentsQres(individual):
-      
-    """
-    Returns a SPARQL query as a string to find all grandparents of a given individual in an RDF graph using the family ontology.
-    
-    Parameters:
-    individual (str): The name of the individual to find grandparents for.
-    
-    Returns:
-    str: A SPARQL query string.
-    """
-
-    return f"""
-PREFIX family: <http://example.org/family#>
-
-SELECT ?grandparent WHERE {{
-  family:{individual} family:hasParent ?parent .
-  ?parent family:hasParent ?grandparent .
-  ?grandparent a family:Person .
-}}
-
-"""
-
-def parentsQres(individual):
-    """
-    Returns a SPARQL query as a string to find all parents of a given individual in an RDF graph using the family ontology.
-    
-    Parameters:
-    individual (str): The name of the individual to find parents for.
-    
-    Returns:
-    str: A SPARQL query string.
-    """
-
-    return f"""
-PREFIX family: <http://example.org/family#>
-
-SELECT ?parent WHERE {{
-  family:{individual} family:hasParent ?parent .
-  ?parent a family:Person .
-}}
-"""
-
-
-def childrenQres(individual):
-    """
-    Returns a SPARQL query as a string to find all children of a given individual in an RDF graph using the family ontology.
-    
-    Parameters:
-    individual (str): The name of the individual to find children for.
-    
-    Returns:
-    str: A SPARQL query string.
-    """
-
-    return f"""
-    PREFIX family: <http://example.org/family#>
-
-SELECT DISTINCT ?child
-WHERE {{
-  ?child family:hasParent family:{individual} .
-}}
-"""
-
-
-
-def siblingsQres(individual):
-    
-    """
-    Returns a SPARQL query as a string to find all siblings of a given individual in an RDF graph using the family ontology.
-    
-    Parameters:
-    individual (str): The name of the individual to find siblings for.
-    
-    Returns:
-    str: A SPARQL query string.
-    """
-
-    return f"""
-    PREFIX family: <http://example.org/family#>
-
-SELECT DISTINCT ?sibling
-WHERE {{
-  
-  family:{individual} family:hasParent ?parent .
-  
-
-  ?sibling family:hasParent ?parent .
-  
-  FILTER (?sibling != family:{individual})
-}}
-"""
-
-
-def gp_folderPath_Qres(individual):
-    """
-    Returns a SPARQL query that retrieves the folders of the grandparents of an individual in a family RDF graph.
-    
-    Args:
-        individual (str): The name of the individual whose grandparents' folders should be retrieved.
-        
-    Returns:
-        str: A string representing the constructed SPARQL query.
-    """
-
-
-    return f"""
-PREFIX family: <http://example.org/family#>
-
-SELECT ?folder
-WHERE {{
-  ?person family:hasChild family:{individual} .
-  ?parent family:hasChild ?person .
-  ?parent family:hasFolderPath ?folder .
-}}
-
-"""
-
-
-def parents_folderPath_Qres(individual):
-    """
-    Returns a SPARQL query that retrieves the folders of the parents of an individual in a family RDF graph.
-
-    Parameters:
-        individual (str): The name of the individual whose parents' folders should be retrieved.
-
-    Returns:
-        str: A string representing the constructed SPARQL query.
-    """
-    return f"""
-    PREFIX family: <http://example.org/family#>
-
-    SELECT ?folder
-    WHERE {{
-        family:{individual} family:hasParent ?parent .
-        ?parent family:hasFolderPath ?folder .
-    }}
-    """
-
-
-def children_folderPath_Qres(individual):
-    """
-    Returns a SPARQL query that retrieves the folders of the children of an individual in a family RDF graph.
-
-    Parameters:
-        individual (str): The name of the individual whose children's folders should be retrieved.
-
-    Returns:
-        str: A string representing the constructed SPARQL query.
-    """
-    return f"""
-    PREFIX family: <http://example.org/family#>
-
-    SELECT ?folder
-    WHERE {{
-        ?child family:hasParent family:{individual} .
-        ?child family:hasFolderPath ?folder .
-    }}
-    """
-
-
-
-
-
-def siblings_folderPath_Qres(individual):
-    """
-    Returns a SPARQL query that retrieves the folders of the siblings of an individual in a family RDF graph.
-
-    Parameters:
-        individual (str): The name of the individual whose siblings' folders should be retrieved.
-
-    Returns:
-        str: A string representing the constructed SPARQL query.
-    """
-    return f"""
-    PREFIX family: <http://example.org/family#>
-
-    SELECT DISTINCT ?folder
-    WHERE {{
-        ?sibling family:hasParent ?parent .
-        ?sibling family:hasFolderPath ?folder .
-        FILTER (?sibling != family:{individual})
-        FILTER EXISTS {{
-            family:{individual} family:hasParent ?parent .
-        }}
-    }}
-    """
-
-
-def individual_folderPath_Qres(individual):
-    """
-    Returns a SPARQL query that retrieves the folder path of a specific individual in a family RDF graph.
-
-    Parameters:
-        individual (str): The name of the individual whose folder path should be retrieved.
-
-    Returns:
-        str: A string representing the constructed SPARQL query.
-    """
-    return f"""
-    PREFIX family: <http://example.org/family#>
-
-    SELECT ?folderPath
-    WHERE {{
-        family:{individual} family:hasFolderPath ?folderPath .
-    }}
-    """
-
 
 
 def handle_namespace(namespace):
@@ -288,15 +54,15 @@ def compose_header(initial,arguments):
 def handle_queries(type, individual, g):
     try:
         if type == 'siblings':
-            return apply_querie(siblingsQres, individual, g)
+            return apply_querie(sparql_queries.siblingsQres, individual, g)
         elif type == 'grandparents':
-            return apply_querie(grandparentsQres, individual, g)
+            return apply_querie(sparql_queries.grandparentsQres, individual, g)
         elif type == 'parents':
-            return apply_querie(parentsQres, individual, g)
+            return apply_querie(sparql_queries.parentsQres, individual, g)
         elif type == 'unclesaunts':
-            return apply_querie(unclesauntsQres, individual, g)
+            return apply_querie(sparql_queries.unclesauntsQres, individual, g)
         elif type == 'children':
-            return apply_querie(childrenQres, individual, g)
+            return apply_querie(sparql_queries.childrenQres, individual, g)
     except Exception as e:
         # Handle the ParseException here
         print(f"✗ Some error occurred. Individual might not exist.")
@@ -378,6 +144,9 @@ def anb_search():
     dataControl.search_anbtk()
     g = genealogia.read_onto_file('anbsafeonto.rdf')
     args = argsConfig.a_search()
+    if not any([args.siblings, args.parents, args.unclesaunts, args.grandparents, args.children]):
+        print("✗ At least one of the flags -s, -p, -ua, -gp, -c is required.")
+        exit()
     unique,message,header = query_composition(cwd,g,args)
     show_data(unique,message,header)
 
@@ -386,7 +155,7 @@ def anb_search():
 def folder_cd_composition(unique,g):
     possibilities = []
     for value in unique:
-        sparql_qry = individual_folderPath_Qres(value)
+        sparql_qry = sparql_queries.individual_folderPath_Qres(value)
         result = execute_sparql_query(sparql_qry,g)
         if not result:
             print("✗ Non-existing folderpath.")
@@ -434,6 +203,10 @@ def anb_cd():
         os.chdir(dataControl.get_root())
         
     args = argsConfig.a_cd()
+    if not any([args.siblings, args.parents, args.unclesaunts, args.grandparents, args.children]):
+        print("✗ At least one of the flags -s, -p, -ua, -gp, -c is required.")
+        exit()
+    
     unique,_,_ = query_composition(cwd,g,args)
     possibilities = folder_cd_composition(unique,g)
     selected_folder = select_path(possibilities)
@@ -448,5 +221,3 @@ def anb_cd():
     
 
         
-
-

@@ -1,5 +1,6 @@
 import subprocess
 import os
+import threading 
 
 from ..DSL.family import gramma
 
@@ -38,7 +39,6 @@ def edit_block(config_data):
     os.remove(temp_filename)
 
     return modified_block
-
 
 # need to add error handling
 def check_errors(modified_block):
@@ -91,8 +91,6 @@ def changed(dict1,dict2):
     changed_values['removed'] = removed
     changed_values['added'] = added
     return changed_values,changed_key
-
-
 
 
 
@@ -165,9 +163,9 @@ def updates(before_block, changed_ids, before_ids, values, keys):
 
 
 
-def dict_to_file(ids,block):
+def dict_to_file(block,ids):
     """
-    Converts a dictionary to a string representation of a file.
+    Converts a dictionary to the correct representation of an anb temp file.
 
     This function takes in an IDs dictionary and a block dictionary, and it converts them into a string
     representation of a file. The IDs and block information are formatted according to specific rules.
@@ -192,30 +190,47 @@ def dict_to_file(ids,block):
             p1 = p1.split("_")[1]
         if p2.startswith("undiscovered"):
             p2 = p2.split("_")[1]
+
         bd_p1 = ids[p1]["birthDate"]
         dd_p1 = ids[p1]["deathDate"]
         bd_p2 = ids[p2]["birthDate"]
         dd_p2 = ids[p2]["deathDate"]
         n_p1 = ids[p1]["nickname"]
         n_p2 = ids[p2]["nickname"]
+
+        string += f"{p1} "
+        
+        if n_p1 != '':
+            string += f"({n_p1}) "
+        
         if bd_p1 == dd_p1 and bd_p1 == "?":
-            string = string + f"{p1} ? +"
+            string = string + f"? + "
         else:
-            string = string + f"{p1} ({bd_p1} {dd_p1}) +"
+            string = string + f"({bd_p1} {dd_p1}) +"
+
+        string += f"{p2} "
+        
+        if n_p2 != '':
+            string += f"({n_p2}) "
+
         if bd_p2 == dd_p2 and bd_p2 == "?":
-            string = string + f" {p2} ?\n"
+            string = string + f"?\n"
         else:
-            string = string + f" {p2} ({bd_p2} {dd_p2})\n"
+            string = string + f"({bd_p2} {dd_p2})\n"
         for child in value:
             if child.startswith("undiscovered"):
                 string = string + '.#' + child.split("_")[1] + '\n'
             else:
                 bd = ids[child]["birthDate"]
                 dd = ids[child]["deathDate"]
+                nn = ids[child]["nickname"]
+                string += f".{child} "
+                if nn != '':
+                    string += f"({nn}) "
                 if bd == dd and bd == "?":
-                    string = string + f".{child} ?\n"
+                    string = string + f"?\n"
                 else:
-                    string = string + f".{child} ({bd} {dd})\n"
+                    string = string + f"({bd} {dd})\n"
         string += '\n'
     return string
 
@@ -247,7 +262,7 @@ def add_new_dict_block_file(file,block,ids):
     with open(file, 'r') as sf:
         text = sf.read()
 
-    text += dict_to_file(ids,block)
+    text += dict_to_file(block,ids)
 
     with open(file, 'w') as sf:
         sf.write(text)

@@ -1,28 +1,5 @@
 import inquirer
-
-
-
-def list_and_num_families(dictionary):
-    """
-    This function takes a dictionary generated from processing a seed file.
-    It iterates over the dictionary and prints each family, along with its members and associated number.
-
-    Args:
-        dictionary (dict): The dictionary of families and their members.
-    """
-
-    print("Families:")
-    print("---------")
-    
-    for i, key in enumerate(dictionary, start=1):
-        print(f"{i}. {key}")
-        
-        for element in dictionary[key]:
-            print(f"   - {element}")
-            
-        print("\n")
-    
-    print("0. Leave\n")
+import shutil
 
 
 # def list_and_num_families(dictionary):
@@ -42,6 +19,35 @@ def list_and_num_families(dictionary):
 #         print("\n")
 #     print("0. Leave\n")
 
+terminal_width = shutil.get_terminal_size().columns
+divider = "=" * terminal_width
+
+def list_and_num_families(dictionary):
+    """
+    This function takes a dictionary generated from processing a seed file.
+    It iterates over the dictionary and prints each family, along with its members and associated number.
+
+    Args:
+        dictionary (dict): The dictionary of families and their members.
+    """
+    title = "Families:".center(terminal_width)
+    print(divider)
+    print()
+    print(title)
+    print(divider)
+    
+    for i, key in enumerate(dictionary, start=1):
+        print(f"{i}. {key}")
+        
+        for element in dictionary[key]:
+            print(f"   - {element}")
+            
+        print("\n")
+    
+    print("0. Leave\n")
+
+
+
 
 
 def interaction(og_family):
@@ -54,10 +60,12 @@ def interaction(og_family):
     Returns:
         int: The number of the chosen block.
     """
+
     length = len(og_family.keys())
     while True:
         try:
             list_and_num_families(og_family)
+            print(divider)
             number = int(input(f"Choose a block to be edited: "))
             if 0 < number <= length:
                 return number
@@ -66,7 +74,6 @@ def interaction(og_family):
             else:
                 print(f"Number should be between 0 and {length}. Try again.")
         except ValueError:
-
             print("\n> Invalid input. Please enter a number.")
     
 

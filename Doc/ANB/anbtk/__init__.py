@@ -12,7 +12,7 @@ from . import dataControl
 from . import controlsystem
 from .anbPE import projectionEditor
 from .anbPE import blocks
-from .anbPE import sparql_queries
+from .filters import filters
 
 from .actions import latex
 from .actions import book
@@ -72,6 +72,8 @@ from .dgu import dguObject as dgu
 ##############################################################################################################
 
 
+#! readline bib para completação
+
 def dgu2texbook():
     latex.dgu2texbook()
 
@@ -109,10 +111,10 @@ def createCouple():
     projectionEditor.add_couple()
 
 def query():
-    sparql_queries.anb_search()
+    filters.anb_search()
 
 def folder_cd():
-    sparql_queries.anb_cd()
+    filters.anb_cd()
 
 
 ############################## .anb ################################
@@ -194,7 +196,7 @@ def anb():
                 g,(fam_structure,fam_ids) = genealogia.onto_folders_correspondence(seed,family=family,entities=fsgram)
                 #! error handling needed here for errors in the seed file
             
-                file_structure = blocks.dict_to_file(fam_ids,fam_structure)
+                file_structure = blocks.dict_to_file(fam_structure,fam_ids)
                 
                 with open(os.path.join(dataControl.find_anb(),'anbtemp.txt'),'w') as anbtemp:             
                     anbtemp.write(file_structure)

@@ -148,7 +148,8 @@ def a_cd():
     parser.add_argument('-ua','--unclesaunts',help="Individual's uncles and aunts.",nargs=0,action=CustomAction)
     parser.add_argument('-gp','--grandparents',help="Individual's grandparents.",nargs=0,action=CustomAction)
     parser.add_argument('-c','--children',help="Individual's children.",nargs=0,action=CustomAction)
-    parser.add_argument('-i','--individual',help="Individual to be queried.",nargs=1,required=True)
+    parser.add_argument('-i','--individual',help="Individual to be queried.",nargs=1,required=True,default=input_with_completion("Enter -i: "))
+    
     
 
     return parser.parse_args()
@@ -156,4 +157,42 @@ def a_cd():
 
 
 
-  
+
+import readline
+
+from .. import dataControl
+import os
+
+
+    #folders = [folder for folder in os.listdir(os.getcwd()) if os.path.isdir(folder) and not folder.startswith('.')]
+
+
+class CustomAction(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        if not 'ordered_args' in namespace:
+            setattr(namespace, 'ordered_args', [])
+        previous = getattr(namespace, 'ordered_args')
+        previous.append((self.dest, values))
+        setattr(namespace, 'ordered_args', previous)
+
+def input_with_completion(prompt):
+    os.chdir(dataControl.get_root())
+    folders = ['banana', 'salt']
+
+    if prompt == "Enter -i: ":
+        def completer(text, state):
+            matches = [name for name in folders if name.startswith(text)]
+            if state < len(matches):
+                return matches[state]
+            else:
+                return None
+
+        readline.set_completer(completer)
+        readline.parse_and_bind("tab: complete")
+        return input("")
+    else:
+        return input(prompt)
+    
+
+
+    

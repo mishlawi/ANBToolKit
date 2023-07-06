@@ -341,10 +341,7 @@ def check_parsing(data):
         print("Error while processing the anbtemplate file.")
         print("Either bad input or no added elements.")
         exit(-1)
-    # print("================================1111111============================================")
-    # print(family_tree)
-    # print("==================================================================================")
-    # print(meta)
+   
     return family_tree, meta
 
 

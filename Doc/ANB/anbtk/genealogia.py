@@ -111,6 +111,8 @@ def read_onto_file(filename):
 
     return g 
 
+    
+
 
 def defineOnto(family_structure,ages):
     
@@ -124,12 +126,32 @@ def defineOnto(family_structure,ages):
     return g
 
 
+def raw_initialization(file,family):
+    cwd = os.getcwd()
+    dataControl.search_anbtk()
+    family_structure, ids = gramma.parsing(file)
+    if family_structure is None:
+        print("✗ Failed to parse the family structure. Some errors might exist in the anbtemplate")
+        exit()
+
+    print("✓ Successfully parsed the anb template file.")
+
+    
+    g = defineOnto(family_structure,ids)
+    os.chdir(cwd)
+    for couple, children in family_structure.items():    
+        gen_parents_folders(couple, children, g, family)
+    return g
+
+
+
+
 
 def onto_folders_correspondence(file, family, entities=""):
     family_structure, ages = gramma.parsing(file)
     
     if family_structure is None:
-        print("✗ Failed to parse family structure. Some errors might exist in the anbtemplate")
+        print("✗ Failed to parse the family structure. Some errors might exist in the anbtemplate")
         exit()
 
     print("✓ Successfully parsed the anb template file.")

@@ -52,27 +52,28 @@ def relative_to_anbtk(path):
 
 def initanb(grampath="",folderpath=""):
     cwd = os.getcwd()
-    if os.path.exists(cwd + '/.anbtk'):
-        print("✗ This folder was already initialized as an Ancestors Notebook or there might be an existing anb with the default name.")
-        exit(1)
-    elif find_anb() is not None:
-        print("✗ You are already in an Ancestors Notebook")  
-        exit(1)
-    else:
-        os.mkdir(filepath := (cwd + '/.anbtk'))
-        os.chdir(filepath)
-        initData()
-        
-        if grampath=="":
-            FSGram.initializer()
+    if not os.path.exists(cwd + "/.anbtk/anbtemp.txt"):
+        if os.path.exists(cwd + '/.anbtk'):
+            print("✗ This folder was already initialized as an Ancestors Notebook or there might be an existing anb with the default name.")
+            exit(1)
+        elif find_anb() is not None:
+            print("✗ You are already in an Ancestors Notebook")  
+            exit(1)
         else:
-            if os.path.dirname(grampath)!='':
-                os.chdir(os.path.dirname(os.path.abspath(grampath)))
-            temp = open(grampath,'r').read()
+            os.mkdir(filepath := (cwd + '/.anbtk'))
             os.chdir(filepath)
-            FSGram.initializer(temp)
-        templateGen()
-    os.chdir(cwd)
+            initData()
+            
+            if grampath=="":
+                FSGram.initializer()
+            else:
+                if os.path.dirname(grampath)!='':
+                    os.chdir(os.path.dirname(os.path.abspath(grampath)))
+                temp = open(grampath,'r').read()
+                os.chdir(filepath)
+                FSGram.initializer(temp)
+            templateGen()
+        os.chdir(cwd)
 
 
 

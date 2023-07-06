@@ -11,7 +11,7 @@ from . import handlers
 
 # dbfile for db 
        
-
+#! CLEAR OS.CHDIR
 #! elements that already exist are still not handled, except when they are children of someone
 #! do a changer that checks the dates for "inconsistencias" if they are, change for the originals, as it is intended
 
@@ -53,16 +53,29 @@ def child_to_parent(individual1,og_name1,individual2,og_name2,ids,og_dates,g):
 # check for existing parents
 
 
+def anb_raw_init(block,id,root):
+    new_couple_str = blocks.dict_to_file(block,id)
+    dot_anbtk = dataControl.find_anb()
+
+    with open(f'{dot_anbtk}/anbtemp.txt','w') as anbtemp:
+        anbtemp.write(new_couple_str)
+    os.chdir(root)
+    g = genealogia.raw_initialization('anbtemp.txt',root)
+
+    dataControl.search_anbtk()
+    genealogia.gen_onto_file(g,'anbsafeonto')
+
+
+
 #! try to change the chdir to the maximum and clear this mess
 def add_couple():
     if dataControl.find_anb() == None:
         print("You are not in an initialized Ancestors Notebook.")
         exit()
     root = dataControl.get_root()
-    path = dataControl.get_root()
     cwd = os.getcwd()
-    os.chdir(path)
-    path = os.path.basename(path)
+    os.chdir(root)
+    path = os.path.basename(root)
 
     verify_anbtemp = False
     if os.path.exists(os.path.join(root,'.anbtk/anbtemp.txt')):
@@ -78,18 +91,7 @@ def add_couple():
         exit()        
     
     if not verify_anbtemp:
-        new_couple_str = blocks.dict_to_file(block,ids)
-        dataControl.search_anbtk()
-
-        with open('anbtemp.txt','w') as anbtemp:
-            anbtemp.write(new_couple_str)
-        os.chdir(root)
-        g = genealogia.raw_initialization('anbtemp.txt',root)
-
-        dataControl.search_anbtk()
-        genealogia.gen_onto_file(g,'anbsafeonto')
-
-
+        anb_raw_init(block,ids,root)
 
 
     else:

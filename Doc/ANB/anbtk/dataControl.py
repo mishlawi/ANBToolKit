@@ -34,20 +34,26 @@ def find_anb():
         current_dir = new_dir
 
 
-def get_root():
-    if (anbtk_path:=find_anb())!=None:
-        return os.path.dirname(anbtk_path)
 
+def search_anbtk():
 
+    """
+    Searches for the existence of an `.anbtk` folder in the current directory or any of its parent directories, and changes the working directory to the `.anbtk` folder if found. If the folder is not found, it changes the working directory back to its original location and returns False.
 
-def relative_to_anbtk(path):
-    if (anbtk_path := find_anb()) != None:
-        seed_folder = os.path.dirname(anbtk_path)
-        relative_path = Path(path).relative_to(seed_folder)
-        relative_path = os.path.join(os.path.basename(seed_folder),relative_path)
-        relative_path =   "/".join(relative_path.split("/")[1:])
-        return relative_path
-
+    Returns:
+    bool:
+        True if the `.anbtk` folder is found and the working directory is changed to it, False otherwise.
+    """
+    save = os.getcwd()
+    current_dir = os.getcwd()
+    while current_dir != '/':
+        folder_path = os.path.join(current_dir, '.anbtk')
+        if os.path.isdir(folder_path):
+            os.chdir(folder_path)
+            return True
+        current_dir = os.path.dirname(current_dir)
+    os.chdir(save)
+    return False
 
 
 def initanb(grampath="",folderpath=""):
@@ -74,6 +80,23 @@ def initanb(grampath="",folderpath=""):
                 FSGram.initializer(temp)
             templateGen()
         os.chdir(cwd)
+
+
+def get_root():
+    if (anbtk_path:=find_anb())!=None:
+        return os.path.dirname(anbtk_path)
+
+
+
+def relative_to_anbtk(path):
+    if (anbtk_path := find_anb()) != None:
+        seed_folder = os.path.dirname(anbtk_path)
+        relative_path = Path(path).relative_to(seed_folder)
+        relative_path = os.path.join(os.path.basename(seed_folder),relative_path)
+        relative_path =   "/".join(relative_path.split("/")[1:])
+        return relative_path
+
+
 
 
 
@@ -147,26 +170,6 @@ def templateGen():
 
 
 
-
-def search_anbtk():
-
-    """
-    Searches for the existence of an `.anbtk` folder in the current directory or any of its parent directories, and changes the working directory to the `.anbtk` folder if found. If the folder is not found, it changes the working directory back to its original location and returns False.
-
-    Returns:
-    bool:
-        True if the `.anbtk` folder is found and the working directory is changed to it, False otherwise.
-    """
-    save = os.getcwd()
-    current_dir = os.getcwd()
-    while current_dir != '/':
-        folder_path = os.path.join(current_dir, '.anbtk')
-        if os.path.isdir(folder_path):
-            os.chdir(folder_path)
-            return True
-        current_dir = os.path.dirname(current_dir)
-    os.chdir(save)
-    return False
 
 
 

@@ -116,6 +116,8 @@ def query():
 def folder_cd():
     filters.anb_cd()
 
+def folder_sd():
+    filters.anb_ls()
 
 ############################## .anb ################################
 

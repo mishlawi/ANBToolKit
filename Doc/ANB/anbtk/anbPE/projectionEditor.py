@@ -67,8 +67,6 @@ def anb_raw_init(block,id,root):
     genealogia.gen_onto_file(g,'anbsafeonto')
 
 
-
-#! try to change the chdir to the maximum and clear this mess
 def add_couple():
     if dataControl.find_anb() == None:
         print("You are not in an initialized Ancestors Notebook.")
@@ -119,6 +117,11 @@ def add_couple():
         p1 = genealogia.adapt_name(og_name_p1)
         p2 = genealogia.adapt_name(og_name_p2)
 
+
+        if f"{og_name_p1}+{og_name_p2}" in all_parents or f"{og_name_p2}+{og_name_p1}" in all_parents:
+            print(f"The couple '{og_name_p1} + {og_name_p2} ' already exists!")
+            exit()
+
         if not p1_is_child and not p2_is_child and not p1_is_parent and not p2_is_parent:
             #both parents didnt exist
             unique_parent_creation(p1,p2,og_name_p1,og_name_p2,parents,children,block,ids,path,g)             
@@ -131,16 +134,12 @@ def add_couple():
                 if not all([p2_is_child,p2_is_parent]):
                     child_to_parent(p2,og_name_p2,p1,og_name_p1,ids,og_ids,g)
             elif not all([p1_is_child,p1_is_parent]) and not all([p2_is_child,p2_is_parent]):
-                if f"{og_name_p1}+{og_name_p2}" in all_parents or f"{og_name_p2}+{og_name_p1}" in all_parents:
-                    print(f"The couple '{og_name_p1} + {og_name_p2} ' already exists!")
-                    exit()
-                print(handlers.get_children_parent(og_family,og_name_p1))
-                print(handlers.get_children_parent(og_family,og_name_p2))
-                if og_name_p2 in handlers.get_children_parent(og_family,og_name_p1) or  og_name_p1 in handlers.get_children_parent(og_family,og_name_p2) :
+                
+                if og_name_p2 in handlers.get_children_parent(og_family,og_name_p1) or og_name_p1 in handlers.get_children_parent(og_family,og_name_p2) :
                     print("It's not possible from a child and a parent to marry!")
                     exit()
-                print("just newly created couple")
-
+                print("just newly created couple")                
+                
                 #both exist like kids
                 ousia.add_hasSpouse(p1,p2,g)
                 if ids[og_name_p1]['birthDate'] != og_ids[og_name_p1]['birthDate']:

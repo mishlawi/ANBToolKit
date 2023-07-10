@@ -115,6 +115,32 @@ WHERE {{
 }}
 """
 
+'============================ATTRIBUTES================================='
+
+def individual_label_Qres(individual):
+    """
+    Returns a SPARQL query that retrieves the label of an individual in a family RDF graph.
+
+    Parameters:
+        individual (str): The name of the individual whose label should be retrieved.
+
+    Returns:
+        str: A string representing the constructed SPARQL query.
+    """
+    return f"""
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX : <http://example.org/family#>
+
+    SELECT ?label
+    WHERE {{
+        :{individual} rdfs:label ?label .
+    }}
+    """
+
+'''
+============================FOLDERS=====================================
+'''
+
 
 def gp_folderPath_Qres(individual):
     """

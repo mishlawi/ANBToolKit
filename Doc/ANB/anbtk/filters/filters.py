@@ -189,12 +189,42 @@ def select_path(paths):
 
 
 def anb_cd():
+    print("alkjglakjg")
     cwd = os.getcwd()
     if not dataControl.search_anbtk():
         print("✗ You are not in an Ancestors Notebook." )
         exit()
     else:
-        # dataControl.search_anbtk()
+        try:
+            g = genealogia.read_onto_file('anbsafeonto.rdf')
+        except FileNotFoundError:
+            print("No ontology was initialized.\nWas this ancestor notebook created from scratch? There doesn't seem to exist any .rdf file that defines the familiar connections.")
+            exit()
+        os.chdir(dataControl.get_root())
+    print("klajhgkajshgj")    
+    args = argsConfig.a_cd()
+    if not any([args.siblings, args.parents, args.unclesaunts, args.grandparents, args.children]):
+        print("✗ At least one of the flags -s, -p, -ua, -gp, -c is required.")
+        exit()
+    print("asjkghakjghkajghk")
+    unique,_,_ = query_composition(cwd,g,args)
+    possibilities = folder_cd_composition(unique,g)
+    selected_folder = select_path(possibilities)
+    selected_folder = selected_folder.split("/")[1]
+    print("alkjgslakjglakjg")
+    try:
+        subprocess.check_call(f"cd {selected_folder} && exec $SHELL", shell=True)
+    except subprocess.CalledProcessError:
+            print("Some problem in finding the folder. Were any manual naming changes made to the Ancestors Notebook folder?.")
+            exit()
+
+
+def anb_ls():
+    cwd = os.getcwd()
+    if not dataControl.search_anbtk():
+        print("✗ You are not in an Ancestors Notebook." )
+        exit()
+    else:
         try:
             g = genealogia.read_onto_file('anbsafeonto.rdf')
         except FileNotFoundError:
@@ -203,21 +233,34 @@ def anb_cd():
         os.chdir(dataControl.get_root())
         
     args = argsConfig.a_cd()
-    if not any([args.siblings, args.parents, args.unclesaunts, args.grandparents, args.children]):
-        print("✗ At least one of the flags -s, -p, -ua, -gp, -c is required.")
-        exit()
     
     unique,_,_ = query_composition(cwd,g,args)
     possibilities = folder_cd_composition(unique,g)
     selected_folder = select_path(possibilities)
     selected_folder = selected_folder.split("/")[1]
     try:
-        subprocess.check_call(f"cd {selected_folder} && exec $SHELL", shell=True)
+        subprocess.check_call(f"ls {selected_folder} && exec $SHELL", shell=True)
     except subprocess.CalledProcessError:
             print("Some problem in finding the folder. Were any manual naming changes made to the Ancestors Notebook folder?.")
             exit()
-    
-    
-    
 
+    
+def lazy_search(names,search_name): 
+    """
+    Search for individuals in the list of names whose second or third name starts with the given search term.
+
+    Parameters:
+        names (list): A list of names to search through.
+        search_name (str): The search term to match against the second or third name of individuals.
+
+    Returns:
+        list: A list of individuals whose second or third name starts with the search term.
+    """
+    matching_individuals = []
+    for name in names:
+        name_parts = name.split('-')
+        if len(name_parts) >= 3 and (search_name.lower() == name_parts[1].lower()[:len(search_name)] or
+                                     search_name.lower() == name_parts[2].lower()[:len(search_name)]):
+            matching_individuals.append(name)
+    return matching_individuals
         

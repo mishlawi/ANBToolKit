@@ -24,5 +24,6 @@ anbedit = "anbtk:anbedit"
 anbadd = "anbtk:createCouple"
 anbsearch = "anbtk:query"
 anbcd = "anbtk:folder_cd"
+anbls = "anbtk:folder_ls"
 anb = "anbtk:anb"
 

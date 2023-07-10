@@ -5,47 +5,62 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
 >
-  <rdf:Description rdf:about="http://example.org/family#Rui-Miguel-Santos-Ferreira">
+  <rdf:Description rdf:about="http://example.org/family#Susana-Rodrigues">
     <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Rui Miguel Santos Ferreira</rdfs:label>
-    <hasParent rdf:resource="http://example.org/family#José-Augusto-Santos"/>
-    <hasParent rdf:resource="http://example.org/family#Susana-Rodrigues"/>
-    <hasSpouse rdf:resource="http://example.org/family#Mariana-da-Costa-Almeida"/>
-    <hasChild rdf:resource="http://example.org/family#Silvestre-Tiago-Almeida-Santos-Ferreira"/>
-    <hasChild rdf:resource="http://example.org/family#Rodrigo-Diogo-Almeida-Santos-Ferreira"/>
-    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1970</birthDate>
-    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-</deathDate>
-    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Rui-Miguel-Santos-Ferreira</hasFolderPath>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#hasParent">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
-    <rdfs:label>has parent</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
-    <rdfs:range rdf:resource="http://example.org/family#Person"/>
-    <owl:inverseOf rdf:resource="http://example.org/family#hasChild"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#José-Augusto-Santos">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>José Augusto Santos</rdfs:label>
-    <hasParent rdf:resource="http://example.org/family#Luciana-Abreu-Loureiro"/>
-    <hasParent rdf:resource="http://example.org/family#Lucas-Esteves-Cardoso"/>
-    <hasSpouse rdf:resource="http://example.org/family#Susana-Rodrigues"/>
+    <rdfs:label>Susana Rodrigues</rdfs:label>
+    <hasSpouse rdf:resource="http://example.org/family#José-Augusto-Santos"/>
     <hasChild rdf:resource="http://example.org/family#Rui-Miguel-Santos-Ferreira"/>
     <hasChild rdf:resource="http://example.org/family#Silvana-Isabel-Santos-Ferreira"/>
-    <hasChild rdf:resource="http://example.org/family#Pedro-Miguel-Santos-Ferreira"/>
-    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1947</birthDate>
-    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2019</deathDate>
-    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/José-Augusto-Santos</hasFolderPath>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Mariana-da-Costa-Almeida">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Mariana da Costa Almeida</rdfs:label>
-    <hasSpouse rdf:resource="http://example.org/family#Rui-Miguel-Santos-Ferreira"/>
-    <hasChild rdf:resource="http://example.org/family#Silvestre-Tiago-Almeida-Santos-Ferreira"/>
-    <hasChild rdf:resource="http://example.org/family#Rodrigo-Diogo-Almeida-Santos-Ferreira"/>
-    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1972</birthDate>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1956</birthDate>
     <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-</deathDate>
-    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Mariana-da-Costa-Almeida</hasFolderPath>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Susana-Rodrigues</hasFolderPath>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Santos">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Santos</rdfs:label>
+    <hasSpouse rdf:resource="http://example.org/family#Ruca"/>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Santos</hasFolderPath>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#birthDate">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>birth date</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Rita-Lee">
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Rita-Lee</hasFolderPath>
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Rita Lee</rdfs:label>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1954</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2023</deathDate>
+    <hasParent rdf:resource="http://example.org/family#Filó"/>
+    <hasParent rdf:resource="http://example.org/family#Pedro-Rodrigues"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/dgu#hasFoto">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Foto</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://example.com/dgu#hasPath"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Ricardo-Esteves-Cardoso">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Ricardo Esteves Cardoso</rdfs:label>
+    <hasSpouse rdf:resource="http://example.org/family#Luciana-Abreu-Loureiro"/>
+    <hasChild rdf:resource="http://example.org/family#José-Augusto-Santos"/>
+    <hasChild rdf:resource="http://example.org/family#Ana-Sofia-Mendes"/>
+    <hasChild rdf:resource="http://example.org/family#Pedro-Esteves"/>
+    <hasChild rdf:resource="http://example.org/family#Ricardo-Figueiras"/>
+    <hasChild rdf:resource="http://example.org/family#Lucas-Santos"/>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Ricardo-Esteves-Cardoso</hasFolderPath>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/dgu#hasBirthplace">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>has Birthplace</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.com/dgu#hasBiography"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </rdf:Description>
   <rdf:Description rdf:about="http://example.org/family#Silvestre-Tiago-Almeida-Santos-Ferreira">
     <rdf:type rdf:resource="http://example.org/family#Person"/>
@@ -56,42 +71,53 @@
     <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-</deathDate>
     <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Silvestre-Tiago-Almeida-Santos-Ferreira</hasFolderPath>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.com/dgu#hasBirthday">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>has Birthday</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.com/dgu#hasBiography"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Pedro-Esteves">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Pedro Esteves</rdfs:label>
-    <hasParent rdf:resource="http://example.org/family#Luciana-Abreu-Loureiro"/>
-    <hasParent rdf:resource="http://example.org/family#Lucas-Esteves-Cardoso"/>
-    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
-    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
-    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Pedro-Esteves</hasFolderPath>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#hasFolder">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>has path</rdfs:label>
+  <rdf:Description rdf:about="http://example.com/dgu#hasPath">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>File</rdfs:label>
     <rdfs:domain rdf:resource="http://example.org/family#Person"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Lucas-Esteves-Cardoso">
+  <rdf:Description rdf:about="http://example.org/family#Filó">
     <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Lucas Esteves Cardoso</rdfs:label>
-    <hasSpouse rdf:resource="http://example.org/family#Luciana-Abreu-Loureiro"/>
-    <hasChild rdf:resource="http://example.org/family#undiscovered_3"/>
-    <hasChild rdf:resource="http://example.org/family#José-Augusto-Santos"/>
-    <hasChild rdf:resource="http://example.org/family#Ana-Sofia-Mendes"/>
-    <hasChild rdf:resource="http://example.org/family#Pedro-Esteves"/>
+    <rdfs:label>Filó</rdfs:label>
+    <hasParent rdf:resource="http://example.org/family#Ricardo-Antunes"/>
+    <hasParent rdf:resource="http://example.org/family#Pedro-Guerra"/>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Filó</hasFolderPath>
     <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
-    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Ricardo-Esteves-Cardoso</hasFolderPath>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
+    <hasChild rdf:resource="http://example.org/family#Rita-Lee"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.com/dgu#hasFoto">
+  <rdf:Description rdf:about="http://example.org/family#Person">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:label>Foto</rdfs:label>
-    <rdfs:subClassOf rdf:resource="http://example.com/dgu#hasPath"/>
+    <rdfs:label>Person</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Esteves">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Esteves</rdfs:label>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
+    <hasParent rdf:resource="http://example.org/family#Ricardo-Antunes"/>
+    <hasParent rdf:resource="http://example.org/family#Pedro-Guerra"/>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Esteves</hasFolderPath>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Ana-Sofia-Mendes">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Ana Sofia Mendes</rdfs:label>
+    <hasParent rdf:resource="http://example.org/family#Ricardo-Esteves-Cardoso"/>
+    <hasParent rdf:resource="http://example.org/family#Luciana-Abreu-Loureiro"/>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1950</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-</deathDate>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Ana-Sofia-Mendes</hasFolderPath>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Ricardo-Antunes">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Ricardo Antunes</rdfs:label>
+    <hasSpouse rdf:resource="http://example.org/family#Pedro-Guerra"/>
+    <hasChild rdf:resource="http://example.org/family#Filó"/>
+    <hasChild rdf:resource="http://example.org/family#Esteves"/>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Ricardo-Antunes</hasFolderPath>
   </rdf:Description>
   <rdf:Description rdf:about="http://example.org/family#Silvana-Isabel-Santos-Ferreira">
     <rdf:type rdf:resource="http://example.org/family#Person"/>
@@ -102,117 +128,6 @@
     <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-</deathDate>
     <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Silvana-Isabel-Santos-Ferreira</hasFolderPath>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.com/dgu#hasDeath">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>has Death</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.com/dgu#hasBiography"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#family-ontology">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
-    <rdfs:label>Family Ontology</rdfs:label>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.com/dgu#hasBirthplace">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>has Birthplace</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.com/dgu#hasBiography"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Pedro-Miguel-Santos-Ferreira">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Pedro Miguel Santos Ferreira</rdfs:label>
-    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1970</birthDate>
-    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-</deathDate>
-    <hasParent rdf:resource="http://example.org/family#José-Augusto-Santos"/>
-    <hasParent rdf:resource="http://example.org/family#Susana-Rodrigues"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Luciana-Abreu-Loureiro">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Luciana Abreu Loureiro</rdfs:label>
-    <hasSpouse rdf:resource="http://example.org/family#Lucas-Esteves-Cardoso"/>
-    <hasChild rdf:resource="http://example.org/family#undiscovered_3"/>
-    <hasChild rdf:resource="http://example.org/family#José-Augusto-Santos"/>
-    <hasChild rdf:resource="http://example.org/family#Ana-Sofia-Mendes"/>
-    <hasChild rdf:resource="http://example.org/family#Pedro-Esteves"/>
-    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1932</birthDate>
-    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
-    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Luciana-Abreu-Loureiro</hasFolderPath>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.com/dgu#hasName">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>has name</rdfs:label>
-    <rdfs:label>has Name</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.com/dgu#hasPath"/>
-    <rdfs:domain rdf:resource="http://example.com/dgu#hasBiography"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Susana-Rodrigues">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Susana Rodrigues</rdfs:label>
-    <hasSpouse rdf:resource="http://example.org/family#José-Augusto-Santos"/>
-    <hasChild rdf:resource="http://example.org/family#Rui-Miguel-Santos-Ferreira"/>
-    <hasChild rdf:resource="http://example.org/family#Silvana-Isabel-Santos-Ferreira"/>
-    <hasChild rdf:resource="http://example.org/family#Pedro-Miguel-Santos-Ferreira"/>
-    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1956</birthDate>
-    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-</deathDate>
-    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Susana-Rodrigues</hasFolderPath>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#deathDate">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>death date</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.com/dgu#hasType">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>has type</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.com/dgu#hasPath"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#birthDate">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>birth date</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#undiscovered_3">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>undiscovered_3</rdfs:label>
-    <hasParent rdf:resource="http://example.org/family#Luciana-Abreu-Loureiro"/>
-    <hasParent rdf:resource="http://example.org/family#Lucas-Esteves-Cardoso"/>
-    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
-    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#hasFilePath">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>has file path</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Ana-Sofia-Mendes">
-    <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Ana Sofia Mendes</rdfs:label>
-    <hasParent rdf:resource="http://example.org/family#Luciana-Abreu-Loureiro"/>
-    <hasParent rdf:resource="http://example.org/family#Lucas-Esteves-Cardoso"/>
-    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1950</birthDate>
-    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-</deathDate>
-    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Ana-Sofia-Mendes</hasFolderPath>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Subfolder">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:label>Subfolder</rdfs:label>
-    <rdfs:subClassOf rdf:resource="http://example.org/family#Person"/>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Person">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:label>Person</rdfs:label>
-  </rdf:Description>
-  <rdf:Description rdf:about="http://example.com/dgu#hasAbout">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>has about</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.com/dgu#hasPath"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
-  </rdf:Description>
   <rdf:Description rdf:about="http://example.org/family#hasChild">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
     <rdfs:label>has child</rdfs:label>
@@ -220,35 +135,89 @@
     <rdfs:range rdf:resource="http://example.org/family#Person"/>
     <owl:inverseOf rdf:resource="http://example.org/family#hasParent"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.com/dgu#hasBiography">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:label>Biography</rdfs:label>
-    <rdfs:subClassOf rdf:resource="http://example.com/dgu#hasPath"/>
+  <rdf:Description rdf:about="http://example.org/family#Ruca">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Ruca</rdfs:label>
+    <hasSpouse rdf:resource="http://example.org/family#Santos"/>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Ruca</hasFolderPath>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#hasSubfolder">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
-    <rdfs:label>has subfolder</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.org/family#Subfolder"/>
-    <rdfs:range rdf:resource="http://example.org/family#Subfolder"/>
+  <rdf:Description rdf:about="http://example.org/family#Pedro-Guerra">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Pedro Guerra</rdfs:label>
+    <hasSpouse rdf:resource="http://example.org/family#Ricardo-Antunes"/>
+    <hasChild rdf:resource="http://example.org/family#Filó"/>
+    <hasChild rdf:resource="http://example.org/family#Esteves"/>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Pedro-Guerra</hasFolderPath>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.com/dgu#hasTitle">
+  <rdf:Description rdf:about="http://example.org/family#silence">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>silence</rdfs:label>
+    <hasSpouse rdf:resource="http://example.org/family#what"/>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/silence</hasFolderPath>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Lucas-Santos">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Lucas Santos</rdfs:label>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
+    <hasParent rdf:resource="http://example.org/family#Ricardo-Esteves-Cardoso"/>
+    <hasParent rdf:resource="http://example.org/family#Luciana-Abreu-Loureiro"/>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Lucas-Santos</hasFolderPath>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Ricardo-Figueiras">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Ricardo Figueiras</rdfs:label>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
+    <hasParent rdf:resource="http://example.org/family#Ricardo-Esteves-Cardoso"/>
+    <hasParent rdf:resource="http://example.org/family#Luciana-Abreu-Loureiro"/>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Ricardo-Figueiras</hasFolderPath>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Luciana-Abreu-Loureiro">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Luciana Abreu Loureiro</rdfs:label>
+    <hasSpouse rdf:resource="http://example.org/family#Ricardo-Esteves-Cardoso"/>
+    <hasChild rdf:resource="http://example.org/family#José-Augusto-Santos"/>
+    <hasChild rdf:resource="http://example.org/family#Ana-Sofia-Mendes"/>
+    <hasChild rdf:resource="http://example.org/family#Pedro-Esteves"/>
+    <hasChild rdf:resource="http://example.org/family#Ricardo-Figueiras"/>
+    <hasChild rdf:resource="http://example.org/family#Lucas-Santos"/>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1932</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Luciana-Abreu-Loureiro</hasFolderPath>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/dgu#hasBirthday">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>has Title</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.com/dgu#hasStory"/>
+    <rdfs:label>has Birthday</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.com/dgu#hasBiography"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#hasSpouse">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
-    <rdfs:label>has spouse</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
-    <rdfs:range rdf:resource="http://example.org/family#Person"/>
-    <owl:inverseOf rdf:resource="http://example.org/family#hasSpouse"/>
+  <rdf:Description rdf:about="http://example.org/family#José-Augusto-Santos">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>José Augusto Santos</rdfs:label>
+    <hasParent rdf:resource="http://example.org/family#Ricardo-Esteves-Cardoso"/>
+    <hasParent rdf:resource="http://example.org/family#Luciana-Abreu-Loureiro"/>
+    <hasSpouse rdf:resource="http://example.org/family#Susana-Rodrigues"/>
+    <hasChild rdf:resource="http://example.org/family#Rui-Miguel-Santos-Ferreira"/>
+    <hasChild rdf:resource="http://example.org/family#Silvana-Isabel-Santos-Ferreira"/>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1947</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2019</deathDate>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/José-Augusto-Santos</hasFolderPath>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.com/dgu#hasFormat">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>has format</rdfs:label>
-    <rdfs:domain rdf:resource="http://example.com/dgu#hasPath"/>
-    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  <rdf:Description rdf:about="http://example.org/family#Mariana-da-Costa-Almeida">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Mariana da Costa Almeida</rdfs:label>
+    <hasSpouse rdf:resource="http://example.org/family#Rui-Miguel-Santos-Ferreira"/>
+    <hasChild rdf:resource="http://example.org/family#Silvestre-Tiago-Almeida-Santos-Ferreira"/>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1972</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-</deathDate>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Mariana-da-Costa-Almeida</hasFolderPath>
   </rdf:Description>
   <rdf:Description rdf:about="http://example.com/dgu#hasDate">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
@@ -257,14 +226,90 @@
     <rdfs:domain rdf:resource="http://example.com/dgu#hasFoto"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Rodrigo-Diogo-Almeida-Santos-Ferreira">
+  <rdf:Description rdf:about="http://example.org/family#what">
     <rdf:type rdf:resource="http://example.org/family#Person"/>
-    <rdfs:label>Rodrigo Diogo Almeida Santos Ferreira</rdfs:label>
-    <hasParent rdf:resource="http://example.org/family#Rui-Miguel-Santos-Ferreira"/>
-    <hasParent rdf:resource="http://example.org/family#Mariana-da-Costa-Almeida"/>
-    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1998</birthDate>
+    <rdfs:label>what</rdfs:label>
+    <hasSpouse rdf:resource="http://example.org/family#silence"/>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/what</hasFolderPath>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Rui-Miguel-Santos-Ferreira">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Rui Miguel Santos Ferreira</rdfs:label>
+    <hasParent rdf:resource="http://example.org/family#José-Augusto-Santos"/>
+    <hasParent rdf:resource="http://example.org/family#Susana-Rodrigues"/>
+    <hasSpouse rdf:resource="http://example.org/family#Mariana-da-Costa-Almeida"/>
+    <hasChild rdf:resource="http://example.org/family#Silvestre-Tiago-Almeida-Santos-Ferreira"/>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1970</birthDate>
     <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">-</deathDate>
-    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Rodrigo-Diogo-Almeida-Santos-Ferreira</hasFolderPath>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Rui-Miguel-Santos-Ferreira</hasFolderPath>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/dgu#hasType">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>has type</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.com/dgu#hasPath"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Pedro-Esteves">
+    <rdf:type rdf:resource="http://example.org/family#Person"/>
+    <rdfs:label>Pedro Esteves</rdfs:label>
+    <hasParent rdf:resource="http://example.org/family#Ricardo-Esteves-Cardoso"/>
+    <hasParent rdf:resource="http://example.org/family#Luciana-Abreu-Loureiro"/>
+    <birthDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</birthDate>
+    <deathDate rdf:datatype="http://www.w3.org/2001/XMLSchema#string">?</deathDate>
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Pedro-Esteves</hasFolderPath>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/dgu#hasAbout">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>has about</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.com/dgu#hasPath"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/dgu#hasDeath">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>has Death</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.com/dgu#hasBiography"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/dgu#hasStory">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Story</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://example.com/dgu#hasPath"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#hasSubfolder">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:label>has subfolder</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/family#Subfolder"/>
+    <rdfs:range rdf:resource="http://example.org/family#Subfolder"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Family">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Family</rdfs:label>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#hasSpouse">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:label>has spouse</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
+    <rdfs:range rdf:resource="http://example.org/family#Person"/>
+    <owl:inverseOf rdf:resource="http://example.org/family#hasSpouse"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#deathDate">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>death date</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Subfolder">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Subfolder</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://example.org/family#Person"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/dgu#hasOccupation">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>has Occupation</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.com/dgu#hasBiography"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </rdf:Description>
   <rdf:Description rdf:about="http://example.com/dgu#hasNote">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
@@ -278,25 +323,56 @@
     <rdfs:domain rdf:resource="http://example.com/dgu#hasStory"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.org/family#Family">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:label>Family</rdfs:label>
+  <rdf:Description rdf:about="http://example.com/dgu#hasTitle">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>has Title</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.com/dgu#hasStory"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.com/dgu#hasPath">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:label>File</rdfs:label>
+  <rdf:Description rdf:about="http://example.org/family#hasFolder">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>has path</rdfs:label>
     <rdfs:domain rdf:resource="http://example.org/family#Person"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.com/dgu#hasOccupation">
+  <rdf:Description rdf:about="http://example.org/family#hasFilePath">
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
-    <rdfs:label>has Occupation</rdfs:label>
+    <rdfs:label>has file path</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/dgu#hasFormat">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>has format</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.com/dgu#hasPath"/>
+    <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#Pedro-Rodrigues">
+    <hasFolderPath rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sobreiros/Pedro-Rodrigues</hasFolderPath>
+    <hasChild rdf:resource="http://example.org/family#Rita-Lee"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/dgu#hasBiography">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdfs:label>Biography</rdfs:label>
+    <rdfs:subClassOf rdf:resource="http://example.com/dgu#hasPath"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.com/dgu#hasName">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+    <rdfs:label>has name</rdfs:label>
+    <rdfs:label>has Name</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.com/dgu#hasPath"/>
     <rdfs:domain rdf:resource="http://example.com/dgu#hasBiography"/>
     <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
   </rdf:Description>
-  <rdf:Description rdf:about="http://example.com/dgu#hasStory">
-    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
-    <rdfs:label>Story</rdfs:label>
-    <rdfs:subClassOf rdf:resource="http://example.com/dgu#hasPath"/>
+  <rdf:Description rdf:about="http://example.org/family#hasParent">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+    <rdfs:label>has parent</rdfs:label>
+    <rdfs:domain rdf:resource="http://example.org/family#Person"/>
+    <rdfs:range rdf:resource="http://example.org/family#Person"/>
+    <owl:inverseOf rdf:resource="http://example.org/family#hasChild"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://example.org/family#family-ontology">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+    <rdfs:label>Family Ontology</rdfs:label>
   </rdf:Description>
 </rdf:RDF>

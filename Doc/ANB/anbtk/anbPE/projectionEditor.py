@@ -132,8 +132,10 @@ def add_couple():
                     child_to_parent(p2,og_name_p2,p1,og_name_p1,ids,og_ids,g)
             elif not all([p1_is_child,p1_is_parent]) and not all([p2_is_child,p2_is_parent]):
                 if f"{og_name_p1}+{og_name_p2}" in all_parents or f"{og_name_p2}+{og_name_p1}" in all_parents:
-                    print(f"The couple {og_name_p1} {og_name_p2} already exists!")
+                    print(f"The couple '{og_name_p1} + {og_name_p2} ' already exists!")
                     exit()
+                print(handlers.get_children_parent(og_family,og_name_p1))
+                print(handlers.get_children_parent(og_family,og_name_p2))
                 if og_name_p2 in handlers.get_children_parent(og_family,og_name_p1) or  og_name_p1 in handlers.get_children_parent(og_family,og_name_p2) :
                     print("It's not possible from a child and a parent to marry!")
                     exit()
@@ -150,11 +152,14 @@ def add_couple():
 
             genealogia.gen_parents_folders(parents,children,g,path)        
             for og_child in children:
-                    child = genealogia.adapt_name(og_child)
-                    bd = ids[og_child]['birthDate']
-                    dd = ids[og_child]['deathDate']
-                    ousia.add_complete_individual(child,og_child,bd,dd,g)
-                    ousia.add_parent_children(p1,p2,child,g)
+                if og_child in parent_children['children']:
+                    print(f"{og_child} is already referenced as someone's child before.")
+                    exit()
+                child = genealogia.adapt_name(og_child)
+                bd = ids[og_child]['birthDate']
+                dd = ids[og_child]['deathDate']
+                ousia.add_complete_individual(child,og_child,bd,dd,g)
+                ousia.add_parent_children(p1,p2,child,g)
 
         blocks.add_new_dict_block_file(structure_file_path,block,ids)
         # cwd = os.getcwd()

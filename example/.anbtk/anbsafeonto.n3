@@ -1,0 +1,162 @@
+@prefix : <http://example.org/family#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.com/dgu#hasAbout> a owl:DatatypeProperty ;
+    rdfs:label "has about" ;
+    rdfs:domain <http://example.com/dgu#hasPath> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasAuthor> a owl:DatatypeProperty ;
+    rdfs:label "has Author" ;
+    rdfs:domain <http://example.com/dgu#hasStory> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasBirthday> a owl:DatatypeProperty ;
+    rdfs:label "has Birthday" ;
+    rdfs:domain <http://example.com/dgu#hasBiography> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasBirthplace> a owl:DatatypeProperty ;
+    rdfs:label "has Birthplace" ;
+    rdfs:domain <http://example.com/dgu#hasBiography> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasDate> a owl:DatatypeProperty ;
+    rdfs:label "has Date" ;
+    rdfs:domain <http://example.com/dgu#hasFoto>,
+        <http://example.com/dgu#hasStory> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasDeath> a owl:DatatypeProperty ;
+    rdfs:label "has Death" ;
+    rdfs:domain <http://example.com/dgu#hasBiography> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasFormat> a owl:DatatypeProperty ;
+    rdfs:label "has format" ;
+    rdfs:domain <http://example.com/dgu#hasPath> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasName> a owl:DatatypeProperty ;
+    rdfs:label "has Name",
+        "has name" ;
+    rdfs:domain <http://example.com/dgu#hasBiography>,
+        <http://example.com/dgu#hasPath> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasNote> a owl:DatatypeProperty ;
+    rdfs:label "has Note" ;
+    rdfs:domain <http://example.com/dgu#hasFoto> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasOccupation> a owl:DatatypeProperty ;
+    rdfs:label "has Occupation" ;
+    rdfs:domain <http://example.com/dgu#hasBiography> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasTitle> a owl:DatatypeProperty ;
+    rdfs:label "has Title" ;
+    rdfs:domain <http://example.com/dgu#hasStory> ;
+    rdfs:range xsd:string .
+
+<http://example.com/dgu#hasType> a owl:DatatypeProperty ;
+    rdfs:label "has type" ;
+    rdfs:domain <http://example.com/dgu#hasPath> ;
+    rdfs:range xsd:string .
+
+:Family a owl:Class ;
+    rdfs:label "Family" .
+
+:birthDate a owl:DatatypeProperty ;
+    rdfs:label "birth date" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:deathDate a owl:DatatypeProperty ;
+    rdfs:label "death date" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:family-ontology a owl:Ontology ;
+    rdfs:label "Family Ontology" .
+
+:hasFilePath a owl:DatatypeProperty ;
+    rdfs:label "has file path" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:hasFolder a owl:DatatypeProperty ;
+    rdfs:label "has path" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:hasNickname a owl:DatatypeProperty ;
+    rdfs:label "nickname" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:hasSubfolder a owl:ObjectProperty ;
+    rdfs:label "has subfolder" ;
+    rdfs:domain :Subfolder ;
+    rdfs:range :Subfolder .
+
+:hasChild a owl:ObjectProperty ;
+    rdfs:label "has child" ;
+    rdfs:domain :Person ;
+    rdfs:range :Person ;
+    owl:inverseOf :hasParent .
+
+:hasParent a owl:ObjectProperty ;
+    rdfs:label "has parent" ;
+    rdfs:domain :Person ;
+    rdfs:range :Person ;
+    owl:inverseOf :hasChild .
+
+:hasSpouse a owl:ObjectProperty ;
+    rdfs:label "has spouse" ;
+    rdfs:domain :Person ;
+    rdfs:range :Person ;
+    owl:inverseOf :hasSpouse .
+
+:joao a :Person ;
+    rdfs:label "joao" ;
+    :birthDate "?"^^xsd:string ;
+    :deathDate "?"^^xsd:string ;
+    :hasFolderPath "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/example/joao"^^xsd:string ;
+    :hasSpouse :maria ;
+    :nickname ""^^xsd:string .
+
+:maria a :Person ;
+    rdfs:label "maria" ;
+    :birthDate "?"^^xsd:string ;
+    :deathDate "?"^^xsd:string ;
+    :hasFolderPath "/mnt/c/Users/Duarte Vilar/OneDrive/Ambiente de Trabalho/Eu/tese/thesis/Thesis/example/maria"^^xsd:string ;
+    :hasSpouse :joao ;
+    :nickname ""^^xsd:string .
+
+<http://example.com/dgu#hasFoto> a owl:Class ;
+    rdfs:label "Foto" ;
+    rdfs:subClassOf <http://example.com/dgu#hasPath> .
+
+:Subfolder a owl:Class ;
+    rdfs:label "Subfolder" ;
+    rdfs:subClassOf :Person .
+
+<http://example.com/dgu#hasStory> a owl:Class ;
+    rdfs:label "Story" ;
+    rdfs:subClassOf <http://example.com/dgu#hasPath> .
+
+<http://example.com/dgu#hasBiography> a owl:Class ;
+    rdfs:label "Biography" ;
+    rdfs:subClassOf <http://example.com/dgu#hasPath> .
+
+<http://example.com/dgu#hasPath> a owl:Class ;
+    rdfs:label "File" ;
+    rdfs:domain :Person ;
+    rdfs:range xsd:string .
+
+:Person a owl:Class ;
+    rdfs:label "Person" .
+

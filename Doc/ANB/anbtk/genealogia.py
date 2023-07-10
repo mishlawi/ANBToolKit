@@ -127,18 +127,15 @@ def defineOnto(family_structure,ages):
 
 
 def raw_initialization(file,family):
-    cwd = os.getcwd()
-    dataControl.search_anbtk()
-    family_structure, ids = gramma.parsing(file)
+        
+    family_structure, ids = gramma.parsing(dataControl.find_anb()+f"/{file}")
     if family_structure is None:
         print("✗ Failed to parse the family structure. Some errors might exist in the anbtemplate")
         exit()
 
     print("✓ Successfully parsed the anb template file.")
 
-    
     g = defineOnto(family_structure,ids)
-    os.chdir(cwd)
     for couple, children in family_structure.items():    
         gen_parents_folders(couple, children, g, family)
     return g
@@ -270,6 +267,6 @@ def gen_onto_file(g,filename):
     with open(f"{filename}.rdf", "wb") as f:
         f.write(g.serialize(format="xml").encode('u8'))
 
-    print(f"\nSuccessfully generated the ontology files.\n Info: {filename} generated.")
+    print(f"\n✓ Successfully generated the ontology file.")
 
 

@@ -165,4 +165,9 @@ def parents_kids(block):
 
     return status
 
+def get_children_parent(block,parent):
+    for parents,children in block.items():
+        if parent in parents:
+            return children
+
         

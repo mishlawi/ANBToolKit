@@ -25,6 +25,7 @@ def unique_parent_creation(p1,p2,og_name_p1,og_name_p2,parents,children,block,id
     p2_dd = ids[og_name_p2]['deathDate']
     p2_nn = ids[og_name_p2]['nickname']
     
+    ousia.add_hasSpouse(p1,p2,g)
     ousia.add_birthdate(p1,p1_bd,g)
     ousia.add_deathdate(p1,p1_dd,g)
     ousia.add_nickname(p1,p1_nn,g)
@@ -41,8 +42,8 @@ def unique_parent_creation(p1,p2,og_name_p1,og_name_p2,parents,children,block,id
             ousia.add_birthdate(child,bd,g)
             ousia.add_deathdate(child,dd,g) 
 
-def child_to_parent(individual1,og_name1,individual2,og_name2,ids,og_dates,g):
-    if ids[og_name1]['birthDate']!=og_dates[og_name1]['birthDate'] or ids[og_name1]['deathDate']!=og_dates[og_name1]['deathDate']:
+def child_to_parent(individual1,og_name1,individual2,og_name2,ids,og_ids,g):
+    if ids[og_name1]['birthDate']!=og_ids[og_name1]['birthDate'] or ids[og_name1]['deathDate']!=og_ids[og_name1]['deathDate']:
             print(f"There are year differences for {og_name1}, the original birthdate and deathdate will be preserved. To change use the projection editor - anbpe.")
             print("parent 1 is a child")
             bd = ids[og_name2]['birthDate']
@@ -73,7 +74,6 @@ def add_couple():
         print("You are not in an initialized Ancestors Notebook.")
         exit()
     root = dataControl.get_root()
-    cwd = os.getcwd()
     os.chdir(root)
     path = os.path.basename(root)
 
@@ -101,8 +101,8 @@ def add_couple():
         children = list(block.values())[0]
 
         og_name_p1,og_name_p2 = parents.split("+")
-        og_family, og_dates = gramma.parsing(structure_file_path)
-
+        og_family, og_ids = gramma.parsing(structure_file_path)
+        all_parents = list(og_family.keys())
         p1_is_child,p2_is_child,p1_is_parent,p2_is_parent = False,False,False,False
 
         parent_children = handlers.parents_kids(og_family)
@@ -120,13 +120,33 @@ def add_couple():
         p2 = genealogia.adapt_name(og_name_p2)
 
         if not p1_is_child and not p2_is_child and not p1_is_parent and not p2_is_parent:
+            #both parents didnt exist
             unique_parent_creation(p1,p2,og_name_p1,og_name_p2,parents,children,block,ids,path,g)             
         else:
-            if p1_is_child and not p1_is_parent:
-                child_to_parent(p1,og_name_p1,p2,og_name_p2,ids,og_dates,g)
+            if not p2_is_child and not p2_is_parent:
+                # if p1 is either a child or a parent, meaning that it exists; note : all[True,False] = False
+                if not all([p1_is_child,p1_is_parent]):
+                    child_to_parent(p1,og_name_p1,p2,og_name_p2,ids,og_ids,g)          
+            elif not p1_is_child and not p1_is_parent:
+                if not all([p2_is_child,p2_is_parent]):
+                    child_to_parent(p2,og_name_p2,p1,og_name_p1,ids,og_ids,g)
+            elif not all([p1_is_child,p1_is_parent]) and not all([p2_is_child,p2_is_parent]):
+                if f"{og_name_p1}+{og_name_p2}" in all_parents or f"{og_name_p2}+{og_name_p1}" in all_parents:
+                    print(f"The couple {og_name_p1} {og_name_p2} already exists!")
+                    exit()
+                if og_name_p2 in handlers.get_children_parent(og_family,og_name_p1) or  og_name_p1 in handlers.get_children_parent(og_family,og_name_p2) :
+                    print("It's not possible from a child and a parent to marry!")
+                    exit()
+                print("just newly created couple")
+
+                #both exist like kids
+                ousia.add_hasSpouse(p1,p2,g)
+                if ids[og_name_p1]['birthDate'] != og_ids[og_name_p1]['birthDate']:
+                    print(f"Warning: different dates specified for {og_name_p1}")
+                if ids[og_name_p2]['birthDate'] != og_ids[og_name_p2]['birthDate']:
+                    print(f"Warning: different dates specified for {og_name_p2}")
+                
             
-            elif p2_is_child and not p2_is_parent:
-                child_to_parent(p2,og_name_p2,p1,og_name_p1,ids,og_dates,g)
 
             genealogia.gen_parents_folders(parents,children,g,path)        
             for og_child in children:
@@ -137,10 +157,10 @@ def add_couple():
                     ousia.add_parent_children(p1,p2,child,g)
 
         blocks.add_new_dict_block_file(structure_file_path,block,ids)
-        cwd = os.getcwd()
-        os.chdir(dataControl.find_anb())
-        genealogia.gen_onto_file(g,'anbsafeonto')
-        os.chdir(cwd)
+        # cwd = os.getcwd()
+        # os.chdir(dataControl.find_anb())
+        genealogia.gen_onto_file(g,dataControl.find_anb() + '/anbsafeonto')
+        # os.chdir(cwd)
 
 def handle_changes(new_parent,removed_parent,updated_parents,added_children,removed_children,updated_children,updated_geral_block,changed_block,og_family,g):
     if new_parent != []:
@@ -164,7 +184,7 @@ def action():
     
     while True:
         subprocess.call('clear' if os.name == 'posix' else 'cls', shell=True)
-        og_family, og_dates = gramma.parsing(structure_file_path)
+        og_family, og_ids = gramma.parsing(structure_file_path)
         block_number = view.interaction(og_family)
         key = list(og_family.keys())[block_number-1]
         block = view.retrieve_content_by_name(structure_file_path,key)
@@ -202,12 +222,10 @@ def action():
         block_after = blocks.dict_to_file(changed_block,changed_ids)
 
         blocks.replace_updated_block_file(structure_file_path,block_before,block_after)
+
         
-        cwd = os.getcwd()
-        os.chdir(dataControl.find_anb())
         if new_parent!=[] or removed_parent!=[] or updated_parents!=[] or added_children!=[] or removed_children!=[] or updated_children !=[]:
-            genealogia.gen_onto_file(g,'anbsafeonto')
-        os.chdir(cwd)
+            genealogia.gen_onto_file(g,dataControl.find_anb()+'/anbsafeonto')
 
 
 ### NOTES:

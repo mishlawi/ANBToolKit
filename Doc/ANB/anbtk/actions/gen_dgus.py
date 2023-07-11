@@ -6,9 +6,11 @@ from ..auxiliar import argsConfig
 from ..auxiliar import dgu_helper
 from ..auxiliar import skeletons
 
-from .. import dataControl
-from ..dgu import dguObject as dgu
 from ..dgu import DGUhand
+from ..dgu import dguObject as dgu
+
+from .. import dataControl
+from .. import controlsystem
 
 
 
@@ -46,30 +48,31 @@ def genDguImage_file(files):
 
                     
 def genDguImage_tree(cwd):
-        visited = set()
-        for dirpath, _, filenames in os.walk(cwd):
-            realpath = os.path.realpath(dirpath)
-            if realpath in visited or os.path.basename(dirpath) == '.anbtk':
-                continue
-            else:
-                visited.add(realpath)
-                for filename in filenames:
-                    filepath = os.path.join(dirpath, filename)
-                    if not dgu_helper.is_image(filepath) or os.path.islink(filepath) and not os.path.exists(filepath):
-                        continue
+    visited = set()
+    for dirpath, _, filenames in os.walk(cwd):
+        realpath = os.path.realpath(dirpath)
+        if realpath in visited or os.path.basename(dirpath) == '.anbtk':
+            continue
+        else:
+            visited.add(realpath)
+            for filename in filenames:
+                filepath = os.path.join(dirpath, filename)
+                if not dgu_helper.is_image(filepath) or os.path.islink(filepath) and not os.path.exists(filepath):
+                    continue
+                else:
+                    format = os.path.splitext(filename)[1][1:]
+                    id = os.path.splitext(filename)[0]
+                    abpath = os.path.abspath(filepath)
+                    # realpath = dataControl.relative_to_anbtk(abpath)
+                    if not os.path.exists(os.path.join(dirpath, id + '.dgu')):
+                        with open(os.path.join(dirpath, id + '.dgu'), 'w') as dgufile:
+                            dgufile.write('---\n')
+                            yaml.dump(dgu.DGU(id=id, format=format, path=abpath), dgufile, default_flow_style=False, sort_keys=False, allow_unicode=True)
+                            dgufile.write('---\n')
                     else:
-                        format = os.path.splitext(filename)[1][1:]
-                        id = os.path.splitext(filename)[0]
-                        abpath = os.path.abspath(filepath)
-                        # realpath = dataControl.relative_to_anbtk(abpath)
-                        if not os.path.exists(os.path.join(dirpath, id + '.dgu')):
-                            with open(os.path.join(dirpath, id + '.dgu'), 'w') as dgufile:
-                                dgufile.write('---\n')
-                                yaml.dump(dgu.DGU(id=id, format=format, path=abpath), dgufile, default_flow_style=False, sort_keys=False, allow_unicode=True)
-                                dgufile.write('---\n')
-                        else:
-                            print("There is a dgu file for this image already!\n")
-                        
+                        print("There is a dgu file for this image already!\n")
+    controlsystem.auto_sync()
+                    
 
 
 def simplify(title):
@@ -110,6 +113,8 @@ def genStory():
         with open(f'{filename}.tex','w') as texfo:
             texfo.write(skeletons.story(title,author,date))
 
+    controlsystem.auto_sync()
+
 
 
 def genBio():    
@@ -131,7 +136,7 @@ def genBio():
         os.chdir(cd)
     with open(f'{filename}.md','w') as mdfileobject:
         mdfileobject.write(skeletons.biography(name,birth,death,bp,o))
-
+    controlsystem.auto_sync()
 
 
 
@@ -140,6 +145,9 @@ def genDgu(title, attributes, nameofthefile, dir):
     id = dataControl.dataUpdate(title, nameofthefile)
     subclass = DGUhand.dgu_subclass(title, attributes)
     newDgu = subclass(nameofthefile, "", title, "", "", *["" for _ in attributes])
-    os.chdir(dir)
-    with open(f"{id}.dgu", "w") as f:
+#    os.chdir(dir)
+    with open(f"{dir}/{id}.dgu", "w") as f:
         dgu_helper.dguheadercomposer(newDgu, f)
+    controlsystem.auto_sync()
+       
+    

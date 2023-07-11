@@ -144,9 +144,9 @@ def anb_search():
     dataControl.search_anbtk()
     g = genealogia.read_onto_file('anbsafeonto.rdf')
     args = argsConfig.a_search()
-    if not any([args.siblings, args.parents, args.unclesaunts, args.grandparents, args.children]):
-        print("✗ At least one of the flags -s, -p, -ua, -gp, -c is required.")
-        exit()
+    # if not any([args.siblings, args.parents, args.unclesaunts, args.grandparents, args.children]):
+    #     print("✗ At least one of the flags -s, -p, -ua, -gp, -c is required.")
+    #     exit()
     unique,message,header = query_composition(cwd,g,args)
     show_data(unique,message,header)
 
@@ -189,7 +189,6 @@ def select_path(paths):
 
 
 def anb_cd():
-    print("alkjglakjg")
     cwd = os.getcwd()
     if not dataControl.search_anbtk():
         print("✗ You are not in an Ancestors Notebook." )
@@ -201,17 +200,14 @@ def anb_cd():
             print("No ontology was initialized.\nWas this ancestor notebook created from scratch? There doesn't seem to exist any .rdf file that defines the familiar connections.")
             exit()
         os.chdir(dataControl.get_root())
-    print("klajhgkajshgj")    
     args = argsConfig.a_cd()
     if not any([args.siblings, args.parents, args.unclesaunts, args.grandparents, args.children]):
         print("✗ At least one of the flags -s, -p, -ua, -gp, -c is required.")
         exit()
-    print("asjkghakjghkajghk")
     unique,_,_ = query_composition(cwd,g,args)
     possibilities = folder_cd_composition(unique,g)
     selected_folder = select_path(possibilities)
     selected_folder = selected_folder.split("/")[1]
-    print("alkjgslakjglakjg")
     try:
         subprocess.check_call(f"cd {selected_folder} && exec $SHELL", shell=True)
     except subprocess.CalledProcessError:

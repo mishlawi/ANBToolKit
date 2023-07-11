@@ -42,7 +42,7 @@ def handler_children(removed_children,added_children,changed_block,og_block,g):
             if elem not in p_k['parents']:
                 warning(genealogia.adapt_name(elem))
                 os.rmdir(genealogia.adapt_name(elem))     
-    ### e preciso encontrar os pais do filho caso nao existam filhos removidos
+    # é preciso encontrar os pais do filho caso nao existam filhos removidos.
     if removed_children == []:
         parents = list(changed_block.keys())[0]    
         p1,p2 = parents.split("+")
@@ -122,6 +122,7 @@ def update_data(elem,g):
 def handler_updates(updated_parents, updated_children, g):
     for elem in updated_parents:
         update_data(elem,g)
+
     for elem in updated_children:
         update_data(elem,g)
 
@@ -170,4 +171,8 @@ def get_children_parent(block,parent):
         if parent in parents:
             return children
 
-        
+def get_parents_child(block,child):
+    for parents,children in block.items():
+        if child in children:
+            return {parents:children}
+    return None

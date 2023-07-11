@@ -285,13 +285,13 @@ def remaining_blocks(structure_file_path,chosen_block):
         dict: The remaining blocks.
     """
 
-    blocks,_ = gramma.parsing(structure_file_path)
+    blocks,ids = gramma.parsing(structure_file_path)
     block_couple = list(chosen_block.keys())[0]
 
     del blocks[block_couple]
 
 
-    return blocks
+    return blocks,ids
 
 def new_block(unedited_geral_block,changed_block):
     """

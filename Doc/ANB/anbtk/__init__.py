@@ -36,8 +36,6 @@ from .dgu import dguObject as dgu
 #*TODO
 
 # ! FIX TEX2DGU regarding the UTF8
-# * ( ls ) search through the folders
-# * cd folders x 
 # * i want it so that story and bio (and others) are default formats but the users can create their ones x
 # * maybe add specs to dont do anything if there are no differences in the sync command
 #!  update the onto file so that new entities can be added
@@ -50,7 +48,7 @@ from .dgu import dguObject as dgu
 # * refactor dgubook individual and generic functions
 # * ontology for dgus and ontology for relations
 # * be careful with new couples for the same individual (ex spouse)
-# * auto sync when creating dgus
+# * auto sync when creating dgus x
 # * revise the command for dgu generation for generic dgus
 # * gedcom
 # * add two ontologies
@@ -116,7 +114,7 @@ def query():
 def folder_cd():
     filters.anb_cd()
 
-def folder_sd():
+def folder_ls():
     filters.anb_ls()
 
 ############################## .anb ################################

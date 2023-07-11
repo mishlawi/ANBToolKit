@@ -172,3 +172,19 @@ def version_control(path,graph):
         new_dict = check_file_structure(path)
     
     create_vc_file(f'{path}/.anbtk', new_dict)
+
+from . import genealogia
+from . import dataControl
+
+
+def auto_sync():
+    path = dataControl.find_anb()
+       
+    if path != None:
+        path = os.path.dirname(path)
+        ontofile = os.path.join(path,".anbtk/anbsafeonto.rdf")
+        g = genealogia.read_onto_file(ontofile)
+        version_control(path,g)
+        genealogia.gen_onto_file(g,'anbsafeonto')
+    else:
+        print("✗ Not in any initialized ANB folder.")

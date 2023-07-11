@@ -36,11 +36,9 @@ from .dgu import dguObject as dgu
 #*TODO
 
 # ! FIX TEX2DGU regarding the UTF8
-# * i want it so that story and bio (and others) are default formats but the users can create their ones x
 # * maybe add specs to dont do anything if there are no differences in the sync command
 #!  update the onto file so that new entities can be added
 # * anbvc has the absolute path 
-# * update connections , and entities' attributes
 # * show commands : show entities, etc
 # * erro de ja estar numa pasta  já inicializada como anb, quando na realidade apenas se está um nivel acima de uma pasta inicializada
 # * tex2dgu puts author false
@@ -48,7 +46,6 @@ from .dgu import dguObject as dgu
 # * refactor dgubook individual and generic functions
 # * ontology for dgus and ontology for relations
 # * be careful with new couples for the same individual (ex spouse)
-# * auto sync when creating dgus x
 # * revise the command for dgu generation for generic dgus
 # * gedcom
 # * add two ontologies
@@ -63,6 +60,10 @@ from .dgu import dguObject as dgu
 # ! individual dgubook not working
 # ! todo : gedcom; show family tree
 # ! data updates and nickname updates should be presented in the anbtemplate when two references exist -> if i add a nickname to jose in the child position, it should appear in the parent position 
+
+#? Done, but re check:
+# * i want it so that story and bio (and others) are default formats but the users can create their ones x
+# * auto sync when creating dgus x
 
 ##############################################################################################################
 ##############################################################################################################
@@ -116,6 +117,13 @@ def folder_cd():
 
 def folder_ls():
     filters.anb_ls()
+
+def lazy_search():
+
+    filters.lazy_search_names_folders()
+
+def show_entities():
+    pass
 
 ############################## .anb ################################
 

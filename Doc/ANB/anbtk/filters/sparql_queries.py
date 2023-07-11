@@ -188,29 +188,6 @@ def parents_folderPath_Qres(individual):
     """
 
 
-def children_folderPath_Qres(individual):
-    """
-    Returns a SPARQL query that retrieves the folders of the children of an individual in a family RDF graph.
-
-    Parameters:
-        individual (str): The name of the individual whose children's folders should be retrieved.
-
-    Returns:
-        str: A string representing the constructed SPARQL query.
-    """
-    return f"""
-    PREFIX family: <http://example.org/family#>
-
-    SELECT ?folder
-    WHERE {{
-        ?child family:hasParent family:{individual} .
-        ?child family:hasFolderPath ?folder .
-    }}
-    """
-
-
-
-
 
 def siblings_folderPath_Qres(individual):
     """
@@ -257,3 +234,22 @@ def individual_folderPath_Qres(individual):
     """
 
 
+
+def all_individuals_folderPath_Qres():
+    """
+    Returns a SPARQL query that retrieves the names and folder paths of all individuals in a family RDF graph.
+
+    Returns:
+        str: A string representing the constructed SPARQL query.
+    """
+    return """
+    PREFIX family: <http://example.org/family#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+    SELECT ?name ?folderPath
+    WHERE {
+        ?individual rdf:type family:Person .
+        ?individual rdfs:label ?name .
+        ?individual family:hasFolderPath ?folderPath .
+    }
+    """

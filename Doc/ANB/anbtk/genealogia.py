@@ -123,6 +123,7 @@ def defineOnto(family_structure,ages):
     with open(os.path.join(dataControl.find_anb(),'universe.dgu')) as universe:
         entities = dgu_helper.parse_text(universe.read())
     ousia.dgu_base(entities,g)
+    print(entities)
     return g
 
 

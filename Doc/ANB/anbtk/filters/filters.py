@@ -240,8 +240,17 @@ def anb_ls():
             print("Some problem in finding the folder. Were any manual naming changes made to the Ancestors Notebook folder?.")
             exit()
 
+
+import difflib
     
-def lazy_search(names,search_name): 
+
+def find_possible_names(input_name, name_list, threshold=0.3):
+    matches = difflib.get_close_matches(input_name, name_list, n=len(name_list), cutoff=threshold)
+
+    return matches
+
+
+def lazy_search_names_folders(): 
     """
     Search for individuals in the list of names whose second or third name starts with the given search term.
 
@@ -252,11 +261,21 @@ def lazy_search(names,search_name):
     Returns:
         list: A list of individuals whose second or third name starts with the search term.
     """
-    matching_individuals = []
-    for name in names:
-        name_parts = name.split('-')
-        if len(name_parts) >= 3 and (search_name.lower() == name_parts[1].lower()[:len(search_name)] or
-                                     search_name.lower() == name_parts[2].lower()[:len(search_name)]):
-            matching_individuals.append(name)
-    return matching_individuals
+    individual = 'travis'
+    g = genealogia.read_onto_file(dataControl.find_anb()+'/anbsafeonto.rdf')
+    sparql_qry = sparql_queries.all_individuals_folderPath_Qres()
+    result = execute_sparql_query(sparql_qry,g)
+    individuals = []
+    for row in result:
+        name = row[0].value
+        folder = row[1].value
+        individuals.append(name)
+    print(find_possible_names(individual,individuals))
+    # for name in names:
+    #     name_parts = name.split('-')
+    #     if len(name_parts) >= 3 and (search_name.lower() == name_parts[1].lower()[:len(search_name)] or
+    #                                  search_name.lower() == name_parts[2].lower()[:len(search_name)]):
+    #         matching_individuals.append(name)
+    # return matching_individuals
         
+

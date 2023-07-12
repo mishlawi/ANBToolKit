@@ -143,8 +143,6 @@ def raw_initialization(file,family):
 
 
 
-
-
 def onto_folders_correspondence(file, family, entities=""):
     family_structure, ages = gramma.parsing(file)
     

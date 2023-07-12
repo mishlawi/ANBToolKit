@@ -55,7 +55,7 @@ from .dgu import dguObject as dgu
 # * "anb individuo" e aparecerem elementos relativos ao individuo 
 # * add comments for the seed file and entities file
 # * testar projection editor (check individual function annotations)
-
+# * use default editor
 
 # ! individual dgubook not working
 # ! todo : gedcom; show family tree

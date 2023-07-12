@@ -75,16 +75,28 @@ def query_composition(path,g,args):
         print("✗ You need to specify what flags you want. Use anbget -h for additional information.")
         exit()
 
-    inverted_args = inverted_args[::-1]
     if args.individual[0] == ".":
         individual = os.path.basename(path)
         initial = individual.replace("-", " ")
-    else:
-        if args.individual[0].endswith("/"):
-            args.individual[0]=args.individual[0][:-1]
+
+    elif args.individual[0].endswith("/"):
+        args.individual[0]=args.individual[0][:-1]
         individual = args.individual[0]
         initial = args.individual[0].replace("-", " ")
+    else:
+        individuals,folders = lazy_search_names_folders(g)
+        
+        initial = args.individual[0]
+        individual = initial
+        if args.individual[0] not in individuals and args.individual[0] not in folders:
+            initial = select_names(find_matching_names(args.individual[0],individuals))
+            individual = initial.replace(" ","-")
+        # if not any([args.siblings, args.parents, args.unclesaunts, args.grandparents, args.children]):
+    #     print("✗ At least one of the flags -s, -p, -ua, -gp, -c is required.")
+    #     exit()
+        
 
+    inverted_args = inverted_args[::-1]
     header = compose_header(initial,args.ordered_args) 
     for i, (argument, _) in enumerate(inverted_args):
         if i == len(inverted_args) - 1:
@@ -166,6 +178,27 @@ def folder_cd_composition(unique,g):
 
 
 
+def select_names(names):
+    folder_names = names
+    folder_names.append("Leave")
+    print("The name is either too vague or there isn't someone with that name.")
+    questions = [
+        inquirer.List('names',
+                      choices=folder_names,
+                      
+                      ),
+    ]
+    answers = inquirer.prompt(questions)
+    selected_name = answers['names']
+
+    if selected_name == "Leave":
+        exit()
+
+    # Get the corresponding full path for the selected folder name
+    # selected_path = next(path for path in names if os.path.basename(path) == selected_folder_name)
+
+    return selected_name
+
 def select_path(paths):
     folder_names = [os.path.basename(path) for path in paths]
     folder_names.append("Leave")
@@ -201,9 +234,8 @@ def anb_cd():
             exit()
         os.chdir(dataControl.get_root())
     args = argsConfig.a_cd()
-    if not any([args.siblings, args.parents, args.unclesaunts, args.grandparents, args.children]):
-        print("✗ At least one of the flags -s, -p, -ua, -gp, -c is required.")
-        exit()
+
+    
     unique,_,_ = query_composition(cwd,g,args)
     possibilities = folder_cd_composition(unique,g)
     selected_folder = select_path(possibilities)
@@ -244,13 +276,37 @@ def anb_ls():
 import difflib
     
 
-def find_possible_names(input_name, name_list, threshold=0.3):
-    matches = difflib.get_close_matches(input_name, name_list, n=len(name_list), cutoff=threshold)
+# def find_matching_names(input_name, name_list, threshold=0.6):
+#     matches = []
+    
+#     for name in name_list:
+#         similarity_score = difflib.SequenceMatcher(None, input_name, name).ratio()
+#         if similarity_score >= threshold or input_name.lower() in name.lower():
+#             matches.append(name)
+    
+#     return matches
 
+def find_matching_names(input_name, name_list, threshold=0.6):
+    matches = []
+    
+    input_words = input_name.lower().split()
+    
+    for name in name_list:
+        name_lower = name.lower()
+        is_match = True
+        
+        for word in input_words:
+            if word not in name_lower:
+                is_match = False
+                break
+        
+        similarity_score = difflib.SequenceMatcher(None, input_name, name).ratio()
+        if is_match or similarity_score >= threshold:
+            matches.append(name)
+    
     return matches
 
-
-def lazy_search_names_folders(): 
+def lazy_search_names_folders(g): 
     """
     Search for individuals in the list of names whose second or third name starts with the given search term.
 
@@ -261,16 +317,21 @@ def lazy_search_names_folders():
     Returns:
         list: A list of individuals whose second or third name starts with the search term.
     """
-    individual = 'travis'
-    g = genealogia.read_onto_file(dataControl.find_anb()+'/anbsafeonto.rdf')
+
+    # g = genealogia.read_onto_file(dataControl.find_anb()+'/anbsafeonto.rdf')
     sparql_qry = sparql_queries.all_individuals_folderPath_Qres()
     result = execute_sparql_query(sparql_qry,g)
     individuals = []
+    folders = []
     for row in result:
         name = row[0].value
         folder = row[1].value
         individuals.append(name)
-    print(find_possible_names(individual,individuals))
+        folders.append(folder)
+    folders = [elem.split("/")[-1] for elem in folders]
+    print(folders)
+    return individuals, folders
+    # print(find_matching_names(individual,individuals))
     # for name in names:
     #     name_parts = name.split('-')
     #     if len(name_parts) >= 3 and (search_name.lower() == name_parts[1].lower()[:len(search_name)] or

@@ -1,112 +1,92 @@
-import inquirer
 import subprocess
+import difflib
 import os
 
-from rdflib.plugins.sparql import prepareQuery
 
 from ..auxiliar import argsConfig
-from . import sparql_queries
+from ..auxiliar import dgu_helper
 from .. import dataControl
 from .. import genealogia
+from . import view_sparql
+from . import queries
 
 
-def handle_namespace(namespace):
-    return namespace.split('#')[1]
-
-
-
-def execute_sparql_query(query_string, graph):
-    query = prepareQuery(query_string)
-    result = graph.query(query)
-    return result
-
-def apply_querie(function_type,individual,g):
-    res = []
-    if isinstance(individual,str): 
-        sparql_qry = function_type(individual)
-        result = execute_sparql_query(sparql_qry,g)
-        if not result:
-            res = []
+def find_matching_names(input_name, name_list, threshold=0.6):
+    """
+    Returns the list of probable names by comparing the given argument input_name with the existing names that are referenced in the ontology.
+    """
+    matches = []
     
-        else:
-            for row in result:
-                row[0].toPython()
-                res.append(handle_namespace(row[0].toPython()))
+    input_words = input_name.lower().split()
     
-        return res
+    for name in name_list:
+        name_lower = name.lower()
+        is_match = True
+        
+        for word in input_words:
+            if word not in name_lower:
+                is_match = False
+                break
+        
+        similarity_score = difflib.SequenceMatcher(None, input_name, name).ratio()
+        if is_match or similarity_score >= threshold:
+            matches.append(name)
+    
+    return matches
 
+def individual_processing(path,g,args):
+    """
+    Defines the type of way that the individual's that is passed as an input  is processed, while also allowing 
+    to show all the probable possibilities that the input might match, if it doesn't exist in the ontology.
+    Also allows the user to choose the current folder '.' or other folders instead of names.
+    
+    """
 
-def compose_header(initial,arguments):
-    header = "The "
-    for (elem,_) in arguments[:-1]:
-        if elem == 'unclesaunts':
-            header += "uncles and aunts of the "
-        else:
-            header += elem + " of the "
-    elem,_ = arguments[-1]
-    if elem == 'unclesaunts':
-        header += f"uncles and aunts of {initial}:"
-    else:
-        header += elem + f" of {initial}:"
-    return header  
-
-
-def handle_queries(type, individual, g):
-    try:
-        if type == 'siblings':
-            return apply_querie(sparql_queries.siblingsQres, individual, g)
-        elif type == 'grandparents':
-            return apply_querie(sparql_queries.grandparentsQres, individual, g)
-        elif type == 'parents':
-            return apply_querie(sparql_queries.parentsQres, individual, g)
-        elif type == 'unclesaunts':
-            return apply_querie(sparql_queries.unclesauntsQres, individual, g)
-        elif type == 'children':
-            return apply_querie(sparql_queries.childrenQres, individual, g)
-    except Exception as e:
-        # Handle the ParseException here
-        print(f"✗ Some error occurred. Individual might not exist.")
-        return None
-
-def query_composition(path,g,args):
     if hasattr(args, 'ordered_args'):
         inverted_args = args.ordered_args
     else:
         print("✗ You need to specify what flags you want. Use anbget -h for additional information.")
         exit()
 
-    if args.individual[0] == ".":
+    if len(args.individual) == 1 and args.individual[0] == ".":
+        if os.getcwd() == dataControl.get_root():
+            print("You can't select the root directory as a valid individual")
+            exit()
         individual = os.path.basename(path)
         initial = individual.replace("-", " ")
 
-    elif args.individual[0].endswith("/"):
+    elif len(args.individual) == 1 and args.individual[0].endswith("/"):
         args.individual[0]=args.individual[0][:-1]
         individual = args.individual[0]
         initial = args.individual[0].replace("-", " ")
     else:
-        individuals,folders = lazy_search_names_folders(g)
+        individuals,folders = queries.lazy_search_names_folders(g)
         
-        initial = args.individual[0]
+        initial = ' '.join(args.individual)
         individual = initial
-        if args.individual[0] not in individuals and args.individual[0] not in folders:
-            initial = select_names(find_matching_names(args.individual[0],individuals))
+        if initial not in individuals and initial not in folders:
+            if len(find_matching_names(initial,individuals)) == 0:
+                print("✗ There isn't anyone that resembles that name.")
+                exit()
+                
+            initial = view_sparql.select_names(find_matching_names(initial,individuals))
             individual = initial.replace(" ","-")
-        # if not any([args.siblings, args.parents, args.unclesaunts, args.grandparents, args.children]):
-    #     print("✗ At least one of the flags -s, -p, -ua, -gp, -c is required.")
-    #     exit()
-        
+    query_solutions(inverted_args,initial,args,g)
+
+
+def query_solutions(inverted_args,initial,args,g):
 
     inverted_args = inverted_args[::-1]
-    header = compose_header(initial,args.ordered_args) 
+    header = view_sparql.compose_header(initial,args.ordered_args) 
     for i, (argument, _) in enumerate(inverted_args):
         if i == len(inverted_args) - 1:
             aux = {}
 
             if isinstance(individual,list):
                 for elem in individual:
-                    aux[elem] = handle_queries(argument,elem,g)
+                    aux[elem] = queries.handle_queries(argument,elem,g)
             elif isinstance(individual,str):
-                aux[individual] = handle_queries(argument,individual,g)
+                aux[individual] = queries.handle_queries(argument,individual,g)
             
             all_empty = all(val == [] for val in aux.values())
             if all_empty:
@@ -126,29 +106,13 @@ def query_composition(path,g,args):
             if isinstance(individual,list):
                 aux = []
                 for elem in individual:
-                    aux.extend(handle_queries(argument,elem,g))
+                    aux.extend(queries.handle_queries(argument,elem,g))
                 individual = aux
             elif isinstance(individual,str):
-                aux = handle_queries(argument,individual,g)
+                aux = queries.handle_queries(argument,individual,g)
                 individual = aux
     return unique,message,header
 
-
-# def show_data(unique,message,header):
-
-#     print(header)
-#     for elem in unique:
-#         print("*", elem.replace("-"," "))
-#     print("\n",message)
-
-from prettytable import PrettyTable
-
-def show_data(unique, message, header):
-    table = PrettyTable([header])
-    for elem in unique:
-        table.add_row(["* " + elem.replace("-", " ")])
-    print(table)
-    print("\n" + message)
 
 
 def anb_search():
@@ -159,66 +123,8 @@ def anb_search():
     # if not any([args.siblings, args.parents, args.unclesaunts, args.grandparents, args.children]):
     #     print("✗ At least one of the flags -s, -p, -ua, -gp, -c is required.")
     #     exit()
-    unique,message,header = query_composition(cwd,g,args)
-    show_data(unique,message,header)
-
-
-
-def folder_cd_composition(unique,g):
-    possibilities = []
-    for value in unique:
-        sparql_qry = sparql_queries.individual_folderPath_Qres(value)
-        result = execute_sparql_query(sparql_qry,g)
-        if not result:
-            print("✗ Non-existing folderpath.")
-        else:
-            for row in result:
-                possibilities.append(str(row["folderPath"].toPython()))
-    return possibilities
-
-
-
-def select_names(names):
-    folder_names = names
-    folder_names.append("Leave")
-    print("The name is either too vague or there isn't someone with that name.")
-    questions = [
-        inquirer.List('names',
-                      choices=folder_names,
-                      
-                      ),
-    ]
-    answers = inquirer.prompt(questions)
-    selected_name = answers['names']
-
-    if selected_name == "Leave":
-        exit()
-
-    # Get the corresponding full path for the selected folder name
-    # selected_path = next(path for path in names if os.path.basename(path) == selected_folder_name)
-
-    return selected_name
-
-def select_path(paths):
-    folder_names = [os.path.basename(path) for path in paths]
-    folder_names.append("Leave")
-
-    questions = [
-        inquirer.List('path',
-                      message="Select a folder:",
-                      choices=folder_names,
-                      ),
-    ]
-    answers = inquirer.prompt(questions)
-    selected_folder_name = answers['path']
-
-    if selected_folder_name == "Leave":
-        exit()
-
-    # Get the corresponding full path for the selected folder name
-    selected_path = next(path for path in paths if os.path.basename(path) == selected_folder_name)
-
-    return selected_path
+    unique,message,header = individual_processing(cwd,g,args)
+    view_sparql.show_data(unique,message,header)
 
 
 def anb_cd():
@@ -236,9 +142,9 @@ def anb_cd():
     args = argsConfig.a_cd()
 
     
-    unique,_,_ = query_composition(cwd,g,args)
-    possibilities = folder_cd_composition(unique,g)
-    selected_folder = select_path(possibilities)
+    unique,_,_ = individual_processing(cwd,g,args)
+    possibilities = queries.folder_cd_composition(unique,g)
+    selected_folder = view_sparql.select_path(possibilities)
     selected_folder = selected_folder.split("/")[1]
     try:
         subprocess.check_call(f"cd {selected_folder} && exec $SHELL", shell=True)
@@ -262,81 +168,40 @@ def anb_ls():
         
     args = argsConfig.a_cd()
     
-    unique,_,_ = query_composition(cwd,g,args)
-    possibilities = folder_cd_composition(unique,g)
-    selected_folder = select_path(possibilities)
+    unique,_,_ = individual_processing(cwd,g,args)
+    possibilities = queries.folder_cd_composition(unique,g)
+    selected_folder = view_sparql.select_path(possibilities)
     selected_folder = selected_folder.split("/")[1]
     try:
         subprocess.check_call(f"ls {selected_folder} && exec $SHELL", shell=True)
     except subprocess.CalledProcessError:
-            print("Some problem in finding the folder. Were any manual naming changes made to the Ancestors Notebook folder?.")
+            print("Some problem in finding the folder. Were any manual naming or structural changes made to the Ancestors Notebook folder?.")
             exit()
 
+  
 
-import difflib
-    
+def search_by_about_files():
+    g = genealogia.read_onto_file('anbsafeonto.rdf')
+    root = dataControl.get_root()
+    visited = set()
+    for dirpath, _, filenames in os.walk(root):
+        realpath = os.path.realpath(dirpath)
 
-# def find_matching_names(input_name, name_list, threshold=0.6):
-#     matches = []
-    
-#     for name in name_list:
-#         similarity_score = difflib.SequenceMatcher(None, input_name, name).ratio()
-#         if similarity_score >= threshold or input_name.lower() in name.lower():
-#             matches.append(name)
-    
-#     return matches
+        if realpath in visited or os.path.basename(dirpath) == '.anbtk':
+            continue
+        visited.add(realpath)
+        for filename in filenames:
+            if filename.endswith(".dgu"):
+                adgu = dgu_helper.parseAbstractDgu(filename)
+                if adgu['about'] != '':
+                    if isinstance(adgu['about'] , list):
+                        for elem in adgu['about']:
+                            if elem not in (name_list := queries.lazy_search_names_folders(g)[0]):
+                                results = find_matching_names(elem,name_list)
+                                if len(results) == 1:
+                                    pass
 
-def find_matching_names(input_name, name_list, threshold=0.6):
-    matches = []
-    
-    input_words = input_name.lower().split()
-    
-    for name in name_list:
-        name_lower = name.lower()
-        is_match = True
-        
-        for word in input_words:
-            if word not in name_lower:
-                is_match = False
-                break
-        
-        similarity_score = difflib.SequenceMatcher(None, input_name, name).ratio()
-        if is_match or similarity_score >= threshold:
-            matches.append(name)
-    
-    return matches
 
-def lazy_search_names_folders(g): 
-    """
-    Search for individuals in the list of names whose second or third name starts with the given search term.
 
-    Parameters:
-        names (list): A list of names to search through.
-        search_name (str): The search term to match against the second or third name of individuals.
-
-    Returns:
-        list: A list of individuals whose second or third name starts with the search term.
-    """
-
-    # g = genealogia.read_onto_file(dataControl.find_anb()+'/anbsafeonto.rdf')
-    sparql_qry = sparql_queries.all_individuals_folderPath_Qres()
-    result = execute_sparql_query(sparql_qry,g)
-    individuals = []
-    folders = []
-    for row in result:
-        name = row[0].value
-        folder = row[1].value
-        individuals.append(name)
-        folders.append(folder)
-    folders = [elem.split("/")[-1] for elem in folders]
-    print(folders)
-    return individuals, folders
-    # print(find_matching_names(individual,individuals))
-    # for name in names:
-    #     name_parts = name.split('-')
-    #     if len(name_parts) >= 3 and (search_name.lower() == name_parts[1].lower()[:len(search_name)] or
-    #                                  search_name.lower() == name_parts[2].lower()[:len(search_name)]):
-    #         matching_individuals.append(name)
-    # return matching_individuals
         
 

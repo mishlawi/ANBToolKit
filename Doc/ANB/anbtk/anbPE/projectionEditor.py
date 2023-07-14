@@ -215,61 +215,61 @@ def action():
         dataControl.get_root(), '.anbtk/anbsafeonto.rdf')
     anbtemp_path = os.path.join(dataControl.get_root(), '.anbtk/anbtemp.txt')
 
-    # while True:
-    subprocess.call('clear' if os.name == 'posix' else 'cls', shell=True)
-    og_family, og_ids = gramma.parsing(anbtemp_path)
-    block_number = view.interaction(og_family)
-    selected_key = list(og_family.keys())[block_number-1]
-    block = view.retrieve_content_by_name(anbtemp_path, selected_key)
-    before_block, before_ids = gramma.check_parsing(blocks.add_newlines(block))
-    modified_block = blocks.edit_block(block)
-    modified_block = blocks.add_newlines(modified_block)
-    changed_block, changed_ids = gramma.check_parsing(modified_block)
-    # print(changed_block)
-    # print(changed_ids)
+    while True:
+        subprocess.call('clear' if os.name == 'posix' else 'cls', shell=True)
+        og_family, og_ids = gramma.parsing(anbtemp_path)
+        block_number = view.interaction(og_family)
+        selected_key = list(og_family.keys())[block_number-1]
+        block = view.retrieve_content_by_name(anbtemp_path, selected_key)
+        before_block, before_ids = gramma.check_parsing(blocks.add_newlines(block))
+        modified_block = blocks.edit_block(block)
+        modified_block = blocks.add_newlines(modified_block)
+        changed_block, changed_ids = gramma.check_parsing(modified_block)
+        # print(changed_block)
+        # print(changed_ids)
 
-    changed_block_values, changed_block_keys = blocks.changed(
-        before_block, changed_block)
-    new_parent, removed_parent, updated_parents, added_children, removed_children, updated_children = blocks.updates(
-        before_block, changed_ids, before_ids, changed_block_values, changed_block_keys)
+        changed_block_values, changed_block_keys = blocks.changed(
+            before_block, changed_block)
+        new_parent, removed_parent, updated_parents, added_children, removed_children, updated_children = blocks.updates(
+            before_block, changed_ids, before_ids, changed_block_values, changed_block_keys)
 
-    unedited_geral_block, unedited_geral_ids = blocks.remaining_blocks(
-        anbtemp_path, before_block)
-    # print("***")
-    # print(unedited_geral_block)
-    # print(unedited_geral_ids)
-    updated_geral_block = blocks.new_block(unedited_geral_block, changed_block)
-    # print("***")
+        unedited_geral_block, unedited_geral_ids = blocks.remaining_blocks(
+            anbtemp_path, before_block)
+        # print("***")
+        # print(unedited_geral_block)
+        # print(unedited_geral_ids)
+        updated_geral_block = blocks.new_block(unedited_geral_block, changed_block)
+        # print("***")
 
-    # print(updated_geral_block)
+        # print(updated_geral_block)
 
-    # print("****** new parents ***********")
-    # print(new_parent)
-    # print("*******removed parents`*******")
-    # print(removed_parent)
-    # print("*****updated parents******")
-    # print(updated_parents)
-    # print("*****added children******")
-    # print(added_children)
-    # print("****** removed children ******")
-    # print(removed_children)
-    # print("****** updated children ******")
-    # print(updated_children)
+        # print("****** new parents ***********")
+        # print(new_parent)
+        # print("*******removed parents`*******")
+        # print(removed_parent)
+        # print("*****updated parents******")
+        # print(updated_parents)
+        # print("*****added children******")
+        # print(added_children)
+        # print("****** removed children ******")
+        # print(removed_children)
+        # print("****** updated children ******")
+        # print(updated_children)
 
-    g = genealogia.read_onto_file(onto_file_path)
-    handle_changes(new_parent, removed_parent, updated_parents, added_children,
-                   removed_children, updated_children, updated_geral_block, changed_block, og_family, g)
-    handle_changes_other_references(
-        updated_parents, updated_children, og_family, og_ids)
+        g = genealogia.read_onto_file(onto_file_path)
+        handle_changes(new_parent, removed_parent, updated_parents, added_children,
+                    removed_children, updated_children, updated_geral_block, changed_block, og_family, g)
+        handle_changes_other_references(
+            updated_parents, updated_children, og_family, og_ids)
 
-    block_before = blocks.dict_to_file(before_block, before_ids)
+        block_before = blocks.dict_to_file(before_block, before_ids)
 
-    block_after = blocks.dict_to_file(changed_block, changed_ids)
+        block_after = blocks.dict_to_file(changed_block, changed_ids)
 
-    blocks.replace_updated_block_file(anbtemp_path, block_before, block_after)
+        blocks.replace_updated_block_file(anbtemp_path, block_before, block_after)
 
-    if new_parent != [] or removed_parent != [] or updated_parents != [] or added_children != [] or removed_children != [] or updated_children != []:
-        genealogia.gen_onto_file(g, dataControl.find_anb()+'/anbsafeonto')
+        if new_parent != [] or removed_parent != [] or updated_parents != [] or added_children != [] or removed_children != [] or updated_children != []:
+            genealogia.gen_onto_file(g, dataControl.find_anb()+'/anbsafeonto')
 
 
 # NOTES:

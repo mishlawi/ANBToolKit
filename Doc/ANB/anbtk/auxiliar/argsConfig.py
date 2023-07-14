@@ -124,7 +124,7 @@ def a_search():
     parser.add_argument('-ua','--unclesaunts',help="Individual's uncles and aunts.",nargs=0,action=CustomAction)
     parser.add_argument('-gp','--grandparents',help="Individual's grandparents.",nargs=0,action=CustomAction)
     parser.add_argument('-c','--children',help="Individual's children.",nargs=0,action=CustomAction)
-    parser.add_argument('-i','--individual',help="Individual to be queried.",nargs=1,required=True)
+    parser.add_argument('-i','--individual',help="Individual to be queried.",nargs="+",required=True)
     
 
     return parser.parse_args()
@@ -150,7 +150,7 @@ def a_cd():
     parser.add_argument('-ua','--unclesaunts',help="Individual's uncles and aunts.",nargs=0,action=CustomAction)
     parser.add_argument('-gp','--grandparents',help="Individual's grandparents.",nargs=0,action=CustomAction)
     parser.add_argument('-c','--children',help="Individual's children.",nargs=0,action=CustomAction)
-    parser.add_argument('-i','--individual',help="Individual to be queried.",nargs=1,required=True)
+    parser.add_argument('-i','--individual',help="Individual to be queried.",nargs="+",required=True)
     
     
 
@@ -177,7 +177,7 @@ def a_ls():
     parser.add_argument('-ua','--unclesaunts',help="Individual's uncles and aunts.",nargs=0,action=CustomAction)
     parser.add_argument('-gp','--grandparents',help="Individual's grandparents.",nargs=0,action=CustomAction)
     parser.add_argument('-c','--children',help="Individual's children.",nargs=0,action=CustomAction)
-    parser.add_argument('-i','--individual',help="Individual to be queried.",nargs=1,required=True)
+    parser.add_argument('-i','--individual',help="Individual to be queried.",nargs="+",required=True)
     
     
 
@@ -195,13 +195,13 @@ import os
     #folders = [folder for folder in os.listdir(os.getcwd()) if os.path.isdir(folder) and not folder.startswith('.')]
 
 
-class CustomAction(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        if not 'ordered_args' in namespace:
-            setattr(namespace, 'ordered_args', [])
-        previous = getattr(namespace, 'ordered_args')
-        previous.append((self.dest, values))
-        setattr(namespace, 'ordered_args', previous)
+# class CustomAction(argparse.Action):
+#     def __call__(self, parser, namespace, values, option_string=None):
+#         if not 'ordered_args' in namespace:
+#             setattr(namespace, 'ordered_args', [])
+#         previous = getattr(namespace, 'ordered_args')
+#         previous.append((self.dest, values))
+#         setattr(namespace, 'ordered_args', previous)
 
 def input_with_completion(prompt):
     os.chdir(dataControl.get_root())

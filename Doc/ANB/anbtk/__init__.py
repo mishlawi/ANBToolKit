@@ -118,12 +118,11 @@ def folder_cd():
 def folder_ls():
     filters.anb_ls()
 
-def lazy_search():
-
-    filters.lazy_search_names_folders()
-
 def show_entities():
     pass
+
+def get_about():
+    filters.search_by_about_files()
 
 ############################## .anb ################################
 
@@ -142,9 +141,9 @@ def anb():
 
     genFolderStructure = subparsers.add_parser('genFolders',help="gen folder structure from seed file.")
     genFolderStructure.add_argument('--seed','-s',required=True, help="path to seed file to be converted.",nargs=1)
-    genFolderStructure.add_argument('--source','-src',help ="path to source fsgram file to generat ancestors notebook entities")
-    genFolderStructure.add_argument('--family','-fam',help ="name of the family to be created!",nargs=1)
-    genFolderStructure.add_argument('--filename','-fn', help="give a custom name to the ontology file. If not used, only a safe hidden file will be generated.",nargs='?')
+    genFolderStructure.add_argument('--source','-src',help = "path to source fsgram file to generat ancestors notebook entities")
+    genFolderStructure.add_argument('--family','-fam',help = "name of the family to be created!",nargs=1)
+    genFolderStructure.add_argument('--filename','-fn', help= "give a custom name to the ontology file. If not used, only a safe hidden file will be generated.",nargs='?')
     genFolderStructure.add_argument('--out','-o',help="output the ontology file to a certain directory.",nargs='?')
 
     args = parser.parse_args()
@@ -201,7 +200,7 @@ def anb():
                     family = args.family[0]
                 else:
                     family= "anb-family"
-                g,(fam_structure,fam_ids) = genealogia.onto_folders_correspondence(seed,family=family,entities=fsgram)
+                g ,(fam_structure,fam_ids) = genealogia.onto_folders_correspondence(seed,family=family,entities=fsgram)
                 #! error handling needed here for errors in the seed file
             
                 file_structure = blocks.dict_to_file(fam_structure,fam_ids)

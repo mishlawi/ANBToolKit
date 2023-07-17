@@ -31,6 +31,7 @@ from .dgu import dguObject as dgu
 
 #? DUVIDAS
 # * error handling nas gramáticas
+# * usar path para a ontologia como URI
 
 
 #*TODO

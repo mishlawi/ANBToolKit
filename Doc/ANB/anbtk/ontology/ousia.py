@@ -15,12 +15,13 @@ SISTEMA DE REPRESENTACAO DE CONHECIMENTO
 ==========================================================================================
 ================== ONTOLOGY INITIALIZATION AND PROPERTIES DEFINITION =====================
 ==========================================================================================
-"""
-
+# """
+# For classes and individuals, camel case is used (e.g., ArtifactModel,
+# JohnDoe). For properties, each word is lowercase and joined by underscores (e.g., described_by). 
 
 FAMILY = Namespace('http://example.org/family#')
-RDFS = Namespace('http://www.w3.org/2000/01/rdf-schema#')
 DGU = Namespace('http://example.com/dgu#')
+# RDFS = Namespace('http://www.w3.org/2000/01/rdf-schema#')
 
 def ontology():
 
@@ -110,7 +111,7 @@ def relationships_ontology(g):
     subfolder_class = FAMILY['Subfolder']
     g.add((subfolder_class, RDF.type, OWL.Class))
     g.add((subfolder_class, RDFS.label, Literal('Subfolder')))
-    g.add((subfolder_class, RDFS.subClassOf, person_class))
+    #g.add((subfolder_class, RDFS.subClassOf, person_class))
 
 
     has_subfolder_property = FAMILY['hasSubfolder']

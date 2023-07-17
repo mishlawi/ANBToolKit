@@ -323,7 +323,7 @@ def parsing(filename):
         print("Error while processing the anbtemplate file.")
         print("Either bad input or no added elements.")
         exit(-1)
-
+    
     return family_tree, meta
 
 
@@ -341,7 +341,7 @@ def check_parsing(data):
         print("Error while processing the anbtemplate file.")
         print("Either bad input or no added elements.")
         exit(-1)
-   
+    print(family_tree,meta)
     return family_tree, meta
 
 

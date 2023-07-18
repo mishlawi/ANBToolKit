@@ -4,7 +4,6 @@ import ply.yacc as yacc
 '''
 grammar = γράμμα
 '''
-#! finish the support of the nicknames
 #! support of new couples
 
 

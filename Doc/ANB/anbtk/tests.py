@@ -170,4 +170,9 @@ def print_family_member(parents, children, prefix):
         
         print_family_member(child, [], sub_prefix)
 
-print_family_tree(dict1)
+# print_family_tree(dict1)
+
+
+
+nonterminals = {'Pessoa': ['H*', 'Bio', 'Foto'], 'Album': ['Foto*']}
+

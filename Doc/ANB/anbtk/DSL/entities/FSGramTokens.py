@@ -18,9 +18,6 @@ def t_REGEX(t):
     return t
 
 
-# UNIVERSE\n(.+|\n)+?(?=FORMATS)
-# STATE CONDITIONS
-# ADICIONAR LOOKAHEAD
 
 
 def t_UNIVERSE(t):

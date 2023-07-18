@@ -1,27 +1,29 @@
 import os
 import re
+from . import FSGram
+from ...dgu import DGUhand
+from ... import dataControl
 
 # *
 # ** Controls the way the grammar can be organized and disposed
 # * 
-
 
 def interpreter(terminals,nonterminals):
     interpretation = {}
     for producao in nonterminals.keys():
         racional = []
         for id in nonterminals[producao]:
-            collector = []            
+            collector = []
             zoom(id,terminals,nonterminals,collector)
-            if id[-1] == '*' or id[-1] == '+' or id[-1] == '?':
+            if id[-1] in ['*', '+', '?']:
                 racional.append((collector,id[-1]))
             else:
                 racional.append((collector,''))
-        if producao in interpretation.keys():
+        if producao in interpretation:
             aux = interpretation[producao]    
             interpretation[producao] = aux.append(racional)
-        elif producao not in interpretation.keys():
-            interpretation[producao] = racional 
+        else:
+            interpretation[producao] = racional
     return interpretation
     
 
@@ -30,12 +32,9 @@ def zoom(value, terminals, nonterminals,buff):
     # P : H* , Bio, Foto .
     # Album : Foto*.
 
-    if value[-1] == '*' or value[-1] == '+' or value[-1] == '?':
-        elem = value[:-1]
-    else:
-        elem = value
+    elem = value[:-1] if value[-1] in ['*', '+', '?'] else value
     if elem in terminals.keys():
-        if value[-1] == '*' or value[-1] == '+' or value[-1] == '?':
+        if value[-1] in ['*', '+', '?']:
             buff.append((terminals[elem],value[-1]))
         else:
             buff.append((terminals[elem],''))
@@ -48,7 +47,7 @@ def zoom(value, terminals, nonterminals,buff):
 def verifyGrammar(lista,grammar):
     for producao in lista:
         for id in producao:
-            if id[-1] == '*' or id[-1] == "+" or id[-1] == '?':
+            if id[-1] in ['*', "+", '?']:
                 id = id[:-1]
 
             if id not in grammar.keys():
@@ -147,7 +146,60 @@ def travessia(grammar,dirIn,dirOut,ignoredFiles):
     return disposal
     
 
-
-
+# def travessia2(nonterminals,terminals):
+#     dataControl.get_root()
 
     
+    
+
+def show_declarations(terminals,nonterminals):
+    # disposal = travessia(grammar,dirin,dirout,ignoredFiles)
+    # genHtml(disposal,dirout,dirin)
+    print("\n\n")
+    print("-- Declarations --\n")
+    print(nonterminals)
+    for nonterminal, spec in nonterminals.items():
+        text = ''.join(f'{elem}, ' for elem in spec)
+        text = text[:-1]
+        print(f" - {nonterminal} : {text}")
+    print("\n")
+    for terminal, symbol in terminals.items(): 
+        print(f" -> {terminal} : {symbol}")
+
+    print("\n")
+
+
+
+def universehand(universe):
+    galaxies = universe.split('\n')
+    
+    for elem in galaxies:
+    
+        if len(values:=re.split(r'\-\>',elem))>1:
+            entity = values[0]
+            atributes = values[1]
+            atributes = re.split(r'::',atributes)
+            # subclass = DGUhand.dgu_subclass(entity,atributes)
+
+
+
+def process_fsgram(top,grammar,universe,terminals,nonterminals):
+    """
+    This function serves as an handler that pin-points all the information that needs to be processed to their corresponding functions.
+    """
+    print(universe)
+    verifyGrammar(top,grammar)
+    interpreter(terminals,nonterminals)
+    #universehand(universe)
+    show_declarations(terminals,nonterminals)
+    DGUhand.bigbang(universe,terminals)
+    print("Gramatica")
+    print(grammar)
+    # travessia2(grammar)
+    print("Terminais")
+    print(terminals)
+    print("nao terminais")
+    print(nonterminals)
+    print("A")
+
+

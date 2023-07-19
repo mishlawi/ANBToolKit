@@ -146,12 +146,7 @@ def travessia(grammar,dirIn,dirOut,ignoredFiles):
     return disposal
     
 
-# def travessia2(nonterminals,terminals):
-#     dataControl.get_root()
-
     
-    
-
 def show_declarations(terminals,nonterminals):
     # disposal = travessia(grammar,dirin,dirout,ignoredFiles)
     # genHtml(disposal,dirout,dirin)
@@ -182,24 +177,65 @@ def universehand(universe):
             # subclass = DGUhand.dgu_subclass(entity,atributes)
 
 
+def read_productions_file():
+    with open (f"{dataControl.find_anb()}/fsgram.anb","r") as productions_file:
+        content = productions_file.read()
+    
+    top,grammar,universe,terminals,nonterminals = FSGram.initializer(content)
+
+    print(nonterminals)
+
+def retrieve_all_dgu_files(root_folder):
+    files = []
+    for root, dirs, filenames in os.walk(root_folder, followlinks=False):
+        for folder in dirs:
+            if not folder.startswith("."):
+                folder_path = os.path.join(root, folder)
+                if not os.path.islink(folder_path):
+                    for file in os.listdir(folder_path):
+                        file_path = os.path.join(folder_path, file)
+                        if not os.path.islink(file_path) and os.path.isfile(file_path):
+                            print(file_path)
+                            files.append(file_path) 
+    print(files)
+    return files
+
+def travessia_new():
+    read_productions_file()
+
+    root_folder = dataControl.get_root()
+    retrieve_all_dgu_files(root_folder)
+
+    
+
+
+
+def gen_productions_file(nonterminals):
+    string = ''
+    for production, terminals in nonterminals.items():
+        string += f'{production} : '
+        if len(terminals) != 1:
+            for elem in terminals[:-1]:
+                string += f'{elem} , '
+        string += f'{elem}'
+        string+=f"\n"
+
+
+    with open(r'productions.txt', 'w') as file:
+        file.write(string)
+
 
 def process_fsgram(top,grammar,universe,terminals,nonterminals):
     """
     This function serves as an handler that pin-points all the information that needs to be processed to their corresponding functions.
     """
-    print(universe)
     verifyGrammar(top,grammar)
     interpreter(terminals,nonterminals)
     #universehand(universe)
     show_declarations(terminals,nonterminals)
     DGUhand.bigbang(universe,terminals)
-    print("Gramatica")
-    print(grammar)
-    # travessia2(grammar)
-    print("Terminais")
-    print(terminals)
-    print("nao terminais")
-    print(nonterminals)
-    print("A")
+    gen_productions_file(nonterminals)
+    
+
 
 

@@ -18,8 +18,6 @@ def t_REGEX(t):
     return t
 
 
-
-
 def t_UNIVERSE(t):
     r'UNIVERSE(.|\n)+?(?=IGNORE)'
     t.value=str(t.value)

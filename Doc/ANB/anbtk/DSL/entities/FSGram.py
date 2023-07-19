@@ -8,8 +8,6 @@ from ...dgu import DGUhand
 from ...auxiliar import constants
 
 
-
-
 #todo nao ir ao topo da produção
 
 
@@ -19,14 +17,13 @@ nonterminals = {}
 
 
 def p_FSGram(p):
-    "FSGram : Prods UNIVERSE  IGNORED"
+    "FSGram : Prods UNIVERSE IGNORED"
     universe = re.sub('UNIVERSE','',p[2]).strip()
     ignoredFiles = list(re.sub('IGNORE','',p[3]).strip().split('\n'))
     top = list(grammar.values())[0]
 
-    gramLogic.process_fsgram(top,grammar,universe,terminals,nonterminals)
-    p[0] = ignoredFiles,terminals,nonterminals,grammar
-    print("here",p[1])
+    # gramLogic.process_fsgram(top,grammar,universe,terminals,nonterminals)
+    p[0] = top,grammar,universe,terminals,nonterminals
     # return ignoredFiles,grammar
    
 
@@ -98,8 +95,9 @@ parser = yacc.yacc()
 def initializer(res=''):
     if res=='' :
         result = parser.parse(constants.defaultFsgram,lexer=lexer_fsgram)
+        
     else:
-        result = parser.parse(res,lexer=lexer_fsgram) 
+        result = parser.parse(res,lexer=lexer_fsgram)
 
 
     return result

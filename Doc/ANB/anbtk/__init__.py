@@ -21,7 +21,7 @@ from .actions import gen_dgus
 from .auxiliar import dgu_helper
 from .dgu import dguObject as dgu
 
-
+from .DSL.entities import gramLogic
 
 ##############################################################################################################
 ##############################################################################################################
@@ -30,6 +30,7 @@ from .dgu import dguObject as dgu
 ##############################################################################################################
 
 #? DUVIDAS
+
 # * error handling nas gramáticas
 # * usar path para a ontologia como URI
 
@@ -61,6 +62,17 @@ from .dgu import dguObject as dgu
 # ! individual dgubook not working
 # ! todo : gedcom; show family tree
 # ! data updates and nickname updates should be presented in the anbtemplate when two references exist -> if i add a nickname to jose in the child position, it should appear in the parent position 
+
+
+#! manter estado apos erro de processamento da gramatica de criaçao/edicao de casais
+#! proteger dados de serem perdidos, deteçao de eleminiações
+# add tese: como reagir aos erros, e qual o approach
+# usar o editor predefinido do user para editar
+# ccriar noção de anotação extra as gramaticas para lidar com gestao de erros
+# adicionar notas caso relevante para enriquecer os textos
+
+
+
 
 #? Done, but re check:
 # * i want it so that story and bio (and others) are default formats but the users can create their ones x
@@ -125,6 +137,10 @@ def show_entities():
 def get_about():
     filters.search_by_about_files()
 
+
+def productions():
+    gramLogic.travessia_new()
+    
 ############################## .anb ################################
 
 

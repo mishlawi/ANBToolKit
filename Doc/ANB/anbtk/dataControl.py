@@ -8,7 +8,7 @@ import os
 from .DSL.entities import FSGram
 from .auxiliar import constants
 from .auxiliar import dgu_helper
-
+from .DSL.entities import gramLogic
 
 
 def find_anb():
@@ -71,13 +71,20 @@ def initanb(grampath="",folderpath=""):
             initData()
             
             if grampath=="":
-                FSGram.initializer()
+                top,grammar,universe,terminals,nonterminals = FSGram.initializer()
+                gramLogic.process_fsgram(top,grammar,universe,terminals,nonterminals)
+                with open('fsgram.anb','w') as fsgram:
+                    fsgram.write(constants.defaultFsgram)
             else:
                 if os.path.dirname(grampath)!='':
                     os.chdir(os.path.dirname(os.path.abspath(grampath)))
                 temp = open(grampath,'r').read()
                 os.chdir(filepath)
-                FSGram.initializer(temp)
+                top,grammar,universe,terminals,nonterminals = FSGram.initializer(temp)
+                gramLogic.process_fsgram(top,grammar,universe,terminals,nonterminals)
+                # this file creation and such might cause some stress
+                with open('fsgram.anb','w') as fsgram:
+                    fsgram.write(temp)
             templateGen()
         os.chdir(cwd)
 

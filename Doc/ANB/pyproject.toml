@@ -26,5 +26,6 @@ anbsearch = "anbtk:query"
 anbcd = "anbtk:folder_cd"
 anbls = "anbtk:folder_ls"
 anbabout = "anbtk:get_about"
+productions = "anbtk:productions"
 anb = "anbtk:anb"
 

@@ -79,6 +79,7 @@ def handle_queries(type, individual, g):
             return apply_querie(sparql_queries.grandparentsQres, individual, g)
         elif type == 'parents':
             return apply_querie(sparql_queries.parentsQres, individual, g)
+        
         elif type == 'unclesaunts':
             return apply_querie(sparql_queries.unclesauntsQres, individual, g)
         elif type == 'children':

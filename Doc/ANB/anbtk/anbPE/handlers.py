@@ -2,6 +2,7 @@ import os
 
 from pathlib import Path
 from ..ontology import ousia
+
 from .. import dataControl
 from .. import genealogia
 

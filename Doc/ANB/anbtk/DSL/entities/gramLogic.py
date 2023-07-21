@@ -177,36 +177,76 @@ def universehand(universe):
             # subclass = DGUhand.dgu_subclass(entity,atributes)
 
 
-def read_productions_file():
+def read_fsgram_file():
     with open (f"{dataControl.find_anb()}/fsgram.anb","r") as productions_file:
         content = productions_file.read()
     
     top,grammar,universe,terminals,nonterminals = FSGram.initializer(content)
 
     print(nonterminals)
+    return nonterminals,terminals
 
 def retrieve_all_dgu_files(root_folder):
     files = []
-    for root, dirs, filenames in os.walk(root_folder, followlinks=False):
+
+
+    for root, dirs, _ in os.walk(root_folder, followlinks=False):
         for folder in dirs:
             if not folder.startswith("."):
                 folder_path = os.path.join(root, folder)
                 if not os.path.islink(folder_path):
-                    for file in os.listdir(folder_path):
+                    for file in os.listdir(folder_path):      
                         file_path = os.path.join(folder_path, file)
-                        if not os.path.islink(file_path) and os.path.isfile(file_path):
+                        if not os.path.islink(file_path) and os.path.isfile(file_path) and file_path.endswith(".dgu"):
                             print(file_path)
                             files.append(file_path) 
-    print(files)
     return files
 
+import inquirer
+
+def select_file_optional(files):
+    folder_names = files
+    folder_names.insert(0,"Leave")
+    print("Optional, so chose a file or ignore:")
+    questions = [
+        inquirer.List('files',
+                      choices=folder_names,
+                      ),
+    ]
+    answers = inquirer.prompt(questions)
+    selected_name = answers['files']
+
+    if selected_name == "Leave":
+        exit()
+
+    return selected_name
+
+
 def travessia_new():
-    read_productions_file()
+    nonterminals, terminals = read_fsgram_file()
 
     root_folder = dataControl.get_root()
-    retrieve_all_dgu_files(root_folder)
+    files = retrieve_all_dgu_files(root_folder)
+    dgu_correspondence = {
+        terminal: [
+            file
+            for file in files
+            if (os.path.basename(file)).startswith(terminals[terminal][:-1])
+        ]
+        for terminal in terminals
+    }
 
-    
+    data = {}
+    for production, symbols in nonterminals.items():
+        data[production] = []
+        for sym in symbols:
+
+            if sym.endswith("*"):
+                data[production] =  dgu_correspondence[sym[:-1]]
+            elif sym.endswith("?"):
+                preview = [dataControl.relative_to_anbtk(elem) for elem in dgu_correspondence[sym[:-1]]]
+                data[production] = select_file_optional(dgu_correspondence[sym[:-1]])
+
 
 
 
@@ -214,12 +254,11 @@ def gen_productions_file(nonterminals):
     string = ''
     for production, terminals in nonterminals.items():
         string += f'{production} : '
-        if len(terminals) != 1:
+        if terminals:  
             for elem in terminals[:-1]:
                 string += f'{elem} , '
-        string += f'{elem}'
-        string+=f"\n"
-
+            string += f'{terminals[-1]}'  
+        string += '\n'
 
     with open(r'productions.txt', 'w') as file:
         file.write(string)

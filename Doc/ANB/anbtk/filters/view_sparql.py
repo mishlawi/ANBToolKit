@@ -18,6 +18,8 @@ def select_names(names):
 
     if selected_name == "Leave":
         exit()
+    
+    return selected_name
 
 
 
@@ -60,6 +62,9 @@ def compose_header(initial,arguments):
 
 
 def show_data(unique, message, header):
+    print(unique)
+    print(message)
+    print(header)
     table = PrettyTable([header])
     for elem in unique:
         table.add_row(["* " + elem.replace("-", " ")])

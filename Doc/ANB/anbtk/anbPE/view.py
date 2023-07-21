@@ -1,4 +1,3 @@
-import inquirer
 import shutil
 
 
@@ -66,7 +65,7 @@ def interaction(og_family):
         try:
             list_and_num_families(og_family)
             print(divider)
-            number = int(input(f"Choose a block to be edited: "))
+            number = int(input("Choose a block to be edited: "))
             if 0 < number <= length:
                 return number
             elif number == 0:

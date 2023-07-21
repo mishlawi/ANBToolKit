@@ -49,8 +49,8 @@ def individual_processing(path,g,args):
         exit()
 
     if len(args.individual) == 1 and args.individual[0] == ".":
-        if os.getcwd() == dataControl.get_root():
-            print("You can't select the root directory as a valid individual")
+        if path == dataControl.get_root():
+            print("✗ Action not possible when in root folder.")
             exit()
         individual = os.path.basename(path)
         initial = individual.replace("-", " ")
@@ -71,10 +71,6 @@ def individual_processing(path,g,args):
                 
             initial = view_sparql.select_names(find_matching_names(initial,individuals))
             individual = initial.replace(" ","-")
-    query_solutions(inverted_args,initial,args,g)
-
-
-def query_solutions(inverted_args,initial,args,g):
 
     inverted_args = inverted_args[::-1]
     header = view_sparql.compose_header(initial,args.ordered_args) 
@@ -95,13 +91,13 @@ def query_solutions(inverted_args,initial,args,g):
             
             unique = set()
             message = "Results come from:\n"
-            
+            print(aux)
             for person,relations in aux.items():
                 for p in relations:
                     unique.add(p)
                 if relations != []:
                     message += " " + person.replace("-"," ") + "\n"
-        
+            
         else:
             if isinstance(individual,list):
                 aux = []
@@ -129,20 +125,23 @@ def anb_search():
 
 def anb_cd():
     cwd = os.getcwd()
+    
     if not dataControl.search_anbtk():
         print("✗ You are not in an Ancestors Notebook." )
         exit()
     else:
         try:
+        
             g = genealogia.read_onto_file('anbsafeonto.rdf')
         except FileNotFoundError:
             print("No ontology was initialized.\nWas this ancestor notebook created from scratch? There doesn't seem to exist any .rdf file that defines the familiar connections.")
             exit()
-        os.chdir(dataControl.get_root())
+       
+    os.chdir(dataControl.get_root())
     args = argsConfig.a_cd()
 
     
-    unique,_,_ = individual_processing(cwd,g,args)
+    unique,_,_ = individual_processing(cwd,g,args,True)
     possibilities = queries.folder_cd_composition(unique,g)
     selected_folder = view_sparql.select_path(possibilities)
     selected_folder = selected_folder.split("/")[1]
@@ -160,6 +159,7 @@ def anb_ls():
         exit()
     else:
         try:
+            os.chdir(cwd)
             g = genealogia.read_onto_file('anbsafeonto.rdf')
         except FileNotFoundError:
             print("No ontology was initialized.\nWas this ancestor notebook created from scratch? There doesn't seem to exist any .rdf file that defines the familiar connections.")
@@ -204,4 +204,3 @@ def search_by_about_files():
 
 
         
-

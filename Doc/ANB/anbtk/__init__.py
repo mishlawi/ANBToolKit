@@ -59,13 +59,15 @@ from .DSL.entities import gramLogic
 # * testar projection editor (check individual function annotations)
 # * use default editor
 
+
+
 # ! individual dgubook not working
 # ! todo : gedcom; show family tree
-# ! data updates and nickname updates should be presented in the anbtemplate when two references exist -> if i add a nickname to jose in the child position, it should appear in the parent position 
 
 
 #! manter estado apos erro de processamento da gramatica de criaçao/edicao de casais
 #! proteger dados de serem perdidos, deteçao de eleminiações
+
 # add tese: como reagir aos erros, e qual o approach
 # usar o editor predefinido do user para editar
 # ccriar noção de anotação extra as gramaticas para lidar com gestao de erros
@@ -77,6 +79,7 @@ from .DSL.entities import gramLogic
 #? Done, but re check:
 # * i want it so that story and bio (and others) are default formats but the users can create their ones x
 # * auto sync when creating dgus x
+# * data updates and nickname updates should be presented in the anbtemplate when two references exist -> if i add a nickname to jose in the child position, it should appear in the parent position 
 
 ##############################################################################################################
 ##############################################################################################################

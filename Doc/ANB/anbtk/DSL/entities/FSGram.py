@@ -3,8 +3,6 @@ import re
 
 
 from .FSGramTokens import tokens,lexer_fsgram
-from . import gramLogic
-from ...dgu import DGUhand
 from ...auxiliar import constants
 
 
@@ -79,7 +77,7 @@ def p_IDTIMES(p):
     p[0] = [p[1]]
 
 def p_IDOPTN(p):
-    "IDS : IDo"
+    "IDgen : IDo"
     p[0] = [p[1]]
 
 def p_error(p):

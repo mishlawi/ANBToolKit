@@ -1,4 +1,4 @@
-defaultFsgram= """Pessoa : H* , Bio, Foto.
+defaultFsgram= """Pessoa : H* , Bio?, Foto.
 Album : Foto*.
 
 H : h.

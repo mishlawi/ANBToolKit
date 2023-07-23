@@ -178,9 +178,13 @@ def universehand(universe):
 
 
 def read_fsgram_file():
-    with open (f"{dataControl.find_anb()}/fsgram.anb","r") as productions_file:
-        content = productions_file.read()
-    
+    try:
+        with open (f"{dataControl.find_anb()}/fsgram.anb","r") as productions_file:
+            content = productions_file.read()
+    except FileNotFoundError:
+        print("There isn't a fsgram file in this AncestorsNotebook.")
+        exit()
+
     top,grammar,universe,terminals,nonterminals = FSGram.initializer(content)
 
     print(nonterminals)
@@ -198,16 +202,15 @@ def retrieve_all_dgu_files(root_folder):
                     for file in os.listdir(folder_path):      
                         file_path = os.path.join(folder_path, file)
                         if not os.path.islink(file_path) and os.path.isfile(file_path) and file_path.endswith(".dgu"):
-                            print(file_path)
                             files.append(file_path) 
     return files
 
 import inquirer
 
-def select_file_optional(files):
+def select_file_optional(files,message):
     folder_names = files
-    folder_names.insert(0,"Leave")
-    print("Optional, so chose a file or ignore:")
+
+    print(message)
     questions = [
         inquirer.List('files',
                       choices=folder_names,
@@ -216,11 +219,31 @@ def select_file_optional(files):
     answers = inquirer.prompt(questions)
     selected_name = answers['files']
 
-    if selected_name == "Leave":
-        exit()
-
+    if selected_name == "Ignore":
+        return ''
+    
     return selected_name
 
+
+"""
+defaultFsgram = Pessoa : H* , Bio?, Foto.
+Album : Foto*.
+
+H : h.
+Bio : b.
+Foto : p.
+
+UNIVERSE
+
+Story -> title,author,date
+Biography -> name,birthday,birthplace,occupation,death
+Foto -> note,date
+
+IGNORE
+.py 
+.out
+.fsgram
+"""
 
 def travessia_new():
     nonterminals, terminals = read_fsgram_file()
@@ -240,15 +263,52 @@ def travessia_new():
     for production, symbols in nonterminals.items():
         data[production] = []
         for sym in symbols:
-
+            if sym[-1] in ["*","+","?"]:
+                id = sym[:-1]
+            else:
+                id = sym
+            documents = data[production]
             if sym.endswith("*"):
-                data[production] =  dgu_correspondence[sym[:-1]]
+                documents.append((id,dgu_correspondence[id]))
+
+            elif sym.endswith("+"):
+                if  dgu_correspondence[id] != []:
+                    documents.append((id,dgu_correspondence[id]))
+                else:
+                    print(f"It is necessary to exist at least a {production} file!")
+                    exit()
+
             elif sym.endswith("?"):
-                preview = [dataControl.relative_to_anbtk(elem) for elem in dgu_correspondence[sym[:-1]]]
-                data[production] = select_file_optional(dgu_correspondence[sym[:-1]])
+                
+                if  dgu_correspondence[id] != []:
+                    preview = {}
+                    for elem in dgu_correspondence[id]:
+                        preview[elem] = dataControl.relative_to_anbtk(elem)
+                    lista = list(preview.values())
+                    lista.insert(0,'Ignore')
+                    message = f"Chose a file or just ignore to satisfy\n {sym}"
+                    value = select_file_optional(lista,message)
+                    if value != '':
+                        documents.append((id,value))
+            else:
+                if  dgu_correspondence[id] != []:
+                    preview = {}
+                    for elem in dgu_correspondence[id]:
+                        preview[elem] = dataControl.relative_to_anbtk(elem)
+                    lista = list(preview.values())
+                    message = f"Chose a file to satisfy {sym}:\n"
+                    value = select_file_optional(lista,message)
+                    documents.append((id,value))
+                else:
+                    print(f"It is necessary to exist at least a {production} file!")
+                    exit()
+    return data
 
 
-
+def topdf(data,production):
+    files = data[production]
+    for symb in files:
+        print(symb)
 
 def gen_productions_file(nonterminals):
     string = ''

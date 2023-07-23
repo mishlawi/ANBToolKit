@@ -1,9 +1,9 @@
-import argcomplete
+import readline
 import argparse
 import time
+import os
 
-
-################## tex2dgu ###################
+from .. import dataControl
 
 
 def a_tex2dgu():
@@ -14,9 +14,6 @@ def a_tex2dgu():
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-f', '--file', help="Takes 1 or more files defined by the user.", nargs='+')
     return parser.parse_args()
-
-
-################## dgubooks ##################
 
 
 def a_dgubook():  
@@ -35,9 +32,6 @@ def a_dgubook():
     return parser.parse_args()
 
 
-################### notes ####################
-
-
 def a_notes():
     parser = argparse.ArgumentParser(
         prog = 'genNote',
@@ -47,9 +41,6 @@ def a_notes():
     group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
     return parser.parse_args()
 
-
-
-################## genStory ###################
 
 def a_genStory():
     parser = argparse.ArgumentParser(
@@ -65,8 +56,6 @@ def a_genStory():
     
     return parser.parse_args()
 
-
-################## genBio ##################
 
 def a_genBio():
     parser = argparse.ArgumentParser(
@@ -104,7 +93,6 @@ def a_image():
     return parser.parse_args()
 
 
-
 def a_search():
     
     class CustomAction(argparse.Action):
@@ -125,7 +113,6 @@ def a_search():
     parser.add_argument('-gp','--grandparents',help="Individual's grandparents.",nargs=0,action=CustomAction)
     parser.add_argument('-c','--children',help="Individual's children.",nargs=0,action=CustomAction)
     parser.add_argument('-i','--individual',help="Individual to be queried.",nargs="+",required=True)
-    
 
     return parser.parse_args()
 
@@ -151,8 +138,6 @@ def a_cd():
     parser.add_argument('-gp','--grandparents',help="Individual's grandparents.",nargs=0,action=CustomAction)
     parser.add_argument('-c','--children',help="Individual's children.",nargs=0,action=CustomAction)
     parser.add_argument('-i','--individual',help="Individual to be queried.",nargs="+",required=True)
-    
-    
 
     return parser.parse_args()
 
@@ -179,29 +164,10 @@ def a_ls():
     parser.add_argument('-c','--children',help="Individual's children.",nargs=0,action=CustomAction)
     parser.add_argument('-i','--individual',help="Individual to be queried.",nargs="+",required=True)
     
-    
-
     return parser.parse_args()
 
 
 
-
-import readline
-
-from .. import dataControl
-import os
-
-
-    #folders = [folder for folder in os.listdir(os.getcwd()) if os.path.isdir(folder) and not folder.startswith('.')]
-
-
-# class CustomAction(argparse.Action):
-#     def __call__(self, parser, namespace, values, option_string=None):
-#         if not 'ordered_args' in namespace:
-#             setattr(namespace, 'ordered_args', [])
-#         previous = getattr(namespace, 'ordered_args')
-#         previous.append((self.dest, values))
-#         setattr(namespace, 'ordered_args', previous)
 
 def input_with_completion(prompt):
     os.chdir(dataControl.get_root())

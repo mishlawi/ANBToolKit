@@ -156,6 +156,9 @@ def onto_folders_correspondence(file, family, entities=""):
 
     if not os.path.exists(family):
         os.mkdir(family)
+    else: # this 2 lines were recently added so any future problems should be solved if you remove them
+        print(f"✗ There already exists a {family} folder")
+        exit()
 
     os.chdir(family)
 

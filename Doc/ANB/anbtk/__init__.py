@@ -40,11 +40,10 @@ from .DSL.entities import gramLogic
 # ! FIX TEX2DGU regarding the UTF8
 # * maybe add specs to dont do anything if there are no differences in the sync command
 #!  update the onto file so that new entities can be added
-# * anbvc has the absolute path 
+# * anbvc has the absolute path  x (let him)
 # * show commands : show entities, etc
 # * erro de ja estar numa pasta  já inicializada como anb, quando na realidade apenas se está um nivel acima de uma pasta inicializada
 # * tex2dgu puts author false
-# * maybe, moving a file updates its path?
 # * refactor dgubook individual and generic functions
 # * ontology for dgus and ontology for relations
 # * be careful with new couples for the same individual (ex spouse)
@@ -59,7 +58,7 @@ from .DSL.entities import gramLogic
 # * testar projection editor (check individual function annotations)
 # * use default editor
 
-
+#delete production function
 
 # ! individual dgubook not working
 # ! todo : gedcom; show family tree
@@ -142,7 +141,7 @@ def get_about():
 
 
 def productions():
-    gramLogic.travessia_new()
+    gramLogic.travessia_geral()
     
 ############################## .anb ################################
 

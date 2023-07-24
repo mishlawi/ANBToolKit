@@ -129,6 +129,7 @@ def getFormat(string):
 
 def parseAbstractDgu(filename):
 
+    
     """
     Parses a dgu file and returns a dictionary containing its metadata and body.
 
@@ -138,9 +139,9 @@ def parseAbstractDgu(filename):
     Returns: a dictionary containing the metadata and body of the dgu file.
     """
 
-    _ , ext = os.path.splitext(filename)
+    
 
-    if ext == '.dgu':
+    if filename.endswith('.dgu'):
         print(os.path.abspath(filename))
         with open(os.path.abspath(filename)) as f:
             data = f.read()
@@ -150,7 +151,8 @@ def parseAbstractDgu(filename):
         adgu['body'] = text
         return adgu
     else:
-        raise ValueError("File format is invalid")
+        print(f"{filename} is not a dgu file")
+        exit()
     
 ###################################### latex
 
@@ -272,7 +274,7 @@ def parse_text(input):
 
 
 def is_image(path):
-
+    
     """
     Determine if a file is an image based on its content type.
 
@@ -282,7 +284,7 @@ def is_image(path):
     Returns:
         bool: True if the file is an image, False otherwise.
     """
-    # print(os.getcwd())
+    
     content_type = imghdr.what(path)
     if content_type is not None:
         return True
@@ -319,7 +321,10 @@ def isDguImage(path):
     """
     cwd = os.getcwd()
     os.chdir(dataControl.get_root())
-    adgu = parseAbstractDgu(path)  
+    adgu = parseAbstractDgu(path) 
+    if adgu['path'] == '':
+        print("path not available")
+        return
 
     os.chdir(cwd)
     if (anbtk_path := dataControl.find_anb()) != None:
@@ -405,6 +410,10 @@ def parse_individual_dgu(dgu_path, dates, docs, imgs, cronology):
     if not dgu_path.endswith('.dgu'):
         print (f"{dgu_path} is not a dgu file!")
         exit()
+    elif dgu_path == '':
+        print(f"A error must have occurred")
+        return 
+    
     if isDguImage(os.path.relpath(dgu_path,dataControl.get_root())):
         adgu = parseAbstractDgu(dgu_path)
         adgu['path'] = os.path.relpath(parseAbstractDgu(dgu_path)['path'], os.getcwd()) # gets relative path
@@ -449,6 +458,8 @@ def parse_dgu_tree(dgu_path,dirpath,dates,docs,imgs,cronology):
         
         if isDguImage(elem_path):
             adgu = parseAbstractDgu(elem_path)
+
+                
             adgu['path'] = os.path.relpath(parseAbstractDgu(elem_path)['path'], os.getcwd())
             imgs.append(adgu)
         else:

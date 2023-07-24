@@ -28,7 +28,8 @@ def edit_block(config_data):
 
     # editor_command = ["code", "--wait", temp_filename]
     # editor_command = ["vi", temp_filename]
-    editor_command = ["vim", temp_filename]
+    default_editor = os.environ.get('EDITOR', 'vim')
+    editor_command = [default_editor, temp_filename]
 
     subprocess.run(editor_command)
 

@@ -24,6 +24,7 @@ def interpreter(terminals,nonterminals):
             interpretation[producao] = aux.append(racional)
         else:
             interpretation[producao] = racional
+    print("interpretation",interpretation)
     return interpretation
     
 
@@ -57,94 +58,106 @@ def verifyGrammar(lista,grammar):
 
 
 # instead of receiving the whole grammar, choose a production aka a Universal element
-def travessia(grammar,dirIn,dirOut,ignoredFiles):
+# def travessia(grammar,dirIn,dirOut,ignoredFiles):
     
-    # gets files
-    ficheiros = []
-    for file in os.listdir(dirIn):
-        if os.path.isfile(os.path.join(dirIn, file)):
-            ficheiros.append(file)
-            print(file)
+#     # gets files
+#     ficheiros = []
+#     for file in os.listdir(dirIn):
+#         if os.path.isfile(os.path.join(dirIn, file)):
+#             ficheiros.append(file)
+#             print(file)
 
-    # gets top production that defines the grammar
-    top = list(grammar.values())[0]
-    disposal = []
+#     # gets top production that defines the grammar
+#     top = list(grammar.values())[0]
+#     disposal = []
     
-    # iterates through the productions that compose the top production
+#     # iterates through the productions that compose the top production
     
-    for elem in top:
+#     for elem in top:
         
-        # verifies types if productions have different elements
+#         # verifies types if productions have different elements
         
-        for id in elem:
+#         for id in elem:
                   
-            if id[-1]=='*': # 0 or plus elements
-                id = id[:-1]
-                regex = re.sub("r\'",'',grammar[id][0])
-                regex = re.sub("\'",'',regex)
+#             if id[-1]=='*': # 0 or plus elements
+#                 id = id[:-1]
+#                 regex = re.sub("r\'",'',grammar[id][0])
+#                 regex = re.sub("\'",'',regex)
                 
-                for elem in ficheiros:
-                    if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:    
-                        disposal.append(elem)
+#                 for elem in ficheiros:
+#                     if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:    
+#                         disposal.append(elem)
             
-            elif id[-1]=='+': # 1 or plus elements
-                id = id[:-1]
-                count = 0
-                regex = grammar[id]
-                regex = re.sub("r\'",'',grammar[id][0])
-                regex = re.sub("\'",'',regex)
+#             elif id[-1]=='+': # 1 or plus elements
+#                 id = id[:-1]
+#                 count = 0
+#                 regex = grammar[id]
+#                 regex = re.sub("r\'",'',grammar[id][0])
+#                 regex = re.sub("\'",'',regex)
                 
-                for elem in ficheiros:
-                    if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:
-                        disposal.append(elem)
-                        count+=1
+#                 for elem in ficheiros:
+#                     if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:
+#                         disposal.append(elem)
+#                         count+=1
 
-                if count==0: 
-                    print("não existem um ou mais ficheiros do tipo enunciado na gramática")
-                    exit()
+#                 if count==0: 
+#                     print("não existem um ou mais ficheiros do tipo enunciado na gramática")
+#                     exit()
             
-            elif id[-1]=='?': # optional
-                id = id[:-1]
-                regex = grammar[id]
-                regex = re.sub("r\'",'',grammar[id][0])
-                regex = re.sub("\'",'',regex)
-                count = 0
+#             elif id[-1]=='?': # optional
+#                 id = id[:-1]
+#                 regex = grammar[id]
+#                 regex = re.sub("r\'",'',grammar[id][0])
+#                 regex = re.sub("\'",'',regex)
+#                 count = 0
                 
                 
-                for elem in ficheiros:
-                    if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:
-                        if count == 0:          # can only accept 1 max 
-                            disposal.append(elem)
-                        if count > 0:
-                            print("existem ficheiros a mais")
-                            exit()
-                        count += 1
+#                 for elem in ficheiros:
+#                     if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:
+#                         if count == 0:          # can only accept 1 max 
+#                             disposal.append(elem)
+#                         if count > 0:
+#                             print("existem ficheiros a mais")
+#                             exit()
+#                         count += 1
                                 
         
-            else: # 1 one element only
-                count=0
-                regex = grammar[id]
-                print(grammar[id][0])
-                regex = re.sub("r\'",'',grammar[id][0])
-                regex = re.sub("\'",'',regex)
+#             else: # 1 one element only
+#                 count=0
+#                 regex = grammar[id]
+#                 print(grammar[id][0])
+#                 regex = re.sub("r\'",'',grammar[id][0])
+#                 regex = re.sub("\'",'',regex)
                 
-                for elem in ficheiros:
-                    if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:
+#                 for elem in ficheiros:
+#                     if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:
                         
-                        if count != 1:
-                            disposal.append(elem)
-                            count+=1
+#                         if count != 1:
+#                             disposal.append(elem)
+#                             count+=1
                         
-                        if count > 1:
-                            print("existem ficheiros a mais")
-                            exit()
+#                         if count > 1:
+#                             print("existem ficheiros a mais")
+#                             exit()
 
 
-                        elif count < 1:
-                            print("existem ficheiros a menos")
-                            exit()
-    return disposal
+#                         elif count < 1:
+#                             print("existem ficheiros a menos")
+#                             exit()
+#     return disposal
     
+
+
+# def universehand(universe):
+#     galaxies = universe.split('\n')
+    
+#     for elem in galaxies:
+    
+#         if len(values:=re.split(r'\-\>',elem))>1:
+#             entity = values[0]
+#             atributes = values[1]
+#             atributes = re.split(r'::',atributes)
+#             # subclass = DGUhand.dgu_subclass(entity,atributes)
 
     
 def show_declarations(terminals,nonterminals):
@@ -165,18 +178,6 @@ def show_declarations(terminals,nonterminals):
 
 
 
-def universehand(universe):
-    galaxies = universe.split('\n')
-    
-    for elem in galaxies:
-    
-        if len(values:=re.split(r'\-\>',elem))>1:
-            entity = values[0]
-            atributes = values[1]
-            atributes = re.split(r'::',atributes)
-            # subclass = DGUhand.dgu_subclass(entity,atributes)
-
-
 def read_fsgram_file():
     try:
         with open (f"{dataControl.find_anb()}/fsgram.anb","r") as productions_file:
@@ -187,7 +188,7 @@ def read_fsgram_file():
 
     top,grammar,universe,terminals,nonterminals = FSGram.initializer(content)
 
-    print(nonterminals)
+
     return nonterminals,terminals
 
 def retrieve_all_dgu_files(root_folder):
@@ -221,6 +222,8 @@ def select_file_optional(files,message):
 
     if selected_name == "Ignore":
         return ''
+    elif selected_name == 'Leave':
+        exit()
     
     return selected_name
 
@@ -245,19 +248,99 @@ IGNORE
 .fsgram
 """
 
-def travessia_new():
-    nonterminals, terminals = read_fsgram_file()
 
-    root_folder = dataControl.get_root()
-    files = retrieve_all_dgu_files(root_folder)
+def get_dgu_correspondence(all_files,terminals):
+
     dgu_correspondence = {
         terminal: [
             file
-            for file in files
+            for file in all_files
             if (os.path.basename(file)).startswith(terminals[terminal][:-1])
         ]
         for terminal in terminals
     }
+
+    return dgu_correspondence
+
+
+def convert_to_inquirer(nonterminals):
+    values = []
+    for key,value in nonterminals.items():
+        terminals = ', '.join(str(item) for item in value)
+        values.append(f"{key} : {terminals} ")
+    return values
+
+
+def travessia_specific():
+    nonterminals, terminals = read_fsgram_file()
+
+    root_folder = dataControl.get_root()
+    files = retrieve_all_dgu_files(root_folder)
+    dgu_correspondence = get_dgu_correspondence(files,terminals)
+    inquirer_values = convert_to_inquirer(nonterminals)
+    production = select_simple(inquirer_values,"Select a production to gather documents")
+    production = production.split(':')[0].strip()
+    
+    documents = []
+    for sym in nonterminals[production]:
+        if sym[-1] in ["*","+","?"]:
+            id = sym[:-1]
+        else:
+            id = sym
+        
+        if sym.endswith("*"):
+            documents.append((id,dgu_correspondence[id]))
+
+        elif sym.endswith("+"):
+            if  dgu_correspondence[id] != []:
+                documents.append((id,dgu_correspondence[id]))
+            else:
+                print(f"It is necessary to exist at least a {sym} file!")
+                exit()
+
+        elif sym.endswith("?"):
+            
+            if  dgu_correspondence[id] != []:
+                preview = {}
+                for elem in dgu_correspondence[id]:
+                    preview[dataControl.relative_to_anbtk(elem)] = elem
+                lista = list(preview.keys())
+                lista.insert(0,'Ignore')
+                lista.insert(0,'Leave')
+                message = f"Chose a file or just ignore to satisfy\n {sym}"
+                value = select_file_optional(lista,message)
+                if value != '':
+                    documents.append((id,[preview[value]]))
+        else:
+            if  dgu_correspondence[id] != []:
+                if len(dgu_correspondence[id]) == 1:
+                    documents.append((id,[value]))
+                else:
+                    preview = {}
+
+                    for elem in dgu_correspondence[id]:
+                        preview[dataControl.relative_to_anbtk(elem)] = elem
+                    lista = list(preview.keys())
+                    lista.insert(0,'Leave')
+                    message = f"Chose a file to satisfy {sym}:\n"
+                    value = select_file_optional(lista,message)
+                    documents.append((id,[preview[value]]))
+            else:
+                print(f"It is necessary to exist at least a {sym} file!")
+                exit()
+
+    return documents
+
+
+
+def travessia_geral():
+    print(travessia_specific())
+    exit()
+    nonterminals, terminals = read_fsgram_file()
+
+    root_folder = dataControl.get_root()
+    files = retrieve_all_dgu_files(root_folder)
+    dgu_correspondence = get_dgu_correspondence(files,terminals)
 
     data = {}
     for production, symbols in nonterminals.items():
@@ -286,42 +369,78 @@ def travessia_new():
                         preview[elem] = dataControl.relative_to_anbtk(elem)
                     lista = list(preview.values())
                     lista.insert(0,'Ignore')
+                    lista.insert(0,'Leave')
                     message = f"Chose a file or just ignore to satisfy\n {sym}"
                     value = select_file_optional(lista,message)
                     if value != '':
-                        documents.append((id,value))
+                        documents.append((id,[value]))
             else:
                 if  dgu_correspondence[id] != []:
-                    preview = {}
-                    for elem in dgu_correspondence[id]:
-                        preview[elem] = dataControl.relative_to_anbtk(elem)
-                    lista = list(preview.values())
-                    message = f"Chose a file to satisfy {sym}:\n"
-                    value = select_file_optional(lista,message)
-                    documents.append((id,value))
+                    if len(dgu_correspondence[id]) == 1:
+                        documents.append((id,value))
+                    else:
+                        preview = {}
+
+                        for elem in dgu_correspondence[id]:
+                            preview[elem] = dataControl.relative_to_anbtk(elem)
+                        lista = list(preview.values())
+                        lista.insert(0,'Leave')
+                        message = f"Chose a file to satisfy {sym}:\n"
+                        value = select_file_optional(lista,message)
+                        documents.append((id,[value]))
                 else:
                     print(f"It is necessary to exist at least a {production} file!")
                     exit()
+    print(data)
     return data
 
 
-def topdf(data,production):
-    files = data[production]
-    for symb in files:
-        print(symb)
+def select_simple(symbols,message):
 
-def gen_productions_file(nonterminals):
-    string = ''
-    for production, terminals in nonterminals.items():
-        string += f'{production} : '
-        if terminals:  
-            for elem in terminals[:-1]:
-                string += f'{elem} , '
-            string += f'{terminals[-1]}'  
-        string += '\n'
+    print(message)
+    questions = [
+        inquirer.List('files',
+                      choices=symbols,
+                      ),
+    ]
+    answers = inquirer.prompt(questions)
+    selected_name = answers['files']
 
-    with open(r'productions.txt', 'w') as file:
-        file.write(string)
+    if selected_name == 'Leave':
+        exit()
+    
+    return selected_name
+
+
+
+def travessia_terminals():
+    _ , terminals = read_fsgram_file()
+    root_folder = dataControl.get_root()
+    files = retrieve_all_dgu_files(root_folder)
+    dgu_correspondence = get_dgu_correspondence(files,terminals)
+    selected = select_simple(terminals,f"Choose one type of document to gather.") 
+    lista = [(selected,dgu_correspondence[selected])]
+    return lista
+    
+
+
+
+
+
+
+
+# def gen_productions_file(nonterminals):
+#     string = ''
+#     for production, terminals in nonterminals.items():
+#         string += f'{production} : '
+#         if terminals:  
+#             for elem in terminals[:-1]:
+#                 string += f'{elem} , '
+#             string += f'{terminals[-1]}'  
+#         string += '\n'
+
+#     with open(r'productions.txt', 'w') as file:
+#         file.write(string)
 
 
 def process_fsgram(top,grammar,universe,terminals,nonterminals):
@@ -333,7 +452,7 @@ def process_fsgram(top,grammar,universe,terminals,nonterminals):
     #universehand(universe)
     show_declarations(terminals,nonterminals)
     DGUhand.bigbang(universe,terminals)
-    gen_productions_file(nonterminals)
+    # gen_productions_file(nonterminals)
     
 
 

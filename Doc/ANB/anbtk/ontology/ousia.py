@@ -186,12 +186,11 @@ def dgu_base(entities,g):
             g.add((temp_property, RDFS.domain, main_class))
             g.add((temp_property, RDFS.range, XSD.string))
     
-
+from .. import dataControl  
 
 def add_dgu_file(attributes,graph):
-    print("entrei")
-    print(attributes['path'])
-    dgu = DGU[attributes['path']]
+    path = dataControl.relative_to_anbtk(attributes['path'])
+    dgu = DGU[path]
     for key,value in attributes.items():
         onto_name = key.capitalize()
         if key != 'path':

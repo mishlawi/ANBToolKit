@@ -221,7 +221,7 @@ def select_file_optional(files,message):
     selected_name = answers['files']
 
     if selected_name == "Ignore":
-        return ''
+        return None
     elif selected_name == 'Leave':
         exit()
     
@@ -289,7 +289,10 @@ def travessia_specific():
             id = sym
         
         if sym.endswith("*"):
-            documents.append((id,dgu_correspondence[id]))
+            if len(dgu_correspondence[id])==0:
+                continue
+            else:
+                documents.append((id,dgu_correspondence[id]))
 
         elif sym.endswith("+"):
             if  dgu_correspondence[id] != []:
@@ -307,14 +310,21 @@ def travessia_specific():
                 lista = list(preview.keys())
                 lista.insert(0,'Ignore')
                 lista.insert(0,'Leave')
-                message = f"Chose a file or just ignore to satisfy\n {sym}"
+                message = f"Chose a file or just ignore to satisfy the symbol\n {sym}"
                 value = select_file_optional(lista,message)
-                if value != '':
+                if value is not None:
+                    print(value)
+                    print("->",documents)
                     documents.append((id,[preview[value]]))
+                    print("!->",documents)
+                    
         else:
+            
             if  dgu_correspondence[id] != []:
+                print("???")
                 if len(dgu_correspondence[id]) == 1:
-                    documents.append((id,[value]))
+    
+                    documents.append((id,dgu_correspondence[id]))
                 else:
                     preview = {}
 
@@ -328,6 +338,8 @@ def travessia_specific():
             else:
                 print(f"It is necessary to exist at least a {sym} file!")
                 exit()
+            print(documents)
+    print(documents)
 
     return documents
 

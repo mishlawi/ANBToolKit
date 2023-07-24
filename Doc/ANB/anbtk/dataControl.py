@@ -137,15 +137,15 @@ def dataUpdate(file_type, name):
     Returns:
     - id (str): The ID of the new file, which is generated based on the type and count of files of that type.
     """
-    
-    with open('anbtk.json', 'r') as f:
+    anbtk = find_anb()
+    with open(f'{anbtk}/anbtk.json', 'r') as f:
         data = json.load(f)
     
     if file_type not in data:
         data[file_type] = 0
     
     data[file_type] += 1
-    with open('universe.dgu','r') as universe:
+    with open(f'{anbtk}/universe.dgu','r') as universe:
         const = dgu_helper.parse_text_denomination(universe.read())[file_type]
     print(const)
     id = f"{const}[{data[file_type]}]-{name}"

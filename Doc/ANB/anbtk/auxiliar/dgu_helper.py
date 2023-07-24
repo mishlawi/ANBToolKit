@@ -152,6 +152,7 @@ def parseAbstractDgu(filename):
         return adgu
     else:
         print(f"{filename} is not a dgu file")
+    
         exit()
     
 ###################################### latex
@@ -406,7 +407,7 @@ def parse_individual_dgu(dgu_path, dates, docs, imgs, cronology):
     Returns:
         None
     """
-
+    print(dgu_path)
     if not dgu_path.endswith('.dgu'):
         print (f"{dgu_path} is not a dgu file!")
         exit()

@@ -1,5 +1,6 @@
 import shutil
-
+import os
+from .. import dataControl
 
 # def list_and_num_families(dictionary):
 #     """
@@ -18,8 +19,18 @@ import shutil
 #         print("\n")
 #     print("0. Leave\n")
 
+
 terminal_width = shutil.get_terminal_size().columns
 divider = "=" * terminal_width
+
+
+def normalize_string(input_str):
+    if not input_str:
+        return ""
+
+    # Convert the first character to uppercase and the rest to lowercase
+    normalized_str = input_str[0].upper() + input_str[1:].lower()
+    return normalized_str
 
 def list_and_num_families(dictionary):
     """
@@ -29,7 +40,8 @@ def list_and_num_families(dictionary):
     Args:
         dictionary (dict): The dictionary of families and their members.
     """
-    title = "Families:".center(terminal_width)
+    family_name = normalize_string(os.path.basename(dataControl.get_root()))
+    title = f"{family_name}'s Ancestors NoteBook:".center(terminal_width)
     print(divider)
     print()
     print(title)

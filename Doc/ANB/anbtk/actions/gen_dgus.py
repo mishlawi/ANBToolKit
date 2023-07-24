@@ -39,6 +39,7 @@ def genDguImage_file(files):
             if os.path.dirname(elem)!='':    
                 os.chdir(os.path.dirname(abpath))
             usedname = filename[:-4].replace(" ", "")
+            usedname = dataControl.dataUpdate('Picture',usedname)
             if not os.path.exists(usedname+'.dgu'):
                 with open(usedname+'.dgu','w') as dgufile:
                     dgufile.write('---\n')
@@ -64,8 +65,10 @@ def genDguImage_tree(cwd):
                     id = os.path.splitext(filename)[0]
                     abpath = os.path.abspath(filepath)
                     # realpath = dataControl.relative_to_anbtk(abpath)
+
                     if not os.path.exists(os.path.join(dirpath, id + '.dgu')):
-                        with open(os.path.join(dirpath, id + '.dgu'), 'w') as dgufile:
+                        usedname = dataControl.dataUpdate('Foto',id)
+                        with open(os.path.join(dirpath, usedname + '.dgu'), 'w') as dgufile:
                             dgufile.write('---\n')
                             yaml.dump(dgu.DGU(id=id, format=format, path=abpath), dgufile, default_flow_style=False, sort_keys=False, allow_unicode=True)
                             dgufile.write('---\n')
@@ -85,7 +88,6 @@ def simplify(title):
 
 
 def genStory():
-    cd = os.getcwd()
     args = argsConfig.a_genStory()
     title = args.title
     date = args.date
@@ -102,9 +104,8 @@ def genStory():
         print("No guarantee of a unique name\n")
         filename = "hx-{denomination}"
     else:
-        os.chdir(dataControl.find_anb())
+        
         filename = dataControl.dataUpdate('Story',denomination)
-    os.chdir(cd)
     
     if args.dgu:
         with open(f'{filename}.dgu','w') as dgufo:
@@ -118,7 +119,6 @@ def genStory():
 
 
 def genBio():    
-    cd = os.getcwd()
     args = argsConfig.a_genBio()
     name = args.name
     birth = args.birth
@@ -131,9 +131,7 @@ def genBio():
         denomination = simplify(name)
         filename = f"bx-{denomination}"
     else:
-        os.chdir(dataControl.find_anb())
         filename = dataControl.dataUpdate('Biography',simplify(name))
-        os.chdir(cd)
     with open(f'{filename}.md','w') as mdfileobject:
         mdfileobject.write(skeletons.biography(name,birth,death,bp,o))
     controlsystem.auto_sync()

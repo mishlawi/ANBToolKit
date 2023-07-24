@@ -10,7 +10,6 @@ from . import blocks
 from . import view
 from . import handlers
 
-# dbfile for db
 
 #! CLEAR OS.CHDIR
 

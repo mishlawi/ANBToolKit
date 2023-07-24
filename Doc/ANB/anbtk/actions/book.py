@@ -41,15 +41,29 @@ def dgubook():
 
     docs = []
     imgs = []
-    data = gramLogic.travessia_specific()
+    dates = {}
+    dates['day'] = dgu_helper.getCurrentTime()
+    dates['year'] = datetime.date.today().year
+    dates['oldest'] = dates['year']
 
-    for (sym, files) in data:
+   
+    files_data = gramLogic.travessia_specific()
+
+    for (sym, files) in files_data:
         for file in files:
-            docs.append(file) if not dgu_helper.isDguImage(file) else imgs.append(file)
+            if not dgu_helper.isDguImage(file):
+                 docs.append(file)
+            else:
+                imgs.append(file)
+
+    print(docs)
+    print(imgs)
+    print(dates)
 
 
-    
-    
+    environment = Environment(loader=FileSystemLoader(os.path.join(dataControl.find_anb(),"templates/")))
+    dgus2tex = environment.get_template("anb1.j2")
+
 
 
     # docs.append(elem for elem in document_list if not dgu_helper.isDguImage(document_list))
@@ -58,13 +72,11 @@ def dgubook():
 
 
 
-    # environment = Environment(loader=FileSystemLoader(os.path.join(dataControl.find_anb(),"templates/")))
-    # dgus2tex = environment.get_template("anb1.j2")
-    # with open('AncestorsNotebook.tex', 'w') as tempdgu:
-    #     args =  calls.pdflatex('AncestorsNotebook.tex')
-    #     tempdgu.write(dgus2tex.render(tit="Livro dos antepassados", docs=docs, imgs=imgs, dates=dates))
-    #     tempdgu.flush()
-    # subprocess.check_call(args)
+    with open('AncestorsNotebook.tex', 'w') as tempdgu:
+        args =  calls.pdflatex('AncestorsNotebook.tex')
+        tempdgu.write(dgus2tex.render(tit="Livro dos antepassados", docs=docs, imgs=imgs, dates=dates))
+        tempdgu.flush()
+    subprocess.check_call(args)
 
 
 

@@ -40,7 +40,6 @@ from .DSL.entities import gramLogic
 # ! FIX TEX2DGU regarding the UTF8
 # * maybe add specs to dont do anything if there are no differences in the sync command
 #!  update the onto file so that new entities can be added
-# * anbvc has the absolute path  x (let him)
 # * show commands : show entities, etc
 # * erro de ja estar numa pasta  já inicializada como anb, quando na realidade apenas se está um nivel acima de uma pasta inicializada
 # * tex2dgu puts author false
@@ -76,6 +75,7 @@ from .DSL.entities import gramLogic
 
 
 #? Done, but re check:
+# * anbvc has the absolute path  x (let him)
 # * i want it so that story and bio (and others) are default formats but the users can create their ones x
 # * auto sync when creating dgus x
 # * data updates and nickname updates should be presented in the anbtemplate when two references exist -> if i add a nickname to jose in the child position, it should appear in the parent position 
@@ -86,7 +86,6 @@ from .DSL.entities import gramLogic
 ##############################################################################################################
 
 
-#! readline bib para completação
 
 def dgu2texbook():
     latex.dgu2texbook()
@@ -113,7 +112,7 @@ def genStory():
 def genBio():
     gen_dgus.genBio()
 
-
+#not called
 def genDgu(title, attributes, nameofthefile, dir):
     gen_dgus.genDgu(title,attributes,nameofthefile,dir)
 

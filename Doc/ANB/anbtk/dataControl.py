@@ -174,6 +174,8 @@ def templateGen():
 
     with open('anb1.j2','w') as f:
         f.write(constants.templateLatex)
+    with open('anb2.j2','w') as f:
+        f.write(constants.template_productions)
 
 
 

@@ -313,15 +313,11 @@ def travessia_specific():
                 message = f"Chose a file or just ignore to satisfy the symbol\n {sym}"
                 value = select_file_optional(lista,message)
                 if value is not None:
-                    print(value)
-                    print("->",documents)
                     documents.append((id,[preview[value]]))
-                    print("!->",documents)
                     
         else:
             
             if  dgu_correspondence[id] != []:
-                print("???")
                 if len(dgu_correspondence[id]) == 1:
     
                     documents.append((id,dgu_correspondence[id]))
@@ -338,9 +334,7 @@ def travessia_specific():
             else:
                 print(f"It is necessary to exist at least a {sym} file!")
                 exit()
-            print(documents)
-    print(documents)
-
+    
     return documents
 
 

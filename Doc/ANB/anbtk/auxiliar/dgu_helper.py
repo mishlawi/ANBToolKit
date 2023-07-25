@@ -142,7 +142,7 @@ def parseAbstractDgu(filename):
     
 
     if filename.endswith('.dgu'):
-        print(os.path.abspath(filename))
+        
         with open(os.path.abspath(filename)) as f:
             data = f.read()
         headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)", data).group()
@@ -389,6 +389,53 @@ def updateTitleforId(adgu):
 
 
 
+def parse_individual_dgu_productions(dgu_path, dates, docs, imgs, cronology,sym):
+    """
+    Parse a single .dgu file and add the data to the appropriate lists.
+
+    Args:
+        dgu_path (str): Path to the .dgu file.
+        dates (dict): Dictionary containing various date-related information.
+        docs (list): List of parsed document metadata.
+        imgs (list): List of parsed image metadata.
+        cronology (list): List of parsed document dates.
+
+    Raises:
+        Exception: If the file is not a .dgu file.
+
+    Returns:
+        None
+    """
+
+    if not dgu_path.endswith('.dgu'):
+        print (f"{dgu_path} is not a dgu file!")
+        exit()
+    elif dgu_path == '':
+        print(f"A error must have occurred")
+        return 
+    
+    if isDguImage(os.path.relpath(dgu_path,dataControl.get_root())):
+        adgu = parseAbstractDgu(dgu_path)
+        adgu['path'] = os.path.relpath(parseAbstractDgu(dgu_path)['path'], os.getcwd()) # gets relative path
+        imgs.append(adgu)
+    else:
+        docs[sym] = []
+        # elem_path = os.path.abspath(dgu_path)
+        meta = parseAbstractDgu(dgu_path)
+      
+        if isinstance(meta['about'],str):
+            meta['about'] = [meta['about']]
+        
+
+        meta['corpo'] = meta['body']
+        del meta['body']
+        date = getDate(meta)
+        if date is not None:
+            cronology.append(date)
+            if int(date['date']) < int(dates['oldest']):
+                dates['oldest'] = date['date']
+            updateTitleforId(meta)
+        docs[sym].append(meta)
 
 def parse_individual_dgu(dgu_path, dates, docs, imgs, cronology):
     """
@@ -407,7 +454,7 @@ def parse_individual_dgu(dgu_path, dates, docs, imgs, cronology):
     Returns:
         None
     """
-    print(dgu_path)
+
     if not dgu_path.endswith('.dgu'):
         print (f"{dgu_path} is not a dgu file!")
         exit()
@@ -427,6 +474,7 @@ def parse_individual_dgu(dgu_path, dates, docs, imgs, cronology):
             if aux:= re.split('---',temp):
                 _, cabecalho, corpo = aux
                 meta = yaml.safe_load(cabecalho)
+                
                 meta['corpo'] = corpo
                 date = getDate(meta)
                 if date is not None:

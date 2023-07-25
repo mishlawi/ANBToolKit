@@ -20,27 +20,23 @@ import inquirer
 #args = ['pandoc','-s','AncestorsNotebook.tex', '-o', 'AncestorsNotebook.pdf']
 
 
-def select_production_optional(nonterminals,message):
-    folder_names = nonterminals
-
-    print(message)
-    questions = [
-        inquirer.List('productions',
-                      choices=folder_names,
-                      ),
-    ]
-    answers = inquirer.prompt(questions)
-    selected_name = answers['productions']
-
-    if selected_name == 'Leave':
-        exit()
-    
-    return selected_name
-
 def dgubook():
+    arguments = argsConfig.a_dgubook()
+    if not any(vars(arguments).values()):
+        print("No arguments provided, please use dgubook -h for more info.")
+    else:
+        if arguments.productions:
+            dgubook_productions()
+        else:
+            classic_dgubook(arguments)
+    
 
-    docs = []
+def dgubook_productions():
+
+    cwd = os.getcwd()
+    docs = {}
     imgs = []
+    cronology = []
     dates = {}
     dates['day'] = dgu_helper.getCurrentTime()
     dates['year'] = datetime.date.today().year
@@ -51,10 +47,7 @@ def dgubook():
 
     for (sym, files) in files_data:
         for file in files:
-            if not dgu_helper.isDguImage(file):
-                 docs.append(file)
-            else:
-                imgs.append(file)
+                dgu_helper.parse_individual_dgu_productions(file,dates,docs,imgs,cronology,sym)
 
     print(docs)
     print(imgs)
@@ -62,17 +55,13 @@ def dgubook():
 
 
     environment = Environment(loader=FileSystemLoader(os.path.join(dataControl.find_anb(),"templates/")))
-    dgus2tex = environment.get_template("anb1.j2")
 
-
-
-    # docs.append(elem for elem in document_list if not dgu_helper.isDguImage(document_list))
-
+    dgus2tex = environment.get_template("anb2.j2")
 
 
 
 
-    with open('AncestorsNotebook.tex', 'w') as tempdgu:
+    with open(f'{cwd}/AncestorsNotebook.tex', 'w') as tempdgu:
         args =  calls.pdflatex('AncestorsNotebook.tex')
         tempdgu.write(dgus2tex.render(tit="Livro dos antepassados", docs=docs, imgs=imgs, dates=dates))
         tempdgu.flush()
@@ -81,7 +70,7 @@ def dgubook():
 
 
 
-def dgubook_2():
+def classic_dgubook(arguments):
     
     docs = []
     imgs = []
@@ -92,11 +81,6 @@ def dgubook_2():
     dates['year'] = datetime.date.today().year
     dates['oldest'] = dates['year']
 
-    arguments = argsConfig.a_dgubook()
-
-    if arguments is None:
-        print("You need to specify a flag. Use dgubook -h for more info.")
-        sys.exit(1)
 
     with open('AncestorsNotebook.tex', 'w') as tempdgu:
         args =  calls.pdflatex('AncestorsNotebook.tex')

@@ -112,7 +112,7 @@ def genStory():
 def genBio():
     gen_dgus.genBio()
 
-#not called
+
 def genDgu(title, attributes, nameofthefile, dir):
     gen_dgus.genDgu(title,attributes,nameofthefile,dir)
 
@@ -132,17 +132,23 @@ def folder_cd():
 def folder_ls():
     filters.anb_ls()
 
-def show_entities():
-    pass
 
 def get_about():
+    #not finished
     filters.search_by_about_files()
 
 
-def productions():
-    gramLogic.travessia_geral()
+def show_fsgram():
+    gramLogic.show_declarations()
+
+def teste():
+    pass
     
 ############################## .anb ################################
+import shutil
+
+terminal_width = shutil.get_terminal_size().columns
+divider = "=" * terminal_width
 
 
 def anb():
@@ -186,6 +192,7 @@ def anb():
                         genDgu(args.entity[0], entities[args.entity[0]], args.filename[0],currentdir)
                     else:
                         print("✗ No entity exists with that name")
+                        exit()
             if not args.entity:
                 os.chdir(currentdir)
                 empty_dgu = dgu.DGU()
@@ -194,10 +201,18 @@ def anb():
 
         else:
             print("✗ You need to initialize an ancestors notebook")
+            exit()
 
 
     elif args.subcommand == 'genFolders':
-        print(" ---  Ancestors Notebook processing status  --- \n")
+
+        header= "ANbTk PROCESSING STATUS:".center(terminal_width)
+        
+        
+        print(divider)
+        print(header)
+        print(divider)
+
         
         if args.source:
             fsgram = args.source[0]
@@ -211,7 +226,7 @@ def anb():
         
             if not os.path.exists(seed):
                 print("✗ The specified file does not exist.")
-                exit(1)
+                exit()
         
             else:
                 if args.family:
@@ -249,6 +264,8 @@ def anb():
             genealogia.gen_onto_file(g,'anbsafeonto')
         else:
             print("✗ Not in any initialized ANB folder.")
+            exit()
+
         
     else:
         args.func(args.name, args.attributes, args)

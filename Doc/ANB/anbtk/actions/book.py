@@ -25,15 +25,16 @@ def dgubook():
     if not any(vars(arguments).values()):
         print("No arguments provided, please use dgubook -h for more info.")
     else:
+        
         if arguments.productions:
-            dgubook_productions()
-        else:
+            dgubook_productions(arguments)
+        elif arguments.file or arguments.tree:
             classic_dgubook(arguments)
     
 
-def dgubook_productions():
+def dgubook_productions(arguments):
 
-    cwd = os.getcwd()
+    
     docs = {}
     imgs = []
     cronology = []
@@ -49,23 +50,33 @@ def dgubook_productions():
         for file in files:
                 dgu_helper.parse_individual_dgu_productions(file,dates,docs,imgs,cronology,sym)
 
-    print(docs)
-    print(imgs)
-    print(dates)
-
 
     environment = Environment(loader=FileSystemLoader(os.path.join(dataControl.find_anb(),"templates/")))
 
     dgus2tex = environment.get_template("anb2.j2")
 
+    
 
+    if arguments.output:
+        calls.move_to_output('AncestorsNotebook.pdf',arguments.output[0])
 
+    if arguments.markdown:
 
-    with open(f'{cwd}/AncestorsNotebook.tex', 'w') as tempdgu:
+        subprocess.check_call(calls.pandoc_latex_to_markdown('AncestorsNotebook.tex','AncestorsNotebook.md'))
+        os.remove("AncestorsNotebook.tex")
+
+    if arguments.timeframe:
+                dates['chronology'] = cronology
+    
+    with open('AncestorsNotebook.tex', 'w') as tempdgu:
         args =  calls.pdflatex('AncestorsNotebook.tex')
-        tempdgu.write(dgus2tex.render(tit="Livro dos antepassados", docs=docs, imgs=imgs, dates=dates))
+        tempdgu.write(dgus2tex.render(tit="Ancestors Notebook", docs=docs, imgs=imgs, dates=dates))
         tempdgu.flush()
     subprocess.check_call(args)
+
+    if not arguments.all:
+        
+        subprocess.check_call(calls.rm_latex_unecessary)
 
 
 
@@ -109,7 +120,7 @@ def classic_dgubook(arguments):
             if arguments.timeframe:
                 dates['chronology'] = cronology
             
-            tempdgu.write(dgus2tex.render(tit="Livro dos antepassados", docs=docs, imgs=imgs, dates=dates))
+            tempdgu.write(dgus2tex.render(tit="Ancestors Notebook", docs=docs, imgs=imgs, dates=dates))
             tempdgu.flush()
             subprocess.check_call(args)
 

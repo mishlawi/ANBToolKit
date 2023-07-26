@@ -61,10 +61,10 @@ def initanb(grampath="",folderpath=""):
     if not os.path.exists(cwd + "/.anbtk/anbtemp.txt"):
         if os.path.exists(cwd + '/.anbtk'):
             print("✗ This folder was already initialized as an Ancestors Notebook or there might be an existing anb with the default name.")
-            exit(1)
+            exit()
         elif find_anb() is not None:
             print("✗ You are already in an Ancestors Notebook")  
-            exit(1)
+            exit()
         else:
             os.mkdir(filepath := (cwd + '/.anbtk'))
             os.chdir(filepath)

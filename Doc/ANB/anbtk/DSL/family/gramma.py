@@ -204,7 +204,6 @@ def p_child(p):
     p[0] = p[2]
 
 
-# todo 
 def p_nickname(p):
     '''
     Nickname : LP Names RP
@@ -340,7 +339,7 @@ def check_parsing(data):
         print("Error while processing the anbtemplate file.")
         print("Either bad input or no added elements.")
         exit(-1)
-    print(family_tree,meta)
+
     return family_tree, meta
 
 

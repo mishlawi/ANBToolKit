@@ -24,7 +24,6 @@ def interpreter(terminals,nonterminals):
             interpretation[producao] = aux.append(racional)
         else:
             interpretation[producao] = racional
-    print("interpretation",interpretation)
     return interpretation
     
 
@@ -52,7 +51,7 @@ def verifyGrammar(lista,grammar):
                 id = id[:-1]
 
             if id not in grammar.keys():
-                print("Gramatica mal formulada")
+                print("Errors in the structure of the grammar.")
                 exit()
 
 
@@ -159,22 +158,47 @@ def verifyGrammar(lista,grammar):
 #             atributes = re.split(r'::',atributes)
 #             # subclass = DGUhand.dgu_subclass(entity,atributes)
 
+import shutil
     
-def show_declarations(terminals,nonterminals):
+terminal_width = shutil.get_terminal_size().columns
+divider = "=" * terminal_width
+
+def show_declarations():
+
+    nonterminals, terminals = read_fsgram_file()
     # disposal = travessia(grammar,dirin,dirout,ignoredFiles)
     # genHtml(disposal,dirout,dirin)
-    print("\n\n")
-    print("-- Declarations --\n")
-    print(nonterminals)
+    title = f"Loaded Declarations:".center(terminal_width)
+    print(divider)
+    print(title)
+    print(divider)
+    
+    print("Entities Productions:")
+    print("-"*terminal_width)
     for nonterminal, spec in nonterminals.items():
-        text = ''.join(f'{elem}, ' for elem in spec)
-        text = text[:-1]
+        text = ', '.join(f'{elem}' for elem in spec)
         print(f" - {nonterminal} : {text}")
-    print("\n")
-    for terminal, symbol in terminals.items(): 
-        print(f" -> {terminal} : {symbol}")
 
-    print("\n")
+    print(divider)
+    
+
+    # Printing terminals
+    
+    print("Entities:")
+    print("-"*terminal_width)
+    for terminal, symbol in terminals.items():
+        print(f" - {terminal} : {symbol}")
+    print(divider)
+    
+    # for nonterminal, spec in nonterminals.items():
+    #     text = ''.join(f'{elem}, ' for elem in spec)
+    #     text = text[:-1]
+    #     print(f" - {nonterminal} : {text}")
+    # print("\n")
+    # for terminal, symbol in terminals.items(): 
+    #     print(f" -> {terminal} : {symbol}")
+
+    # print("\n")
 
 
 
@@ -183,7 +207,7 @@ def read_fsgram_file():
         with open (f"{dataControl.find_anb()}/fsgram.anb","r") as productions_file:
             content = productions_file.read()
     except FileNotFoundError:
-        print("There isn't a fsgram file in this AncestorsNotebook.")
+        print("✗ There isn't a fsgram file in this AncestorsNotebook.")
         exit()
 
     top,grammar,universe,terminals,nonterminals = FSGram.initializer(content)
@@ -334,71 +358,68 @@ def travessia_specific():
             else:
                 print(f"It is necessary to exist at least a {sym} file!")
                 exit()
-    
+
     return documents
 
 
 
-def travessia_geral():
-    print(travessia_specific())
-    exit()
-    nonterminals, terminals = read_fsgram_file()
+# def travessia_geral():
+#     nonterminals, terminals = read_fsgram_file()
 
-    root_folder = dataControl.get_root()
-    files = retrieve_all_dgu_files(root_folder)
-    dgu_correspondence = get_dgu_correspondence(files,terminals)
+#     root_folder = dataControl.get_root()
+#     files = retrieve_all_dgu_files(root_folder)
+#     dgu_correspondence = get_dgu_correspondence(files,terminals)
 
-    data = {}
-    for production, symbols in nonterminals.items():
-        data[production] = []
-        for sym in symbols:
-            if sym[-1] in ["*","+","?"]:
-                id = sym[:-1]
-            else:
-                id = sym
-            documents = data[production]
-            if sym.endswith("*"):
-                documents.append((id,dgu_correspondence[id]))
+#     data = {}
+#     for production, symbols in nonterminals.items():
+#         data[production] = []
+#         for sym in symbols:
+#             if sym[-1] in ["*","+","?"]:
+#                 id = sym[:-1]
+#             else:
+#                 id = sym
+#             documents = data[production]
+#             if sym.endswith("*"):
+#                 documents.append((id,dgu_correspondence[id]))
 
-            elif sym.endswith("+"):
-                if  dgu_correspondence[id] != []:
-                    documents.append((id,dgu_correspondence[id]))
-                else:
-                    print(f"It is necessary to exist at least a {production} file!")
-                    exit()
+#             elif sym.endswith("+"):
+#                 if  dgu_correspondence[id] != []:
+#                     documents.append((id,dgu_correspondence[id]))
+#                 else:
+#                     print(f"It is necessary to exist at least a {production} file!")
+#                     exit()
 
-            elif sym.endswith("?"):
+#             elif sym.endswith("?"):
                 
-                if  dgu_correspondence[id] != []:
-                    preview = {}
-                    for elem in dgu_correspondence[id]:
-                        preview[elem] = dataControl.relative_to_anbtk(elem)
-                    lista = list(preview.values())
-                    lista.insert(0,'Ignore')
-                    lista.insert(0,'Leave')
-                    message = f"Chose a file or just ignore to satisfy\n {sym}"
-                    value = select_file_optional(lista,message)
-                    if value != '':
-                        documents.append((id,[value]))
-            else:
-                if  dgu_correspondence[id] != []:
-                    if len(dgu_correspondence[id]) == 1:
-                        documents.append((id,value))
-                    else:
-                        preview = {}
+#                 if  dgu_correspondence[id] != []:
+#                     preview = {}
+#                     for elem in dgu_correspondence[id]:
+#                         preview[elem] = dataControl.relative_to_anbtk(elem)
+#                     lista = list(preview.values())
+#                     lista.insert(0,'Ignore')
+#                     lista.insert(0,'Leave')
+#                     message = f"Chose a file or just ignore to satisfy\n {sym}"
+#                     value = select_file_optional(lista,message)
+#                     if value != '':
+#                         documents.append((id,[value]))
+#             else:
+#                 if  dgu_correspondence[id] != []:
+#                     if len(dgu_correspondence[id]) == 1:
+#                         documents.append((id,value))
+#                     else:
+#                         preview = {}
 
-                        for elem in dgu_correspondence[id]:
-                            preview[elem] = dataControl.relative_to_anbtk(elem)
-                        lista = list(preview.values())
-                        lista.insert(0,'Leave')
-                        message = f"Chose a file to satisfy {sym}:\n"
-                        value = select_file_optional(lista,message)
-                        documents.append((id,[value]))
-                else:
-                    print(f"It is necessary to exist at least a {production} file!")
-                    exit()
-    print(data)
-    return data
+#                         for elem in dgu_correspondence[id]:
+#                             preview[elem] = dataControl.relative_to_anbtk(elem)
+#                         lista = list(preview.values())
+#                         lista.insert(0,'Leave')
+#                         message = f"Chose a file to satisfy {sym}:\n"
+#                         value = select_file_optional(lista,message)
+#                         documents.append((id,[value]))
+#                 else:
+#                     print(f"It is necessary to exist at least a {production} file!")
+#                     exit()
+#     return data
 
 
 def select_simple(symbols,message):
@@ -432,6 +453,7 @@ def travessia_terminals():
 
 
 
+# def add_entities():
 
 
 
@@ -456,7 +478,7 @@ def process_fsgram(top,grammar,universe,terminals,nonterminals):
     verifyGrammar(top,grammar)
     interpreter(terminals,nonterminals)
     #universehand(universe)
-    show_declarations(terminals,nonterminals)
+    # show_declarations(terminals,nonterminals)
     DGUhand.bigbang(universe,terminals)
     # gen_productions_file(nonterminals)
     

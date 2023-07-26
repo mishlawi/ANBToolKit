@@ -223,7 +223,7 @@ template_productions=r"""
 
 {% for h in doc_list %}
 \begin{center}
-\subsection{title {{-h.title-}} }
+\subsection{ {{-h.title-}} }
 \vspace{0.5cm}
 {% if h.author is defined and h.author != 'False' %}
     {% if h.author is iterable and h.author is not string and h.author is not mapping %}

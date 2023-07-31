@@ -1,6 +1,7 @@
 defaultFsgram= """Pessoa : H* , Bio?, Foto.
 Album : Foto*.
 
+
 H : h.
 Bio : b.
 Foto : p.

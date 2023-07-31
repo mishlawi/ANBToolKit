@@ -142,7 +142,7 @@ def show_fsgram():
     gramLogic.show_declarations()
 
 def teste():
-    pass
+    gramLogic.add_to_fsgram()
     
 ############################## .anb ################################
 import shutil

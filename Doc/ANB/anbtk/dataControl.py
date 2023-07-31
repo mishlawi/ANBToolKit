@@ -110,7 +110,7 @@ def relative_to_anbtk(path):
 # must go and calculate the others entities
 def initData():
     """
-    Create an initial JSON file for storing statistics related to the types of content in the notebook.
+    Create an initial JSON file or storing statistics related to the types of content in the notebook.
     """
 
     data = {}

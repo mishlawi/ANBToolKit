@@ -1,6 +1,8 @@
 import os
+import inquirer
 import re
 from . import FSGram
+
 from ...dgu import DGUhand
 from ... import dataControl
 
@@ -44,107 +46,17 @@ def zoom(value, terminals, nonterminals,buff):
 
 
 
-def verifyGrammar(lista,grammar):
-    for producao in lista:
-        for id in producao:
-            if id[-1] in ['*', "+", '?']:
-                id = id[:-1]
-
-            if id not in grammar.keys():
-                print("Errors in the structure of the grammar.")
-                exit()
-
-
-
-# instead of receiving the whole grammar, choose a production aka a Universal element
-# def travessia(grammar,dirIn,dirOut,ignoredFiles):
-    
-#     # gets files
-#     ficheiros = []
-#     for file in os.listdir(dirIn):
-#         if os.path.isfile(os.path.join(dirIn, file)):
-#             ficheiros.append(file)
-#             print(file)
-
-#     # gets top production that defines the grammar
-#     top = list(grammar.values())[0]
-#     disposal = []
-    
-#     # iterates through the productions that compose the top production
-    
-#     for elem in top:
-        
-#         # verifies types if productions have different elements
-        
-#         for id in elem:
-                  
-#             if id[-1]=='*': # 0 or plus elements
+# def verifyGrammar(lista,grammar):
+#     for producao in lista:
+#         for id in producao:
+#             if id[-1] in ['*', "+", '?']:
 #                 id = id[:-1]
-#                 regex = re.sub("r\'",'',grammar[id][0])
-#                 regex = re.sub("\'",'',regex)
-                
-#                 for elem in ficheiros:
-#                     if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:    
-#                         disposal.append(elem)
-            
-#             elif id[-1]=='+': # 1 or plus elements
-#                 id = id[:-1]
-#                 count = 0
-#                 regex = grammar[id]
-#                 regex = re.sub("r\'",'',grammar[id][0])
-#                 regex = re.sub("\'",'',regex)
-                
-#                 for elem in ficheiros:
-#                     if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:
-#                         disposal.append(elem)
-#                         count+=1
 
-#                 if count==0: 
-#                     print("não existem um ou mais ficheiros do tipo enunciado na gramática")
-#                     exit()
-            
-#             elif id[-1]=='?': # optional
-#                 id = id[:-1]
-#                 regex = grammar[id]
-#                 regex = re.sub("r\'",'',grammar[id][0])
-#                 regex = re.sub("\'",'',regex)
-#                 count = 0
-                
-                
-#                 for elem in ficheiros:
-#                     if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:
-#                         if count == 0:          # can only accept 1 max 
-#                             disposal.append(elem)
-#                         if count > 0:
-#                             print("existem ficheiros a mais")
-#                             exit()
-#                         count += 1
-                                
-        
-#             else: # 1 one element only
-#                 count=0
-#                 regex = grammar[id]
-#                 print(grammar[id][0])
-#                 regex = re.sub("r\'",'',grammar[id][0])
-#                 regex = re.sub("\'",'',regex)
-                
-#                 for elem in ficheiros:
-#                     if re.match(regex,elem) and  ('.' + re.split(r'\.',elem)[1]) not in ignoredFiles:
-                        
-#                         if count != 1:
-#                             disposal.append(elem)
-#                             count+=1
-                        
-#                         if count > 1:
-#                             print("existem ficheiros a mais")
-#                             exit()
+#             if id not in grammar.keys():
+#                 print("Errors in the structure of the grammar.")
+#                 exit()
 
 
-#                         elif count < 1:
-#                             print("existem ficheiros a menos")
-#                             exit()
-#     return disposal
-    
 
 
 # def universehand(universe):
@@ -215,6 +127,8 @@ def read_fsgram_file():
 
     return nonterminals,terminals
 
+ 
+
 def retrieve_all_dgu_files(root_folder):
     files = []
 
@@ -230,7 +144,7 @@ def retrieve_all_dgu_files(root_folder):
                             files.append(file_path) 
     return files
 
-import inquirer
+
 
 def select_file_optional(files,message):
     folder_names = files
@@ -252,25 +166,6 @@ def select_file_optional(files,message):
     return selected_name
 
 
-"""
-defaultFsgram = Pessoa : H* , Bio?, Foto.
-Album : Foto*.
-
-H : h.
-Bio : b.
-Foto : p.
-
-UNIVERSE
-
-Story -> title,author,date
-Biography -> name,birthday,birthplace,occupation,death
-Foto -> note,date
-
-IGNORE
-.py 
-.out
-.fsgram
-"""
 
 
 def get_dgu_correspondence(all_files,terminals):
@@ -322,7 +217,7 @@ def travessia_specific():
             if  dgu_correspondence[id] != []:
                 documents.append((id,dgu_correspondence[id]))
             else:
-                print(f"It is necessary to exist at least a {sym} file!")
+                print(f"✗ It is necessary to exist at least a {sym} file!")
                 exit()
 
         elif sym.endswith("?"):
@@ -356,7 +251,7 @@ def travessia_specific():
                     value = select_file_optional(lista,message)
                     documents.append((id,[preview[value]]))
             else:
-                print(f"It is necessary to exist at least a {sym} file!")
+                print(f"✗ It is necessary to exist at least a {sym} file!")
                 exit()
 
     return documents
@@ -440,7 +335,7 @@ def select_simple(symbols,message):
 
 
 
-def travessia_terminals():
+def travessia_terminals():  
     _ , terminals = read_fsgram_file()
     root_folder = dataControl.get_root()
     files = retrieve_all_dgu_files(root_folder)
@@ -450,32 +345,106 @@ def travessia_terminals():
     return lista
     
 
+from ...anbPE.blocks import edit_block
+
+def get_fsgram():
+    with open(dataControl.find_anb()+"/fsgram.anb") as f:
+        fsgram = f.read()
+    return fsgram
+
+def choose_add_option():
+    questions = [
+        inquirer.List('selected_option',
+                      message='Choose an option:',
+                      choices=['Add entity', 'Add aggregator','Leave'],
+                      ),
+    ]
+
+    answers = inquirer.prompt(questions)
+
+    if answers['selected_option'] == 'Leave':
+        exit()
+    return answers['selected_option']
+
+
+def add_to_fsgram():
+    nonterminals , terminals = read_fsgram_file()
+    #show_declarations()
+    data = "Pessoa : H* , Bio?, Foto."
+    print(data)
+    FSGram.parse_individual_production(data)
+    # if choose_add_option() == 'Add aggregator':
+    #     added = edit_block('')
+
+
+    
 
 
 
-# def add_entities():
+def nonterminals_dict_to_string(nonterminals):
+    string = ''
+    for production, terminals in nonterminals.items():
+        string += f'{production} : '
+        if terminals:  
+            for elem in terminals[:-1]:
+                string += f'{elem} , '
+            string += f'{terminals[-1]}'  
+        string += '\n'
 
 
+grammar = """Pessoa : H* , Facade, Bio?, Foto.
+Album : Foto*.
+Luquinhas : Banana*.
 
-# def gen_productions_file(nonterminals):
-#     string = ''
-#     for production, terminals in nonterminals.items():
-#         string += f'{production} : '
-#         if terminals:  
-#             for elem in terminals[:-1]:
-#                 string += f'{elem} , '
-#             string += f'{terminals[-1]}'  
-#         string += '\n'
+H : h.
+Bio : b.
+Foto : p.
 
-#     with open(r'productions.txt', 'w') as file:
-#         file.write(string)
+UNIVERSE
+
+Story -> title,author,date
+Biography -> name,birthday,birthplace,occupation,death
+Foto -> note,date
+
+IGNORE
+.py 
+.out
+.fsgram
+"""
+
+def count_occurrences(lst, target):
+    count_dict = {}
+    for item in lst:
+        count_dict[item] = count_dict.get(item, 0) + 1
+
+    return count_dict.get(target, 0)
+
+# add terminals and non terminals as argument
+def verifyGrammar(terminals,nonterminals):
+    # terminals,nonterminals = read_fsgram_file()
+    # _,_,_,terminals,nonterminals = FSGram.parse_grammar(grammar)
+    for aggregator in nonterminals.keys():
+       if count_occurrences(list(nonterminals.keys()),aggregator) > 1:
+            print(f"ERROR: Repetition of aggregator {aggregator}.")
+    for aggregator, productions in nonterminals.items():
+        for symbol in productions:
+            if symbol[-1] in ["?","*","+"]:
+                symbol = symbol[:-1]
+            if symbol not in list(terminals.keys()):
+                print(f"ERROR: Symbol {symbol} associated with the aggregator {aggregator} not recognized.")
+                exit()
+    print("Grammar verified successfully.")
+            
+            
+
 
 
 def process_fsgram(top,grammar,universe,terminals,nonterminals):
+
     """
     This function serves as an handler that pin-points all the information that needs to be processed to their corresponding functions.
     """
-    verifyGrammar(top,grammar)
+    verifyGrammar(terminals,nonterminals)
     interpreter(terminals,nonterminals)
     #universehand(universe)
     # show_declarations(terminals,nonterminals)

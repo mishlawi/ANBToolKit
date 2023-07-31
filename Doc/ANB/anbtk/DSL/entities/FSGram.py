@@ -30,8 +30,12 @@ def p_Prods(p):
     "Prods : Prod Prods"
 
 
+
 def p_Prodsingle(p):
-    "Prods : Prod"
+    """Prods : Prod"""
+
+
+
 
 # basically non terminal
 def p_Prod(p):
@@ -87,10 +91,11 @@ def p_error(p):
 
 
 
-
-parser = yacc.yacc()
-
 def initializer(res=''):
+    global nonterminals
+    global terminals
+    nonterminals,terminals = {} , {}
+    parser = yacc.yacc()
     if res=='' :
         result = parser.parse(constants.defaultFsgram,lexer=lexer_fsgram)
         
@@ -99,3 +104,26 @@ def initializer(res=''):
 
 
     return result
+
+def parse_grammar(data):
+
+    global nonterminals
+    global terminals
+
+    nonterminals,terminals = {} , {}
+
+    parser = yacc.yacc()
+    result = parser.parse(data,lexer=lexer_fsgram)
+        
+
+    return result
+
+
+def parse_individual_production(data):
+    global nonterminals
+    nonterminals = {}
+    single_prod_parser = yacc.yacc(start='Prods')
+    single_prod_parser.parse(data,lexer=lexer_fsgram)
+    
+    return nonterminals
+

@@ -426,9 +426,9 @@ Foto : p.
 
 UNIVERSE
 
-Story -> title,author,date
-Biography -> name,birthday,birthplace,occupation,death
-Foto -> note,date
+Story (H) -> title,author,date
+Biography (Bio) -> name,birthday,birthplace,occupation,death
+Foto (Pic) -> note,date
 """
 
 def count_occurrences(lst, target):
@@ -466,6 +466,8 @@ def process_fsgram(grammar,universe,terminals,nonterminals):
     """
     verifyGrammar(terminals,nonterminals)
     interpreter(terminals,nonterminals)
+    DGUhand.get_symbols(universe,terminals)
+
     #universehand(universe)
     # show_declarations(terminals,nonterminals)
     DGUhand.bigbang(universe,terminals)

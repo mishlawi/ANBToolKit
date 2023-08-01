@@ -16,8 +16,7 @@ nonterminals = {}
 
 def p_FSGram(p):
     "FSGram : Prods UNIVERSE"
-    universe = (p[2]).strip()
-    
+    universe =  re.sub('UNIVERSE','',p[2]).strip()
 
     # gramLogic.process_fsgram(top,grammar,universe,terminals,nonterminals)
     p[0] = grammar,universe,terminals,nonterminals
@@ -82,12 +81,13 @@ def p_IDOPTN(p):
     p[0] = [p[1]]
 
 
-    
 def p_error(p):
     if p is not None:
         print(f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token '{p.value}'")
     else:
         print("Syntax error: Unexpected end of input")
+
+
 
 
 

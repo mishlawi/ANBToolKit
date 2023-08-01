@@ -11,7 +11,6 @@ def bigbang(stringUniverse,terminals):
     uniformats = re.findall(r"^[^-]+",stringUniverse,re.MULTILINE)
     uniatributes = [re.findall(r'\b[^,]+\b', x) for x in re.findall(r"-> (.*)", stringUniverse, re.MULTILINE)]
     universeAbout = "Universe of entities currently being used in this ancestors notebook"
-    print(uniformats)   
     with open(r'universe.dgu', 'w') as file:
         file.write("---\n")
         yaml.dump(dgu(id = "universe",format = "dgu",type="Universe",about=[universeAbout]),file,default_flow_style=False, sort_keys=False)
@@ -23,6 +22,15 @@ def bigbang(stringUniverse,terminals):
             for elem in attribute:
                 file.write('\t- ' + elem + '\n')
             file.write('\n')
+
+def get_symbols(stringUniverse,terminals):
+    uniformats = re.findall(r"^[^-]+",stringUniverse,re.MULTILINE)
+    uniatributes = [re.findall(r'\b[^,]+\b', x) for x in re.findall(r"-> (.*)", stringUniverse, re.MULTILINE)]
+    print("!!!!")
+    print(uniformats)    
+    print(uniatributes)
+    print(terminals)
+    print("!!!!")
 
 
 

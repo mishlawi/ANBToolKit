@@ -71,8 +71,8 @@ def initanb(grampath="",folderpath=""):
             initData()
             
             if grampath=="":
-                top,grammar,universe,terminals,nonterminals = FSGram.initializer()
-                gramLogic.process_fsgram(top,grammar,universe,terminals,nonterminals)
+                grammar,universe,terminals,nonterminals = FSGram.initializer()
+                gramLogic.process_fsgram(grammar,universe,terminals,nonterminals)
                 with open('fsgram.anb','w') as fsgram:
                     fsgram.write(constants.defaultFsgram)
             else:
@@ -80,8 +80,8 @@ def initanb(grampath="",folderpath=""):
                     os.chdir(os.path.dirname(os.path.abspath(grampath)))
                 temp = open(grampath,'r').read()
                 os.chdir(filepath)
-                top,grammar,universe,terminals,nonterminals = FSGram.initializer(temp)
-                gramLogic.process_fsgram(top,grammar,universe,terminals,nonterminals)
+                grammar,universe,terminals,nonterminals = FSGram.initializer(temp)
+                gramLogic.process_fsgram(grammar,universe,terminals,nonterminals)
                 # this file creation and such might cause some stress
                 with open('fsgram.anb','w') as fsgram:
                     fsgram.write(temp)

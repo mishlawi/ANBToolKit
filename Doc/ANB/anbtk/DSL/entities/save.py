@@ -15,12 +15,13 @@ nonterminals = {}
 
 
 def p_FSGram(p):
-    "FSGram : Prods UNIVERSE"
-    universe = (p[2]).strip()
-    
+    "FSGram : Prods UNIVERSE IGNORED"
+    universe = re.sub('UNIVERSE','',p[2]).strip()
+    ignoredFiles = list(re.sub('IGNORE','',p[3]).strip().split('\n'))
+    top = list(grammar.values())[0]
 
     # gramLogic.process_fsgram(top,grammar,universe,terminals,nonterminals)
-    p[0] = grammar,universe,terminals,nonterminals
+    p[0] = top,grammar,universe,terminals,nonterminals
     # return ignoredFiles,grammar
    
 
@@ -32,6 +33,8 @@ def p_Prods(p):
 
 def p_Prodsingle(p):
     """Prods : Prod"""
+
+
 
 
 # basically non terminal
@@ -81,13 +84,10 @@ def p_IDOPTN(p):
     "IDgen : IDo"
     p[0] = [p[1]]
 
-
-    
 def p_error(p):
-    if p is not None:
-        print(f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token '{p.value}'")
-    else:
-        print("Syntax error: Unexpected end of input")
+    print("error")
+    print(p)
+
 
 
 

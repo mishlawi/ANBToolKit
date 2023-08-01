@@ -30,9 +30,7 @@ def interpreter(terminals,nonterminals):
     
 
 def zoom(value, terminals, nonterminals,buff):
-    # Disposal : P, Album* .
-    # P : H* , Bio, Foto .
-    # Album : Foto*.
+
 
     elem = value[:-1] if value[-1] in ['*', '+', '?'] else value
     if elem in terminals.keys():
@@ -85,7 +83,7 @@ def show_declarations():
     print(title)
     print(divider)
     
-    print("Entities Productions:")
+    print("Entities Aggregators:")
     print("-"*terminal_width)
     for nonterminal, spec in nonterminals.items():
         text = ', '.join(f'{elem}' for elem in spec)
@@ -122,7 +120,7 @@ def read_fsgram_file():
         print("✗ There isn't a fsgram file in this AncestorsNotebook.")
         exit()
 
-    top,grammar,universe,terminals,nonterminals = FSGram.initializer(content)
+    grammar,universe,terminals,nonterminals = FSGram.initializer(content)
 
 
     return nonterminals,terminals
@@ -367,17 +365,40 @@ def choose_add_option():
     return answers['selected_option']
 
 
-def add_to_fsgram():
-    nonterminals , terminals = read_fsgram_file()
-    #show_declarations()
-    data = "Pessoa : H* , Bio?, Foto."
-    print(data)
-    FSGram.parse_individual_production(data)
-    # if choose_add_option() == 'Add aggregator':
-    #     added = edit_block('')
-
-
+def add_aggregator(terminals,nonterminals):
     
+    show_declarations() 
+    added = input('''To add an aggregator, remember to use:\n
+* Colon ":" to separate the aggregator name fromm the respective entities.
+* Commas "," to separate entities.
+* Period "." at the end of the definition.
+\nFORMAT:\n<aggregator> : <entity> , <entity> , ... , <entity>.\n\nEXAMPLE:\n Person : Bio? , Foto .\n\n''')
+    if added == '':
+        exit()
+    nonterminal = FSGram.parse_individual_production(added)
+    if nonterminal == {} :
+        print("Error in the aggregator development.")
+        exit()
+    else:
+        agg = list(nonterminal.keys())[0]
+        if agg in nonterminals.keys():
+            print(f"{agg} is already defined as an aggregator. Give it another name.")
+            exit()
+        nonterminals.update(nonterminal)
+        verifyGrammar(terminals,nonterminals)
+        string = nonterminals_dict_to_string(nonterminals)
+
+        # write_fsgram_file(nonterminals,terminals)
+                        
+
+
+def add_to_fsgram():
+    print(FSGram.parse_grammar(grammar))
+    # nonterminals , terminals = read_fsgram_file()
+    # #show_declarations()
+    # if choose_add_option() == 'Add aggregator':
+    #     add_aggregator(terminals,nonterminals)
+       
 
 
 
@@ -388,8 +409,11 @@ def nonterminals_dict_to_string(nonterminals):
         if terminals:  
             for elem in terminals[:-1]:
                 string += f'{elem} , '
-            string += f'{terminals[-1]}'  
+            string += f'{terminals[-1]} .'  
         string += '\n'
+    
+
+    return string
 
 
 grammar = """Pessoa : H* , Facade, Bio?, Foto.
@@ -405,11 +429,6 @@ UNIVERSE
 Story -> title,author,date
 Biography -> name,birthday,birthplace,occupation,death
 Foto -> note,date
-
-IGNORE
-.py 
-.out
-.fsgram
 """
 
 def count_occurrences(lst, target):
@@ -425,21 +444,22 @@ def verifyGrammar(terminals,nonterminals):
     # _,_,_,terminals,nonterminals = FSGram.parse_grammar(grammar)
     for aggregator in nonterminals.keys():
        if count_occurrences(list(nonterminals.keys()),aggregator) > 1:
-            print(f"ERROR: Repetition of aggregator {aggregator}.")
+            print(f"ERROR: Repetition of aggregator '{aggregator}'.")
     for aggregator, productions in nonterminals.items():
         for symbol in productions:
+            if count_occurrences(productions,symbol) > 1:
+                print(f"ERROR: Symbol '{symbol}' repetition in the aggregator '{aggregator}' definition.")
+                exit()
             if symbol[-1] in ["?","*","+"]:
                 symbol = symbol[:-1]
             if symbol not in list(terminals.keys()):
-                print(f"ERROR: Symbol {symbol} associated with the aggregator {aggregator} not recognized.")
+                print(f"ERROR: Symbol '{symbol}' associated with the aggregator '{aggregator}' not recognized.")
                 exit()
     print("Grammar verified successfully.")
             
             
 
-
-
-def process_fsgram(top,grammar,universe,terminals,nonterminals):
+def process_fsgram(grammar,universe,terminals,nonterminals):
 
     """
     This function serves as an handler that pin-points all the information that needs to be processed to their corresponding functions.

@@ -11,14 +11,12 @@ UNIVERSE
 Story -> title,author,date
 Biography -> name,birthday,birthplace,occupation,death
 Foto -> note,date
-
-IGNORE
-.py 
-.out
-.fsgram
 """
 
-
+# IGNORE
+# .py 
+# .out
+# .fsgram
 templateLatex = r"""
 \documentclass{article}
 

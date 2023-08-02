@@ -75,7 +75,7 @@ divider = "=" * terminal_width
 
 def show_declarations():
 
-    nonterminals, terminals = read_fsgram_file()
+    nonterminals, terminals = get_nonterminals_terminals_fsgram()
     # disposal = travessia(grammar,dirin,dirout,ignoredFiles)
     # genHtml(disposal,dirout,dirin)
     title = f"Loaded Declarations:".center(terminal_width)
@@ -111,13 +111,25 @@ def show_declarations():
     # print("\n")
 
 
-
-def read_fsgram_file():
+def get_entities_fsgram():
     try:
         with open (f"{dataControl.find_anb()}/fsgram.anb","r") as productions_file:
             content = productions_file.read()
     except FileNotFoundError:
-        print("✗ There isn't a fsgram file in this AncestorsNotebook.")
+        print("✗ Fsgram file not found! Is this an AncestorsNotebook?")
+        exit()
+
+    entities,_,_,_ = FSGram.initializer(content)
+
+    return entities
+
+
+def get_nonterminals_terminals_fsgram():
+    try:
+        with open (f"{dataControl.find_anb()}/fsgram.anb","r") as productions_file:
+            content = productions_file.read()
+    except FileNotFoundError:
+        print("✗ Fsgram file not found! Is this an AncestorsNotebook?")
         exit()
 
     grammar,universe,terminals,nonterminals = FSGram.initializer(content)
@@ -189,7 +201,7 @@ def convert_to_inquirer(nonterminals):
 
 
 def travessia_specific():
-    nonterminals, terminals = read_fsgram_file()
+    nonterminals, terminals = get_nonterminals_terminals_fsgram()
 
     root_folder = dataControl.get_root()
     files = retrieve_all_dgu_files(root_folder)
@@ -334,7 +346,7 @@ def select_simple(symbols,message):
 
 
 def travessia_terminals():  
-    _ , terminals = read_fsgram_file()
+    _ , terminals = get_nonterminals_terminals_fsgram()
     root_folder = dataControl.get_root()
     files = retrieve_all_dgu_files(root_folder)
     dgu_correspondence = get_dgu_correspondence(files,terminals)
@@ -393,7 +405,13 @@ def add_aggregator(terminals,nonterminals):
 
 
 def add_to_fsgram():
-    print(FSGram.parse_grammar(grammar))
+    x = FSGram.parse_grammar(grammar)
+    print("?")
+    a1,a2,a3,a4 = x
+    print("1",a1)
+    print("2",a2)
+    print("3",a3)
+    print("4",a4)
     # nonterminals , terminals = read_fsgram_file()
     # #show_declarations()
     # if choose_add_option() == 'Add aggregator':
@@ -441,7 +459,9 @@ def count_occurrences(lst, target):
     return count_dict.get(target, 0)
 
 # add terminals and non terminals as argument
-def verifyGrammar(terminals,nonterminals):
+def verifyGrammar(entityuniverse,terminals,nonterminals):
+    entityuniverse = get_entities_abbreviations(entityuniverse)
+    print("*",entityuniverse)
     # terminals,nonterminals = read_fsgram_file()
     # _,_,_,terminals,nonterminals = FSGram.parse_grammar(grammar)
     for aggregator in nonterminals.keys():
@@ -454,25 +474,46 @@ def verifyGrammar(terminals,nonterminals):
                 exit()
             if symbol[-1] in ["?","*","+"]:
                 symbol = symbol[:-1]
-            if symbol not in list(terminals.keys()):
-                print(f"ERROR: Symbol '{symbol}' associated with the aggregator '{aggregator}' not recognized.")
+                
+            if symbol not in entityuniverse.keys() and symbol not in entityuniverse.values():
+                print(f"ERROR: Symbol '{symbol}' in '{aggregator}' not recognized.")
                 exit()
+    
     print("Grammar verified successfully.")
             
-            
 
-def process_fsgram(grammar,universe,terminals,nonterminals):
+
+def get_entities_abbreviations(entityuniverse):
+    return {k:v[0] for k,v in entityuniverse.items()}
+
+
+def get_entites_attributes(entityuniverse):
+    return {k:v[1] for k,v in entityuniverse.items()}
+
+
+def get_entity_name_by_abv(value,abv_entities):
+    for key, val in abv_entities.items():
+        if val == value:
+            return key
+    return None
+def get_abbreviature_by_name(name,anb_entities):
+    for key, val in anb_entities.items():
+        if key == name:
+            return val
+    return None
+
+def process_fsgram(entityuniverse,universe,terminals,nonterminals):
 
     """
     This function serves as an handler that pin-points all the information that needs to be processed to their corresponding functions.
     """
-    verifyGrammar(terminals,nonterminals)
+    verifyGrammar(entityuniverse,terminals,nonterminals)
     interpreter(terminals,nonterminals)
     DGUhand.get_symbols(universe,terminals)
 
     #universehand(universe)
     # show_declarations(terminals,nonterminals)
-    DGUhand.bigbang(universe,terminals)
+    #DGUhand.bigbang(universe,terminals)
     # gen_productions_file(nonterminals)
     
 

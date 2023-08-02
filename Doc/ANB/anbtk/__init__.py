@@ -185,14 +185,28 @@ def anb():
     elif args.subcommand == 'dgu':
         if dataControl.search_anbtk():
 
-            if args.entity:            
-                with open('universe.dgu') as universe:
-                    entities = dgu_helper.parse_text(universe.read())
-                    if args.entity[0] in entities.keys():
-                        genDgu(args.entity[0], entities[args.entity[0]], args.filename[0],currentdir)
-                    else:
-                        print("✗ No entity exists with that name")
-                        exit()
+            if args.entity:
+                entities = gramLogic.get_entities_fsgram()
+                att_entities = gramLogic.get_entites_attributes(entities)
+                abv_entities = gramLogic.get_entities_abbreviations(entities)
+                print(abv_entities.values())
+                if args.entity[0] in abv_entities.values():
+                    args.entity[0] = gramLogic.get_entity_name_by_abv(args.entity[0],abv_entities)
+                    print(args.entity[0])
+                    print("!!!!")
+                if args.entity[0] in entities.keys():     
+                    genDgu(args.entity[0], att_entities[args.entity[0]], args.filename[0],currentdir)
+                else:
+                    print("✗ No entity exists with that name.")
+                    exit()
+
+                # with open('universe.dgu') as universe:
+                #     entities = dgu_helper.parse_text(universe.read())
+                #     if args.entity[0] in entities.keys():
+                #         genDgu(args.entity[0], entities[args.entity[0]], args.filename[0],currentdir)
+                #     else:
+                #         print("✗ No entity exists with that name")
+                #         exit()
             if not args.entity:
                 os.chdir(currentdir)
                 empty_dgu = dgu.DGU()
@@ -269,3 +283,4 @@ def anb():
         
     else:
         args.func(args.name, args.attributes, args)
+

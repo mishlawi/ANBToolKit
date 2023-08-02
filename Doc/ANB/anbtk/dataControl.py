@@ -68,7 +68,6 @@ def initanb(grampath="",folderpath=""):
         else:
             os.mkdir(filepath := (cwd + '/.anbtk'))
             os.chdir(filepath)
-            initData()
             
             if grampath=="":
                 grammar,universe,terminals,nonterminals = FSGram.initializer()
@@ -85,6 +84,7 @@ def initanb(grampath="",folderpath=""):
                 # this file creation and such might cause some stress
                 with open('fsgram.anb','w') as fsgram:
                     fsgram.write(temp)
+            initData()
             templateGen()
         os.chdir(cwd)
 
@@ -112,12 +112,15 @@ def initData():
     """
     Create an initial JSON file or storing statistics related to the types of content in the notebook.
     """
-
     data = {}
     
-    data['Biography'] = 0
-    data['Story'] = 0
-    data['Picture'] = 0
+    entities = gramLogic.get_entities_fsgram()
+    for entity in entities.keys():
+        data[entity] = 0
+        
+    # data['Biography'] = 0
+    # data['Story'] = 0
+    # data['Picture'] = 0
     
     #  > more formats tba
     with open('anbtk.json','w') as anbtkfo:
@@ -141,24 +144,35 @@ def dataUpdate(file_type, name):
     with open(f'{anbtk}/anbtk.json', 'r') as f:
         data = json.load(f)
     
-    if file_type not in data:
-        data[file_type] = 0
+    
+    # if file_type not in data.keys():
+    #     data[file_type] = 0
     
     data[file_type] += 1
-    with open(f'{anbtk}/universe.dgu','r') as universe:
-        const = dgu_helper.parse_text_denomination(universe.read())[file_type]
-    print(const)
+
+    terminals = gramLogic.get_nonterminals_terminals_fsgram()[1]
+    if file_type not in terminals.keys(): # meaning if the passed value is an abbreviature
+        #if written as in the fsgram H: p.
+        entities = gramLogic.get_entities_fsgram()
+        terminal_key = gramLogic.get_abbreviature_by_name(file_type,entities)[0]
+    else:
+        terminal_key = file_type
+    const = terminals[terminal_key][:-1]
+
+
+    # with open(f'{anbtk}/universe.dgu','r') as universe:
+    #     const = dgu_helper.parse_text_denomination(universe.read())[file_type]
     id = f"{const}[{data[file_type]}]-{name}"
-    
     # > more formats tba
 
-    with open('anbtk.json', 'w') as f:
+    with open(f'{anbtk}/anbtk.json', 'w') as f:
         json.dump(data, f)
 
     return id
 
 
 def templateGen():
+
     """
     Generates a directory called "templates" with the different templates to be used.
 
@@ -170,11 +184,11 @@ def templateGen():
     """
 
     os.mkdir('templates')
-    os.chdir('templates')
+    # os.chdir('templates')
 
-    with open('anb1.j2','w') as f:
+    with open('templates/anb1.j2','w') as f:
         f.write(constants.templateLatex)
-    with open('anb2.j2','w') as f:
+    with open('templates/anb2.j2','w') as f:
         f.write(constants.template_productions)
 
 

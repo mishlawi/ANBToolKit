@@ -112,18 +112,18 @@ def read_onto_file(filename):
     return g 
 
     
-
+from .DSL.entities import gramLogic
 
 def defineOnto(family_structure,ages):
     
     g = ousia.ontology() # create graph
     populate_graph(family_structure,g) # add individuals and imediate relations
     add_dates_onto(ages,g) # adds born and death dates
-    
-    with open(os.path.join(dataControl.find_anb(),'universe.dgu')) as universe:
-        entities = dgu_helper.parse_text(universe.read())
+    entities = gramLogic.get_entities_fsgram()
+    entities = gramLogic.get_entites_attributes(entities)
+    # with open(os.path.join(dataControl.find_anb(),'universe.dgu')) as universe:
+    #     entities = dgu_helper.parse_text(universe.read())
     ousia.dgu_base(entities,g)
-    print(entities)
     return g
 
 

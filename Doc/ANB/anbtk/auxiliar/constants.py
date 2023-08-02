@@ -15,15 +15,14 @@
 
 defaultFsgram = """
 Story (H) -> title,author,date;
-Biography  -> name,birthday,birthplace,occupation,death;
+Biography (Bio) -> name,birthday,birthplace,occupation,death;
 Foto  -> note,date;
 >UNIVERSE<
 
-Pessoa : H* , Facade, Bio?, Foto.
+Pessoa : H* , Bio?, Foto.
 Album : Foto*.
-Luquinhas : Banana*.
 
-H : h.
+Story : h.
 Bio : b.
 Foto : p.
 

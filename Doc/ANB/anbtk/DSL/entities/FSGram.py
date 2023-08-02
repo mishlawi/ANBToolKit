@@ -19,7 +19,7 @@ def p_FSGram(p):
     universe =  re.sub('UNIVERSE','',p[2]).strip()
 
     # gramLogic.process_fsgram(top,grammar,universe,terminals,nonterminals)
-    p[0] = grammar,universe,terminals,nonterminals
+    p[0] = entityuniverse,universe,terminals,nonterminals
     # return ignoredFiles,grammar
    
 def p_Entities(p):
@@ -29,15 +29,16 @@ def p_Entities(p):
 
 def p_Entity(p):
     """Entity : ID Abreviation ARROW Attributes PV"""
-    #   if p[1]!=p[2] :
-    #         if len(p[1])>len(p[2]):
-    # else:
-    #             print(f"{p[2]} is supposed to be an abbreviation, not a longer name than {p[1]}.")
-    #             exit()
-    #     else:
-    #         print(f"{p[2]} is supposed to be different than {p[1]}.")
-    #         exit()
-    entityuniverse[p[1]] = (p[2],p[4])
+    if p[1]!=p[2] :
+        if len(p[1])>len(p[2]):
+            entityuniverse[p[1]] = (p[2],p[4])
+        else:
+            print(f"{p[2]} is supposed to be an abbreviation, not a longer name than {p[1]}.")
+            exit()
+    else:
+        print(f"{p[2]} is supposed to be different than {p[1]}.")
+        exit()        
+    
 
 def p_Abreviation(p):
     """Abreviation : LP ID RP
@@ -45,6 +46,8 @@ def p_Abreviation(p):
     """
     if len(p) == 4:
         p[0] = p[2]
+    else:
+        p[0] = ''
             
         
 
@@ -140,10 +143,6 @@ def p_error(p):
 
 
 
-def get_entities_abbreviations(entityuniverse):
-    return {k:v[0] for k,v in entityuniverse.items()}
-
-
 def initializer(res=''):
     global nonterminals
     global terminals
@@ -186,3 +185,9 @@ def parse_individual_production(data):
     single_prod_parser.parse(data,lexer=lexer_fsgram)
     return nonterminals
 
+def parse_individual_entity(data):
+    global entityuniverse
+
+    single_entity_parser = yacc.yacc(start='Entity')
+    single_entity_parser.parse(data,lexer=lexer_fsgram)
+    return entityuniverse

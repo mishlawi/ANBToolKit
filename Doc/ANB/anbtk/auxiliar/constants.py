@@ -1,16 +1,32 @@
-defaultFsgram= """Pessoa : H* , Bio?, Foto.
-Album : Foto*.
+# defaultFsgram= """Pessoa : H* , Bio?, Foto.
+# Album : Foto*.
 
+
+# H : h.
+# Bio : b.
+# Foto : p.
+
+# UNIVERSE
+
+# Story -> title,author,date
+# Biography -> name,birthday,birthplace,occupation,death
+# Foto -> note,date
+# """
+
+defaultFsgram = """
+Story (H) -> title,author,date;
+Biography  -> name,birthday,birthplace,occupation,death;
+Foto  -> note,date;
+>UNIVERSE<
+
+Pessoa : H* , Facade, Bio?, Foto.
+Album : Foto*.
+Luquinhas : Banana*.
 
 H : h.
 Bio : b.
 Foto : p.
 
-UNIVERSE
-
-Story -> title,author,date
-Biography -> name,birthday,birthplace,occupation,death
-Foto -> note,date
 """
 
 # IGNORE

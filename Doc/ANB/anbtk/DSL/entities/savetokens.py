@@ -3,17 +3,13 @@ from ply.lex import TOKEN
 
 
 # terminais
-tokens = ['PP','PF','PV','UNIVERSE','VIR','REGEX','ID','IDm','IDv','IDo','NAME','ARROW','LP','RP'] 
+tokens = ['PP','PF','UNIVERSE','VIR','REGEX','ID','IDm','IDv','IDo'] 
 
 t_PP = r'\:'
+
 t_PF = r'\.'
+
 t_VIR = r'\,'
-t_LP = r'\('
-t_RP = r'\)'
-t_NAME = r'\w+'
-t_UNIVERSE = r'>UNIVERSE<'
-t_ARROW = r"\-\>"
-t_PV = r'\;'
 
 #p[0-9]+\-\w+\.\w+'
 def t_REGEX(t):
@@ -28,7 +24,13 @@ def t_REGEX(t):
 #     return t
 
 
-    
+def t_UNIVERSE(t):
+    r'UNIVERSE\n([\s\S]*)'
+    t.value=str(t.value)
+    return t
+
+
+
 # def t_IGNORED(t):
 #     r'IGNORE(.|\n)+'
 #     t.value = str(t.value)
@@ -67,4 +69,3 @@ def t_error(t):
 
 lexer_fsgram = lex.lex()
 
-# Get each token recognized by the lexer

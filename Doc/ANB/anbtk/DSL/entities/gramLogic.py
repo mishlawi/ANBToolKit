@@ -416,7 +416,13 @@ def nonterminals_dict_to_string(nonterminals):
     return string
 
 
-grammar = """Pessoa : H* , Facade, Bio?, Foto.
+grammar = """Story (H) -> title,author,date;
+Biography  -> name,birthday,birthplace,occupation,death;
+Foto  -> note,date;
+
+>UNIVERSE<
+
+Pessoa : H* , Facade, Bio?, Foto.
 Album : Foto*.
 Luquinhas : Banana*.
 
@@ -424,11 +430,7 @@ H : h.
 Bio : b.
 Foto : p.
 
-UNIVERSE
 
-Story (H) -> title,author,date
-Biography (Bio) -> name,birthday,birthplace,occupation,death
-Foto (Pic) -> note,date
 """
 
 def count_occurrences(lst, target):

@@ -220,58 +220,58 @@ def defaultConversion(text):
 
     return temptext
 
-def parse_text_denomination(input):
-    """
-    Parses the universe file specified format and returns a dictionary of the form:
-    {'category1': 'abbreviation1', 'category2': 'abbreviation2', ...}
-    """
+# def parse_text_denomination(input):
+#     """
+#     Parses the universe file specified format and returns a dictionary of the form:
+#     {'category1': 'abbreviation1', 'category2': 'abbreviation2', ...}
+#     """
 
-    start_index = input.find('---')
-    if start_index == -1:
-        return {}
+#     start_index = input.find('---')
+#     if start_index == -1:
+#         return {}
 
-    lines = input[start_index + 3:].strip().split('\n')
-    result = {}
+#     lines = input[start_index + 3:].strip().split('\n')
+#     result = {}
 
-    for line in lines:
-        line = line.strip()
-        if line and not line.startswith('-'):
-            category_name, _, abbreviation = line.partition('(')
-            category_name = category_name.strip()
-            abbreviation = abbreviation.rstrip(')')
-            if abbreviation.strip():
-                result[category_name] = abbreviation.strip()
+#     for line in lines:
+#         line = line.strip()
+#         if line and not line.startswith('-'):
+#             category_name, _, abbreviation = line.partition('(')
+#             category_name = category_name.strip()
+#             abbreviation = abbreviation.rstrip(')')
+#             if abbreviation.strip():
+#                 result[category_name] = abbreviation.strip()
 
-    return result
+#     return result
 
-def parse_text(input):
-    """
-    Parses the universe file specified format and returns a dictionary of the form:
-    {'name1': ['item1', 'item2', ...], 'name2': ['item1', 'item2', ...], ...}
-    """
+# def parse_text(input):
+#     """
+#     Parses the universe file specified format and returns a dictionary of the form:
+#     {'name1': ['item1', 'item2', ...], 'name2': ['item1', 'item2', ...], ...}
+#     """
 
-    start_index = input.rfind('---')
-    if start_index == -1:
-        return {}
+#     start_index = input.rfind('---')
+#     if start_index == -1:
+#         return {}
 
-    lines = input[start_index + 3:].strip().split('\n')
-    result = {}
-    current_category = None
+#     lines = input[start_index + 3:].strip().split('\n')
+#     result = {}
+#     current_category = None
 
-    for line in lines:
-        line = line.strip()
-        if line:
-            if not line.startswith('-'):
-                if '(' in line:
-                    current_category = line.split('(')[0].strip()
-                else:
-                    current_category = line
-                result[current_category] = []
-            elif current_category:
-                attribute = line[1:].strip()
-                result[current_category].append(attribute)
+#     for line in lines:
+#         line = line.strip()
+#         if line:
+#             if not line.startswith('-'):
+#                 if '(' in line:
+#                     current_category = line.split('(')[0].strip()
+#                 else:
+#                     current_category = line
+#                 result[current_category] = []
+#             elif current_category:
+#                 attribute = line[1:].strip()
+#                 result[current_category].append(attribute)
 
-    return result
+#     return result
 
 
 def is_image(path):

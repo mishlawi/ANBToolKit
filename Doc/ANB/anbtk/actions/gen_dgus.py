@@ -70,7 +70,7 @@ def genDguImage_tree(cwd):
                         usedname = dataControl.dataUpdate('Foto',id)
                         with open(os.path.join(dirpath, usedname + '.dgu'), 'w') as dgufile:
                             dgufile.write('---\n')
-                            yaml.dump(dgu.DGU(id=id, format=format, path=abpath), dgufile, default_flow_style=False, sort_keys=False, allow_unicode=True)
+                            yaml.dump(dgu.DGU(id = id, format = format,type = "Picture", path = abpath), dgufile, default_flow_style=False, sort_keys=False, allow_unicode=True)
                             dgufile.write('---\n')
                     else:
                         print("There is a dgu file for this image already!\n")

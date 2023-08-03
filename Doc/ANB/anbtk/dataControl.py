@@ -148,7 +148,6 @@ def dataUpdate(file_type, name):
     # if file_type not in data.keys():
     #     data[file_type] = 0
     
-    data[file_type] += 1
 
     terminals = gramLogic.get_nonterminals_terminals_fsgram()[1]
     if file_type not in terminals.keys(): # meaning if the passed value is an abbreviature
@@ -158,6 +157,8 @@ def dataUpdate(file_type, name):
     else:
         terminal_key = file_type
     const = terminals[terminal_key][:-1]
+    
+    data[file_type] += 1
 
 
     # with open(f'{anbtk}/universe.dgu','r') as universe:

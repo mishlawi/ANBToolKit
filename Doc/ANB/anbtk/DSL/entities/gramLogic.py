@@ -87,7 +87,7 @@ def show_declarations():
     print("-"*terminal_width)
     for nonterminal, spec in nonterminals.items():
         text = ', '.join(f'{elem}' for elem in spec)
-        print(f" - {nonterminal} : {text}")
+        print(f" - {nonterminal} : {text}.")
 
     print(divider)
     
@@ -377,16 +377,20 @@ def choose_add_option():
     return answers['selected_option']
 
 
-def add_aggregator(terminals,nonterminals):
+def add_aggregator(entitiesuniverse,terminals,nonterminals):
     
     show_declarations() 
     added = input('''To add an aggregator, remember to use:\n
 * Colon ":" to separate the aggregator name fromm the respective entities.
 * Commas "," to separate entities.
 * Period "." at the end of the definition.
-\nFORMAT:\n<aggregator> : <entity> , <entity> , ... , <entity>.\n\nEXAMPLE:\n Person : Bio? , Foto .\n\n''')
+\nFORMAT:\n<aggregator> : <entity> , <entity> , ... , <entity> .\n\nEXAMPLE:\n Person : Bio? , Foto .\n\n> ''')
     if added == '':
         exit()
+    if added[-1] != '.' or added.count(':') != 1 or added.count('.') != 1:
+        print("Error in the aggregator definition.")
+        exit()
+
     nonterminal = FSGram.parse_individual_production(added)
     if nonterminal == {} :
         print("Error in the aggregator development.")
@@ -397,25 +401,25 @@ def add_aggregator(terminals,nonterminals):
             print(f"{agg} is already defined as an aggregator. Give it another name.")
             exit()
         nonterminals.update(nonterminal)
-        verifyGrammar(terminals,nonterminals)
+        verifyGrammar(entitiesuniverse,terminals,nonterminals)
         string = nonterminals_dict_to_string(nonterminals)
 
-        # write_fsgram_file(nonterminals,terminals)
+        
                         
 
 
 def add_to_fsgram():
-    x = FSGram.parse_grammar(grammar)
-    print("?")
-    a1,a2,a3,a4 = x
-    print("1",a1)
-    print("2",a2)
-    print("3",a3)
-    print("4",a4)
-    # nonterminals , terminals = read_fsgram_file()
-    # #show_declarations()
-    # if choose_add_option() == 'Add aggregator':
-    #     add_aggregator(terminals,nonterminals)
+    # x = FSGram.parse_grammar(grammar)
+    # print("?")
+    # a1,a2,a3,a4 = x
+
+    nonterminals , terminals = get_nonterminals_terminals_fsgram()
+    entitiesuniverse = get_entities_fsgram()
+    #show_declarations()
+    if choose_add_option() == 'Add aggregator':
+        add_aggregator(entitiesuniverse, terminals,nonterminals)
+    elif choose_add_option()== 'Add entity':
+        add_entity(entitiesuniverse, terminals,nonterminals)
        
 
 

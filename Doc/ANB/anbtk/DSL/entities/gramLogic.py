@@ -402,10 +402,123 @@ def add_aggregator(entitiesuniverse,terminals,nonterminals):
             exit()
         nonterminals.update(nonterminal)
         verifyGrammar(entitiesuniverse,terminals,nonterminals)
-        string = nonterminals_dict_to_string(nonterminals)
+        anbtk = dataControl.find_anb()
+        with open(f"{anbtk}/fsgram.anb",'w') as anbtk:
+            anbtk.write(full_fsgram_string(nonterminals,terminals,entitiesuniverse))
 
+
+# def entity_view():
+#     attributes = []
+#     while True:
+#         questions = [
+#             inquirer.List('selected_option',
+#                         message='Choose an option:',
+#                         choices=['Add attribute', 'Save and exit'],
+#                         ),
+#         ]
+#         answers = inquirer.prompt(questions)
+#         if answers['selected_option'] == 'Save and exit':
+#             break
+#         elif answers['selected_option'] == 'Add attribute':
+#             attribute_name = input("Attribute name:\n > ")
+#             if attribute_name == '':
+#                 exit()
+#             else:
+#                 attributes.append(attribute_name)
+#         else:
+#             attribute_name = input("Attribute name:\n > ")
+
+
+import inquirer
+
+def entity_view(entity):
+    attributes = []
+    os.system('clear')
+    while True:
+        os.system('clear')
+    
+        if attributes != []:
+            print(f"{entity}'s Attributes:")
+            for elem in attributes:
+                print("*",elem)
+            print("\n")
+
+            questions = [
+                inquirer.List('selected_option',
+                            message='Choose an option:',
+                            choices=['Add attribute', 'Edit attribute', 'Remove attribute', 'Save and exit', 'Delete entity and exit'],
+                ),
+            ]
+        else:
+            print(f"{entity} has no attributes yet.\n")
+            questions = [
+                inquirer.List('selected_option',
+                            message='Choose an option:',
+                            choices=['Add attribute', 'Delete entity and exit'],
+                ),
+            ]
+        answers = inquirer.prompt(questions)
+        selected_option = answers['selected_option']
+
+        if selected_option == 'Add attribute':
+            attribute_name = input("Attribute name:\n > ")
+            if attribute_name == '':
+                print("No attribute name given.\n")
+            elif not attribute_name.isalpha():
+                print("Only alphabetical characters are allowed.\n")
+            elif attribute_name in attributes:
+                print("Attribute already exists.\n")
+            else:
+                attributes.append(attribute_name)
+
+        if selected_option == 'Remove attribute':
+            attribute_list = [
+                inquirer.List('selected_option',
+                            message=f"{entity}'s attribute to be removed :",
+                            choices= attributes,
+                ),
+            ]
+            answers = inquirer.prompt(attribute_list)
+            os.system('clear')
+            selected_attribute = answers['selected_option']
+            attributes.remove(selected_attribute)
+
+ 
+        elif selected_option == 'Edit attribute':
+            attribute_list = [
+                inquirer.List('selected_option',
+                            message=f"{entity}'s attribute to be edited :",
+                            choices= attributes,
+                ),
+            ]
+            answers = inquirer.prompt(attribute_list)
+            os.system('clear')
+            selected_attribute = answers['selected_option']
+            index = attributes.index(selected_attribute)
+            attributes[index] = input(f"Edit attribute '{selected_attribute}':\n > ")
+            # edited attribute appear in the same position in the list as the original one
+
+
+            # attributes.remove(selected_attribute)
+            # attributes.append(input(f"Edit attribute '{selected_attribute}':\n > "))
         
-                        
+        if selected_option == 'Save and exit':
+            #save
+            break
+        elif selected_option == 'Delete entity and exit':
+            exit()
+
+
+
+
+
+
+def add_entity():
+    entity_name = input("Entity name:\n > ")
+    entity_view(entity_name)
+         
+    # inquirer module a while true that ineterruptly allows to ask to add attribute or to save and exit
+
 
 
 def add_to_fsgram():
@@ -416,12 +529,36 @@ def add_to_fsgram():
     nonterminals , terminals = get_nonterminals_terminals_fsgram()
     entitiesuniverse = get_entities_fsgram()
     #show_declarations()
-    if choose_add_option() == 'Add aggregator':
+    view = choose_add_option()
+    if view == 'Add aggregator':
         add_aggregator(entitiesuniverse, terminals,nonterminals)
-    elif choose_add_option()== 'Add entity':
-        add_entity(entitiesuniverse, terminals,nonterminals)
+    elif view== 'Add entity':
+        add_entity()
        
 
+
+def full_fsgram_string(nonterminals,terminals,entityuniverse):
+    string = ''
+    string += entities_universe_to_string(entityuniverse)
+    string +='\n>UNIVERSE<\n'
+    string += nonterminals_dict_to_string(nonterminals)
+    string += terminals_to_string(terminals)
+    return string
+
+def entities_universe_to_string(entitiesuniverse):
+    string = ''
+    for aggregator,(abreviature,symbols) in entitiesuniverse.items():
+    
+        string +=f"{aggregator} "
+        if abreviature is not None and abreviature!='':
+            string += f"({abreviature})"
+        string+=" -> "
+        for elem in symbols[:-1]:
+            string += f'{elem}, '
+        string += f"{symbols[-1]} ;\n"
+    
+    return string
+    
 
 
 def nonterminals_dict_to_string(nonterminals):
@@ -437,6 +574,11 @@ def nonterminals_dict_to_string(nonterminals):
 
     return string
 
+def terminals_to_string(terminals):
+    string = ''
+    for terminal,abv in terminals.items():
+        string += f'{terminal} : {abv}\n'
+    return string
 
 grammar = """Story (H) -> title,author,date;
 Biography  -> name,birthday,birthplace,occupation,death;
@@ -482,6 +624,11 @@ def verifyGrammar(entityuniverse,terminals,nonterminals):
             if symbol not in entityuniverse.keys() and symbol not in entityuniverse.values():
                 print(f"ERROR: Symbol '{symbol}' in '{aggregator}' not recognized.")
                 exit()
+    
+    for terminal,abv in terminals.items():
+        if terminal not in entityuniverse.values() and terminal not in entityuniverse.keys():
+            print(f"ERROR: Terminal '{terminal}' pin-pointing to the abreviature {abv[:-1]} not recognized.")
+            exit()
     
     print("Grammar verified successfully.")
             

@@ -433,12 +433,18 @@ import inquirer
 
 def entity_view(entity):
     attributes = []
+    abreviature = ''
     os.system('clear')
     while True:
         os.system('clear')
     
         if attributes != []:
-            print(f"{entity}'s Attributes:")
+            choices=['Add attribute', 'Edit attribute', 'Remove attribute','Add or edit alternative symbol', 'Save and exit', 'Delete entity and exit'],
+            
+            if abreviature != '':
+                choices=['Add attribute', 'Edit attribute', 'Remove attribute','Add or edit alternative symbol','Remove alternative symbol', 'Save and exit', 'Delete entity and exit'],
+
+            print(f"{entity} {abreviature} Attributes:\n")
             for elem in attributes:
                 print("*",elem)
             print("\n")
@@ -446,15 +452,17 @@ def entity_view(entity):
             questions = [
                 inquirer.List('selected_option',
                             message='Choose an option:',
-                            choices=['Add attribute', 'Edit attribute', 'Remove attribute', 'Save and exit', 'Delete entity and exit'],
+                            choices = choices
                 ),
             ]
         else:
             print(f"{entity} has no attributes yet.\n")
+            choices=['Add attribute','Add or edit alternative symbol', 'Delete entity and exit'],
+            if abreviature != '':
+                choices=['Add attribute','Add or edit alternative symbol','Remove alternative symbol', 'Delete entity and exit'],
             questions = [
                 inquirer.List('selected_option',
                             message='Choose an option:',
-                            choices=['Add attribute', 'Delete entity and exit'],
                 ),
             ]
         answers = inquirer.prompt(questions)
@@ -470,8 +478,24 @@ def entity_view(entity):
                 print("Attribute already exists.\n")
             else:
                 attributes.append(attribute_name)
-
-        if selected_option == 'Remove attribute':
+        
+        elif selected_option == 'Add or edit alternative symbol':
+            print("The use of an alternative symbol aims to help to associate an entity with a more intuitive way to represent the an entity in the fsgram.\n")
+            alternative_symbol = input("Choose an alternative symbol (leave it empty to cancel and leave):\n > ")
+            if alternative_symbol == '':
+                print("No alternative symbol given.\n")
+            elif not alternative_symbol.isalpha():
+                print("Only alphabetical characters are allowed.\n")
+            elif alternative_symbol in attributes:
+                print("Alternative symbol already exists.\n")
+            elif alternative_symbol==entity or len(alternative_symbol)>len(entity):
+                print("Alternative symbol should be different and an abreviature of the entity.\nFor example: \nentity: Biography\nsymbol: Bio")
+            else:
+                abreviature = alternative_symbol
+        elif selected_option == 'Remove alternative symbol':
+            abreviature = ''
+            
+        elif selected_option == 'Remove attribute':
             attribute_list = [
                 inquirer.List('selected_option',
                             message=f"{entity}'s attribute to be removed :",
@@ -503,10 +527,12 @@ def entity_view(entity):
             # attributes.append(input(f"Edit attribute '{selected_attribute}':\n > "))
         
         if selected_option == 'Save and exit':
-            #save
-            break
+            pass
+            
         elif selected_option == 'Delete entity and exit':
             exit()
+
+
 
 
 

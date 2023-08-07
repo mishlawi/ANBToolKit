@@ -145,8 +145,8 @@ def dataUpdate(file_type, name):
         data = json.load(f)
     
     
-    # if file_type not in data.keys():
-    #     data[file_type] = 0
+    if file_type not in data.keys():
+        data[file_type] = 0
     
 
     terminals = gramLogic.get_nonterminals_terminals_fsgram()[1]

@@ -27,6 +27,7 @@ anbcd = "anbtk:folder_cd"
 anbls = "anbtk:folder_ls"
 anbfsgram = "anbtk:show_fsgram"
 anbabout = "anbtk:get_about"
+anbgrammar = "anbtk:edit_fsgram"
 teste = "anbtk:teste"
 anb = "anbtk:anb"
 

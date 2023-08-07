@@ -141,8 +141,13 @@ def get_about():
 def show_fsgram():
     gramLogic.show_declarations()
 
-def teste():
+def edit_fsgram():
     gramLogic.add_to_fsgram()
+
+
+def teste():
+    pass
+    # gramLogic.add_to_fsgram()
     
 ############################## .anb ################################
 import shutil

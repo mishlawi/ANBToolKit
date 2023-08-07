@@ -1,6 +1,7 @@
 import os
 import inquirer
 import re
+import shutil
 from . import FSGram
 
 from ...dgu import DGUhand
@@ -10,65 +11,56 @@ from ... import dataControl
 # ** Controls the way the grammar can be organized and disposed
 # * 
 
-def interpreter(terminals,nonterminals):
-    interpretation = {}
-    for producao in nonterminals.keys():
-        racional = []
-        for id in nonterminals[producao]:
-            collector = []
-            zoom(id,terminals,nonterminals,collector)
-            if id[-1] in ['*', '+', '?']:
-                racional.append((collector,id[-1]))
-            else:
-                racional.append((collector,''))
-        if producao in interpretation:
-            aux = interpretation[producao]    
-            interpretation[producao] = aux.append(racional)
-        else:
-            interpretation[producao] = racional
-    return interpretation
+# def interpreter(terminals,nonterminals):
+#     interpretation = {}
+#     for producao in nonterminals.keys():
+#         racional = []
+#         for id in nonterminals[producao]:
+#             collector = []
+#             zoom(id,terminals,nonterminals,collector)
+#             if id[-1] in ['*', '+', '?']:
+#                 racional.append((collector,id[-1]))
+#             else:
+#                 racional.append((collector,''))
+#         if producao in interpretation:
+#             aux = interpretation[producao]    
+#             interpretation[producao] = aux.append(racional)
+#         else:
+#             interpretation[producao] = racional
+#     return interpretation
     
 
-def zoom(value, terminals, nonterminals,buff):
-
-
-    elem = value[:-1] if value[-1] in ['*', '+', '?'] else value
-    if elem in terminals.keys():
-        if value[-1] in ['*', '+', '?']:
-            buff.append((terminals[elem],value[-1]))
-        else:
-            buff.append((terminals[elem],''))
-    elif elem in nonterminals.keys():
-        for id in nonterminals[elem]:
-            zoom(id,terminals,nonterminals,buff)
-
-
-
-# def verifyGrammar(lista,grammar):
-#     for producao in lista:
-#         for id in producao:
-#             if id[-1] in ['*', "+", '?']:
-#                 id = id[:-1]
-
-#             if id not in grammar.keys():
-#                 print("Errors in the structure of the grammar.")
-#                 exit()
-
-
-
-
-# def universehand(universe):
-#     galaxies = universe.split('\n')
+# def zoom(value, terminals, nonterminals,buff):
     
-#     for elem in galaxies:
-    
-#         if len(values:=re.split(r'\-\>',elem))>1:
-#             entity = values[0]
-#             atributes = values[1]
-#             atributes = re.split(r'::',atributes)
-#             # subclass = DGUhand.dgu_subclass(entity,atributes)
 
-import shutil
+#     elem = value[:-1] if value[-1] in ['*', '+', '?'] else value
+#     if elem in terminals.keys():
+#         if value[-1] in ['*', '+', '?']:
+#             buff.append((terminals[elem],value[-1]))
+#         else:
+#             buff.append((terminals[elem],''))
+#     elif elem in nonterminals.keys():
+#         for id in nonterminals[elem]:
+#             zoom(id,terminals,nonterminals,buff)
+
+
+# grammar = """Story (H) -> title,author,date;
+# Biography  -> name,birthday,birthplace,occupation,death;
+# Foto  -> note,date;
+
+# >UNIVERSE<
+
+# Pessoa : H* , Facade, Bio?, Foto.
+# Album : Foto*.
+# Luquinhas : Banana*.
+
+# H : h.
+# Bio : b.
+# Foto : p.
+
+
+# """
+
     
 terminal_width = shutil.get_terminal_size().columns
 divider = "=" * terminal_width
@@ -76,41 +68,48 @@ divider = "=" * terminal_width
 def show_declarations():
 
     nonterminals, terminals = get_nonterminals_terminals_fsgram()
-    # disposal = travessia(grammar,dirin,dirout,ignoredFiles)
-    # genHtml(disposal,dirout,dirin)
-    title = f"Loaded Declarations:".center(terminal_width)
+    entityuniverse = get_entities_fsgram()
+    title = f"** ANB FSGram: **".center(terminal_width)
     print(divider)
     print(title)
     print(divider)
+    print()
     
+
+    for entity, (abv,speclist) in entityuniverse.items():
+
+        if abv is not '':
+            print(f"Entity: {entity} ({abv})")
+        else:
+            print(f"Entity: {entity}")
+        for spec in speclist:
+            print(f" * {spec}")
+        print()
+    
+    # Printing terminals
+    print(divider)
+    
+    print("DGU prefixs:")
+    print(divider)
+    
+    for terminal, symbol in terminals.items():
+        print(f" = {terminal} : {symbol}")
+    
+    print()
+
+    print(divider)
     print("Entities Aggregators:")
-    print("-"*terminal_width)
+    print(divider)
     for nonterminal, spec in nonterminals.items():
         text = ', '.join(f'{elem}' for elem in spec)
-        print(f" - {nonterminal} : {text}.")
+        print(f" = {nonterminal} : {text}.")
 
-    print(divider)
+    print()
     
 
-    # Printing terminals
     
-    print("Entities:")
-    print("-"*terminal_width)
-    for terminal, symbol in terminals.items():
-        print(f" - {terminal} : {symbol}")
-    print(divider)
+
     
-    # for nonterminal, spec in nonterminals.items():
-    #     text = ''.join(f'{elem}, ' for elem in spec)
-    #     text = text[:-1]
-    #     print(f" - {nonterminal} : {text}")
-    # print("\n")
-    # for terminal, symbol in terminals.items(): 
-    #     print(f" -> {terminal} : {symbol}")
-
-    # print("\n")
-
-
 def get_entities_fsgram():
     try:
         with open (f"{dataControl.find_anb()}/fsgram.anb","r") as productions_file:
@@ -267,66 +266,6 @@ def travessia_specific():
     return documents
 
 
-
-# def travessia_geral():
-#     nonterminals, terminals = read_fsgram_file()
-
-#     root_folder = dataControl.get_root()
-#     files = retrieve_all_dgu_files(root_folder)
-#     dgu_correspondence = get_dgu_correspondence(files,terminals)
-
-#     data = {}
-#     for production, symbols in nonterminals.items():
-#         data[production] = []
-#         for sym in symbols:
-#             if sym[-1] in ["*","+","?"]:
-#                 id = sym[:-1]
-#             else:
-#                 id = sym
-#             documents = data[production]
-#             if sym.endswith("*"):
-#                 documents.append((id,dgu_correspondence[id]))
-
-#             elif sym.endswith("+"):
-#                 if  dgu_correspondence[id] != []:
-#                     documents.append((id,dgu_correspondence[id]))
-#                 else:
-#                     print(f"It is necessary to exist at least a {production} file!")
-#                     exit()
-
-#             elif sym.endswith("?"):
-                
-#                 if  dgu_correspondence[id] != []:
-#                     preview = {}
-#                     for elem in dgu_correspondence[id]:
-#                         preview[elem] = dataControl.relative_to_anbtk(elem)
-#                     lista = list(preview.values())
-#                     lista.insert(0,'Ignore')
-#                     lista.insert(0,'Leave')
-#                     message = f"Chose a file or just ignore to satisfy\n {sym}"
-#                     value = select_file_optional(lista,message)
-#                     if value != '':
-#                         documents.append((id,[value]))
-#             else:
-#                 if  dgu_correspondence[id] != []:
-#                     if len(dgu_correspondence[id]) == 1:
-#                         documents.append((id,value))
-#                     else:
-#                         preview = {}
-
-#                         for elem in dgu_correspondence[id]:
-#                             preview[elem] = dataControl.relative_to_anbtk(elem)
-#                         lista = list(preview.values())
-#                         lista.insert(0,'Leave')
-#                         message = f"Chose a file to satisfy {sym}:\n"
-#                         value = select_file_optional(lista,message)
-#                         documents.append((id,[value]))
-#                 else:
-#                     print(f"It is necessary to exist at least a {production} file!")
-#                     exit()
-#     return data
-
-
 def select_simple(symbols,message):
 
     print(message)
@@ -355,7 +294,6 @@ def travessia_terminals():
     return lista
     
 
-from ...anbPE.blocks import edit_block
 
 def get_fsgram():
     with open(dataControl.find_anb()+"/fsgram.anb") as f:
@@ -407,26 +345,9 @@ def add_aggregator(entitiesuniverse,terminals,nonterminals):
             anbtk.write(full_fsgram_string(nonterminals,terminals,entitiesuniverse))
 
 
-# def entity_view():
-#     attributes = []
-#     while True:
-#         questions = [
-#             inquirer.List('selected_option',
-#                         message='Choose an option:',
-#                         choices=['Add attribute', 'Save and exit'],
-#                         ),
-#         ]
-#         answers = inquirer.prompt(questions)
-#         if answers['selected_option'] == 'Save and exit':
-#             break
-#         elif answers['selected_option'] == 'Add attribute':
-#             attribute_name = input("Attribute name:\n > ")
-#             if attribute_name == '':
-#                 exit()
-#             else:
-#                 attributes.append(attribute_name)
-#         else:
-#             attribute_name = input("Attribute name:\n > ")
+
+def entity_from_view_to_fsgram_dict(entity_name,abreviature,attributes):
+    return {entity_name:(abreviature,attributes)}
 
 
 import inquirer
@@ -439,10 +360,10 @@ def entity_view(entity):
         os.system('clear')
     
         if attributes != []:
-            choices=['Add attribute', 'Edit attribute', 'Remove attribute','Add or edit alternative symbol', 'Save and exit', 'Delete entity and exit'],
+            choices=['Add attribute', 'Edit attribute', 'Remove attribute','Add or edit alternative symbol', 'Save and exit', 'Delete entity and exit']
             
             if abreviature != '':
-                choices=['Add attribute', 'Edit attribute', 'Remove attribute','Add or edit alternative symbol','Remove alternative symbol', 'Save and exit', 'Delete entity and exit'],
+                choices=['Add attribute', 'Edit attribute', 'Remove attribute','Add or edit alternative symbol','Remove alternative symbol', 'Save and exit', 'Delete entity and exit']
 
             print(f"{entity} {abreviature} Attributes:\n")
             for elem in attributes:
@@ -452,48 +373,54 @@ def entity_view(entity):
             questions = [
                 inquirer.List('selected_option',
                             message='Choose an option:',
-                            choices = choices
+                            choices = choices,
                 ),
             ]
         else:
             print(f"{entity} has no attributes yet.\n")
-            choices=['Add attribute','Add or edit alternative symbol', 'Delete entity and exit'],
+            choices=['Add attribute','Add or edit alternative symbol', 'Delete entity and exit']
             if abreviature != '':
-                choices=['Add attribute','Add or edit alternative symbol','Remove alternative symbol', 'Delete entity and exit'],
+                choices=['Add attribute','Add or edit alternative symbol','Remove alternative symbol', 'Delete entity and exit']
             questions = [
                 inquirer.List('selected_option',
                             message='Choose an option:',
+                            choices=choices,
                 ),
             ]
         answers = inquirer.prompt(questions)
         selected_option = answers['selected_option']
 
         if selected_option == 'Add attribute':
-            attribute_name = input("Attribute name:\n > ")
-            if attribute_name == '':
-                print("No attribute name given.\n")
-            elif not attribute_name.isalpha():
-                print("Only alphabetical characters are allowed.\n")
-            elif attribute_name in attributes:
-                print("Attribute already exists.\n")
-            else:
-                attributes.append(attribute_name)
+            while True:
+                attribute_name = input("Attribute name:\n > ")
+                if attribute_name == '':
+                    print("No attribute name given.\n")
+                elif not attribute_name.isalpha():
+                    print("Only alphabetical characters are allowed.\n")
+                elif attribute_name in attributes:
+                    print("Attribute already exists.\n")
+                else:
+                    attributes.append(attribute_name)
+                    break
         
         elif selected_option == 'Add or edit alternative symbol':
-            print("The use of an alternative symbol aims to help to associate an entity with a more intuitive way to represent the an entity in the fsgram.\n")
-            alternative_symbol = input("Choose an alternative symbol (leave it empty to cancel and leave):\n > ")
-            if alternative_symbol == '':
-                print("No alternative symbol given.\n")
-            elif not alternative_symbol.isalpha():
-                print("Only alphabetical characters are allowed.\n")
-            elif alternative_symbol in attributes:
-                print("Alternative symbol already exists.\n")
-            elif alternative_symbol==entity or len(alternative_symbol)>len(entity):
-                print("Alternative symbol should be different and an abreviature of the entity.\nFor example: \nentity: Biography\nsymbol: Bio")
-            else:
-                abreviature = alternative_symbol
+            print("The use of an alternative symbol aims to help to associate an entity with a more intuitive way to represent the an entity in the anb fsgram.\nFor example, if you were to write a alternative symbol for Biography you would write 'Bio'.")
+            while True:
+                alternative_symbol = input("Choose an alternative symbol (leave it empty to cancel and leave):\n > ")
+                if alternative_symbol == '':
+                    print("No alternative symbol given.\n")
+                elif not alternative_symbol.isalpha():
+                    print("Only alphabetical characters are allowed.\n")
+                elif alternative_symbol in attributes:
+                    print("Alternative symbol already exists.\n")
+                elif alternative_symbol==entity or len(alternative_symbol)>len(entity):
+                    print("Alternative symbol should be different and an abreviature of the entity.\nFor example: \nentity: Biography\nsymbol: Bio")
+                else:
+                    abreviature = alternative_symbol
+                    break
         elif selected_option == 'Remove alternative symbol':
             abreviature = ''
+            print("Alternative symbol removed.\n")
             
         elif selected_option == 'Remove attribute':
             attribute_list = [
@@ -520,26 +447,34 @@ def entity_view(entity):
             selected_attribute = answers['selected_option']
             index = attributes.index(selected_attribute)
             attributes[index] = input(f"Edit attribute '{selected_attribute}':\n > ")
-            # edited attribute appear in the same position in the list as the original one
-
-
-            # attributes.remove(selected_attribute)
-            # attributes.append(input(f"Edit attribute '{selected_attribute}':\n > "))
-        
-        if selected_option == 'Save and exit':
-            pass
             
+        elif selected_option == 'Save and exit':
+            print("To identify an pinpoint the compatible documents the DGU prefix has to be provided")
+            prefix = ''
+            while True:
+                prefix = input("Please give a DGU prefix:\n > ")
+                if prefix != '':
+                    prefix = f"{prefix}."
+                    break                
+            new_addition = entity_from_view_to_fsgram_dict(entity,abreviature,attributes)
+            nonterminals,terminals  = get_nonterminals_terminals_fsgram()
+            terminals.update({entity:prefix})
+            entityuniverse = get_entities_fsgram()
+            entityuniverse.update(new_addition)
+            anbtk = dataControl.find_anb()
+            with open(f"{anbtk}/fsgram.anb",'w') as anbtk:
+                anbtk.write(full_fsgram_string(nonterminals,terminals,entityuniverse))
+            print("Entity saved and added to fsgram.\n")
+            exit()
+
+
         elif selected_option == 'Delete entity and exit':
             exit()
 
 
 
-
-
-
-
-
 def add_entity():
+    show_declarations()
     entity_name = input("Entity name:\n > ")
     entity_view(entity_name)
          
@@ -548,13 +483,9 @@ def add_entity():
 
 
 def add_to_fsgram():
-    # x = FSGram.parse_grammar(grammar)
-    # print("?")
-    # a1,a2,a3,a4 = x
 
     nonterminals , terminals = get_nonterminals_terminals_fsgram()
     entitiesuniverse = get_entities_fsgram()
-    #show_declarations()
     view = choose_add_option()
     if view == 'Add aggregator':
         add_aggregator(entitiesuniverse, terminals,nonterminals)
@@ -597,7 +528,6 @@ def nonterminals_dict_to_string(nonterminals):
             string += f'{terminals[-1]} .'  
         string += '\n'
     
-
     return string
 
 def terminals_to_string(terminals):
@@ -606,22 +536,7 @@ def terminals_to_string(terminals):
         string += f'{terminal} : {abv}\n'
     return string
 
-grammar = """Story (H) -> title,author,date;
-Biography  -> name,birthday,birthplace,occupation,death;
-Foto  -> note,date;
 
->UNIVERSE<
-
-Pessoa : H* , Facade, Bio?, Foto.
-Album : Foto*.
-Luquinhas : Banana*.
-
-H : h.
-Bio : b.
-Foto : p.
-
-
-"""
 
 def count_occurrences(lst, target):
     count_dict = {}
@@ -685,8 +600,8 @@ def process_fsgram(entityuniverse,universe,terminals,nonterminals):
     This function serves as an handler that pin-points all the information that needs to be processed to their corresponding functions.
     """
     verifyGrammar(entityuniverse,terminals,nonterminals)
-    interpreter(terminals,nonterminals)
-    DGUhand.get_symbols(universe,terminals)
+    # interpreter(terminals,nonterminals)
+    # DGUhand.get_symbols(universe,terminals)
 
     #universehand(universe)
     # show_declarations(terminals,nonterminals)

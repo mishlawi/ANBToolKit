@@ -23,14 +23,14 @@ def bigbang(stringUniverse,terminals):
                 file.write('\t- ' + elem + '\n')
             file.write('\n')
 
-def get_symbols(stringUniverse,terminals):
-    uniformats = re.findall(r"^[^-]+",stringUniverse,re.MULTILINE)
-    uniatributes = [re.findall(r'\b[^,]+\b', x) for x in re.findall(r"-> (.*)", stringUniverse, re.MULTILINE)]
-    print("!!!!")
-    print(uniformats)    
-    print(uniatributes)
-    print(terminals)
-    print("!!!!")
+# def get_symbols(stringUniverse,terminals):
+#     uniformats = re.findall(r"^[^-]+",stringUniverse,re.MULTILINE)
+#     uniatributes = [re.findall(r'\b[^,]+\b', x) for x in re.findall(r"-> (.*)", stringUniverse, re.MULTILINE)]
+#     print("!!!!")
+#     print(uniformats)    
+#     print(uniatributes)
+#     print(terminals)
+#     print("!!!!")
 
 
 

@@ -91,7 +91,6 @@ def individual_processing(path,g,args):
             
             unique = set()
             message = "Results come from:\n"
-            print(aux)
             for person,relations in aux.items():
                 for p in relations:
                     unique.add(p)
@@ -112,13 +111,21 @@ def individual_processing(path,g,args):
 
 
 def anb_search():
+
     cwd = os.getcwd()
-    dataControl.search_anbtk()
-    g = genealogia.read_onto_file('anbsafeonto.rdf')
+
+    if not dataControl.search_anbtk():
+        print("✗ You are not in an Ancestors Notebook." )
+        exit()
+    else:
+        try:
+        
+            g = genealogia.read_onto_file('anbsafeonto.rdf')
+        except FileNotFoundError:
+            print("No ontology was initialized.\nWas this ancestor notebook created from scratch? There doesn't seem to exist any .rdf file that defines the familiar connections.")
+            exit()
     args = argsConfig.a_search()
-    # if not any([args.siblings, args.parents, args.unclesaunts, args.grandparents, args.children]):
-    #     print("✗ At least one of the flags -s, -p, -ua, -gp, -c is required.")
-    #     exit()
+    
     unique,message,header = individual_processing(cwd,g,args)
     view_sparql.show_data(unique,message,header)
 
@@ -178,7 +185,23 @@ def anb_ls():
             print("Some problem in finding the folder. Were any manual naming or structural changes made to the Ancestors Notebook folder?.")
             exit()
 
-  
+
+
+def show_individuals():
+    if not dataControl.search_anbtk():
+        print("✗ You are not in an Ancestors Notebook." )
+        exit()
+    else:
+        try:
+        
+            g = genealogia.read_onto_file('anbsafeonto.rdf')
+        except FileNotFoundError:
+            print("No ontology was initialized.\nWas this ancestor notebook created from scratch? There doesn't seem to exist any .rdf file that defines the familiar connections.")
+            exit()
+    
+
+
+
 
 def search_by_about_files():
     g = genealogia.read_onto_file('anbsafeonto.rdf')

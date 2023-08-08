@@ -16,12 +16,12 @@ SISTEMA DE REPRESENTACAO DE CONHECIMENTO
 ================== ONTOLOGY INITIALIZATION AND PROPERTIES DEFINITION =====================
 ==========================================================================================
 # """
+
 # For classes and individuals, camel case is used (e.g., ArtifactModel,
 # JohnDoe). For properties, each word is lowercase and joined by underscores (e.g., described_by). 
 
 FAMILY = Namespace('http://example.org/family#')
 DGU = Namespace('http://example.com/dgu#')
-# RDFS = Namespace('http://www.w3.org/2000/01/rdf-schema#')
 
 def ontology():
 
@@ -53,35 +53,35 @@ def relationships_ontology(g):
 
     has_parent_property = FAMILY['hasParent']
     g.add((has_parent_property, RDF.type, OWL.ObjectProperty))
-    g.add((has_parent_property, RDFS.label,Literal('has parent')))
+    g.add((has_parent_property, RDFS.label,Literal('has_parent')))
     g.add((has_parent_property, RDFS.domain, person_class))
     g.add((has_parent_property, RDFS.range, person_class))
 
     # has Child 
     has_child_property = FAMILY['hasChild']
     g.add((has_child_property, RDF.type, OWL.ObjectProperty))
-    g.add((has_child_property, RDFS.label,Literal('has child')))
+    g.add((has_child_property, RDFS.label,Literal('has_child')))
     g.add((has_child_property, RDFS.domain, person_class))
     g.add((has_child_property, RDFS.range, person_class))
 
     # has Spouse
     has_spouse_property = FAMILY['hasSpouse']
     g.add((has_spouse_property, RDF.type, OWL.ObjectProperty))
-    g.add((has_spouse_property, RDFS.label,Literal('has spouse')))
+    g.add((has_spouse_property, RDFS.label,Literal('has_spouse')))
     g.add((has_spouse_property, RDFS.domain, person_class))
     g.add((has_spouse_property, RDFS.range, person_class))
 
     # has Path 
     has_path_property = FAMILY['hasFolder']
     g.add((has_path_property, RDF.type, OWL.DatatypeProperty))
-    g.add((has_path_property, RDFS.label, Literal('has path')))
+    g.add((has_path_property, RDFS.label, Literal('has_path')))
     g.add((has_path_property, RDFS.domain, person_class))
     g.add((has_path_property, RDFS.range, XSD.string))
 
 
     nickname_property = FAMILY['hasNickname']
     g.add((nickname_property, RDF.type, OWL.DatatypeProperty))
-    g.add((nickname_property, RDFS.label, Literal('nickname')))
+    g.add((nickname_property, RDFS.label, Literal('has_nickname')))
     g.add((nickname_property, RDFS.domain, person_class))
     g.add((nickname_property, RDFS.range, XSD.string))
 
@@ -89,7 +89,7 @@ def relationships_ontology(g):
     # birth date
     birth_date_property = FAMILY['birthDate']
     g.add((birth_date_property, RDF.type, OWL.DatatypeProperty))
-    g.add((birth_date_property, RDFS.label, Literal('birth date')))
+    g.add((birth_date_property, RDFS.label, Literal('has_birth_date')))
     g.add((birth_date_property, RDFS.domain, person_class))
     g.add((birth_date_property, RDFS.range, XSD.string))
 
@@ -139,25 +139,25 @@ def dgu_ontology(g):
 
     has_name = DGU['hasName']
     g.add((has_name, RDF.type, OWL.DatatypeProperty))
-    g.add((has_name, RDFS.label, Literal('has name')))
+    g.add((has_name, RDFS.label, Literal('has_name')))
     g.add((has_name, RDFS.domain, file_class))
     g.add((has_name, RDFS.range, XSD.string))
 
     has_format_property = DGU['hasFormat']
     g.add((has_format_property, RDF.type, OWL.DatatypeProperty))
-    g.add((has_format_property, RDFS.label, Literal('has format')))
+    g.add((has_format_property, RDFS.label, Literal('has_format')))
     g.add((has_format_property, RDFS.domain, file_class))
     g.add((has_format_property, RDFS.range, XSD.string))
 
     has_type_property = DGU['hasType']
     g.add((has_type_property, RDF.type, OWL.DatatypeProperty))
-    g.add((has_type_property, RDFS.label, Literal('has type')))
+    g.add((has_type_property, RDFS.label, Literal('has_type')))
     g.add((has_type_property, RDFS.domain, file_class))
     g.add((has_type_property, RDFS.range, XSD.string))
 
     has_about_property = DGU['hasAbout']
     g.add((has_about_property, RDF.type, OWL.DatatypeProperty))
-    g.add((has_about_property, RDFS.label, Literal('has about')))
+    g.add((has_about_property, RDFS.label, Literal('has_about')))
     g.add((has_about_property, RDFS.domain, file_class))
     g.add((has_about_property, RDFS.range, XSD.string))
 
@@ -182,7 +182,7 @@ def dgu_base(entities,g):
             elem = elem.capitalize()
             temp_property = DGU[f'has{elem}']
             g.add((temp_property, RDF.type, OWL.DatatypeProperty))
-            g.add((temp_property, RDFS.label, Literal(f'has {elem}')))
+            g.add((temp_property, RDFS.label, Literal(f'has_{elem}')))
             g.add((temp_property, RDFS.domain, main_class))
             g.add((temp_property, RDFS.range, XSD.string))
     

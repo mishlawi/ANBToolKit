@@ -168,13 +168,6 @@ def parse_grammar(data):
     parser = yacc.yacc()
     result = parser.parse(data,lexer=lexer_fsgram)
     
-    # lexer_fsgram.input(data)
-    # while True:
-    #     token = lexer_fsgram.token()
-    #     if not token:
-    #         break  # no more tokens
-    #     print(token)
-    print(entityuniverse)
     return result
 
 
@@ -191,3 +184,12 @@ def parse_individual_entity(data):
     single_entity_parser = yacc.yacc(start='Entity')
     single_entity_parser.parse(data,lexer=lexer_fsgram)
     return entityuniverse
+
+
+
+    # lexer_fsgram.input(data)
+    # while True:
+    #     token = lexer_fsgram.token()
+    #     if not token:
+    #         break  # no more tokens
+    #     print(token)

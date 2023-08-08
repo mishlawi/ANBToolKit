@@ -1,48 +1,14 @@
 import os
 import inquirer
-import re
+import inquirer
 import shutil
-from . import FSGram
 
-from ...dgu import DGUhand
 from ... import dataControl
+from . import FSGram
 
 # *
 # ** Controls the way the grammar can be organized and disposed
 # * 
-
-# def interpreter(terminals,nonterminals):
-#     interpretation = {}
-#     for producao in nonterminals.keys():
-#         racional = []
-#         for id in nonterminals[producao]:
-#             collector = []
-#             zoom(id,terminals,nonterminals,collector)
-#             if id[-1] in ['*', '+', '?']:
-#                 racional.append((collector,id[-1]))
-#             else:
-#                 racional.append((collector,''))
-#         if producao in interpretation:
-#             aux = interpretation[producao]    
-#             interpretation[producao] = aux.append(racional)
-#         else:
-#             interpretation[producao] = racional
-#     return interpretation
-    
-
-# def zoom(value, terminals, nonterminals,buff):
-    
-
-#     elem = value[:-1] if value[-1] in ['*', '+', '?'] else value
-#     if elem in terminals.keys():
-#         if value[-1] in ['*', '+', '?']:
-#             buff.append((terminals[elem],value[-1]))
-#         else:
-#             buff.append((terminals[elem],''))
-#     elif elem in nonterminals.keys():
-#         for id in nonterminals[elem]:
-#             zoom(id,terminals,nonterminals,buff)
-
 
 # grammar = """Story (H) -> title,author,date;
 # Biography  -> name,birthday,birthplace,occupation,death;
@@ -57,8 +23,6 @@ from ... import dataControl
 # H : h.
 # Bio : b.
 # Foto : p.
-
-
 # """
 
     
@@ -317,12 +281,16 @@ def choose_add_option():
 
 def add_aggregator(entitiesuniverse,terminals,nonterminals):
     
-    show_declarations() 
-    added = input('''To add an aggregator, remember to use:\n
+    show_declarations()
+    print(divider)
+    print() 
+    added = input('''NOTE:\nTo add an aggregator, remember to use:\n
 * Colon ":" to separate the aggregator name fromm the respective entities.
 * Commas "," to separate entities.
 * Period "." at the end of the definition.
 \nFORMAT:\n<aggregator> : <entity> , <entity> , ... , <entity> .\n\nEXAMPLE:\n Person : Bio? , Foto .\n\n> ''')
+    print(divider)
+
     if added == '':
         exit()
     if added[-1] != '.' or added.count(':') != 1 or added.count('.') != 1:
@@ -350,7 +318,6 @@ def entity_from_view_to_fsgram_dict(entity_name,abreviature,attributes):
     return {entity_name:(abreviature,attributes)}
 
 
-import inquirer
 
 def entity_view(entity):
     attributes = []

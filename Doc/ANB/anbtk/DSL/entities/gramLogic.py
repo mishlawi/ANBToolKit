@@ -5,6 +5,8 @@ import shutil
 
 from ... import dataControl
 from . import FSGram
+from ...ontology import ousia
+from ... import genealogia
 
 # *
 # ** Controls the way the grammar can be organized and disposed
@@ -30,6 +32,19 @@ terminal_width = shutil.get_terminal_size().columns
 divider = "=" * terminal_width
 
 def show_declarations():
+    """
+    Display the declarations, nonterminals, terminals, entity universe, and other information related to the ANB FSGram.
+
+    This function retrieves nonterminals, terminals, and entity universe information using the functions
+    `get_nonterminals_terminals_fsgram()` and `get_entities_fsgram()`. It then prints the retrieved data in a
+    formatted manner, displaying entities, their abbreviations, specifications, DGU prefixes, and entity aggregators.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
 
     nonterminals, terminals = get_nonterminals_terminals_fsgram()
     entityuniverse = get_entities_fsgram()
@@ -75,6 +90,15 @@ def show_declarations():
 
     
 def get_entities_fsgram():
+    """
+    Retrieve entity information from the FSGram file in the AncestorsNotebook.
+
+    This function reads the 'fsgram.anb' file located in the AncestorsNotebook folder .anbtk using the path obtained from
+    It then initializes the FSGram using the file's content and extracts the entities names, attributes and abreviation.
+
+    Returns:
+        dict: A dictionary containing entity information.
+    """
     try:
         with open (f"{dataControl.find_anb()}/fsgram.anb","r") as productions_file:
             content = productions_file.read()
@@ -88,6 +112,17 @@ def get_entities_fsgram():
 
 
 def get_nonterminals_terminals_fsgram():
+    """
+    Retrieve nonterminals and terminals information from the FSGram file in the AncestorsNotebook.
+
+    This function reads the 'fsgram.anb' file located in the AncestorsNotebook using the path obtained from
+    `dataControl.find_anb()`. It then initializes the FSGram using the file's content and extracts nonterminals and
+    terminals information.
+
+    Returns:
+        tuple: A tuple containing two dictionaries. The first dictionary contains nonterminal information, and the
+               second dictionary contains terminal information.
+    """
     try:
         with open (f"{dataControl.find_anb()}/fsgram.anb","r") as productions_file:
             content = productions_file.read()
@@ -95,7 +130,7 @@ def get_nonterminals_terminals_fsgram():
         print("✗ Fsgram file not found! Is this an AncestorsNotebook?")
         exit()
 
-    grammar,universe,terminals,nonterminals = FSGram.initializer(content)
+    _,_,terminals,nonterminals = FSGram.initializer(content)
 
 
     return nonterminals,terminals
@@ -103,6 +138,18 @@ def get_nonterminals_terminals_fsgram():
  
 
 def retrieve_all_dgu_files(root_folder):
+    """
+    Retrieve paths of all .dgu files within the specified root folder.
+
+    This function walks through the directory structure starting from the given root folder and collects paths of all
+    files with a '.dgu' extension. It excludes hidden folders and symlinks.
+
+    Args:
+        root_folder (str): The root folder from which to start the search.
+
+    Returns:
+        list: A list containing paths to all .dgu files found within the specified root folder and its subdirectories.
+    """
     files = []
 
 
@@ -120,6 +167,18 @@ def retrieve_all_dgu_files(root_folder):
 
 
 def select_file_optional(files,message):
+    """
+    Prompt the user to select a file from a list, with optional "Ignore" and "Leave" choices.
+    This function takes a list of files and displays it to the user, allowing him to choose one. It uses the 'inquirer' library to present
+    the list of files to the user for selection.
+    Args:
+        files (list): A list of file names to choose from.
+        message (str): The message to display before presenting the file choices.
+
+    Returns:
+        str or None: The selected file name from the list. Returns `None` if the user chooses to ignore, and exits the
+        program if the user chooses to leave.
+    """
     folder_names = files
 
     print(message)
@@ -142,6 +201,20 @@ def select_file_optional(files,message):
 
 
 def get_dgu_correspondence(all_files,terminals):
+    """
+    Generate a correspondence between terminals and corresponding .dgu files.
+
+    This function creates a dictionary that associates each terminal with a list of .dgu files that have filenames
+    starting with the corresponding terminal abbreviation. It iterates through the provided list of terminals and uses
+    the dgu prefix stored in the terminals dictionary to match .dgu filenames.
+
+    Args:
+        all_files (list): A list of paths to .dgu files.
+        terminals (dict): A dictionary containing terminal abbreviations as keys and corresponding symbols as values.
+
+    Returns:
+        dict: A dictionary where keys are terminals and values are lists of corresponding .dgu files.
+    """
 
     dgu_correspondence = {
         terminal: [
@@ -156,6 +229,19 @@ def get_dgu_correspondence(all_files,terminals):
 
 
 def convert_to_inquirer(nonterminals):
+    """
+    Convert nonterminals dictionary into a format suitable for the 'inquirer' library.
+
+    This function takes a dictionary of nonterminals and their corresponding values, and converts it into a list of
+    formatted strings suitable for use with the 'inquirer' library. Each nonterminal and its associated values are
+    formatted as a single string in the form "key : value1, value2, ...".
+
+    Args:
+        nonterminals (dict): A dictionary containing nonterminal keys and corresponding values.
+
+    Returns:
+        list: A list of formatted strings representing nonterminals and their associated values.
+    """
     values = []
     for key,value in nonterminals.items():
         terminals = ', '.join(str(item) for item in value)
@@ -164,13 +250,23 @@ def convert_to_inquirer(nonterminals):
 
 
 def travessia_specific():
+    """
+    Perform a specific traversal and document gathering based on selected productions.
+
+    This function orchestrates the process of traversing specific productions, gathering documents according to the
+    specified symbols, and returning the collected documents. It interacts with user choices using the 'inquirer' library
+    and makes use of various helper functions to achieve its purpose.
+
+    Returns:
+        list: A list of tuples containing symbols and corresponding lists of document paths.
+    """
     nonterminals, terminals = get_nonterminals_terminals_fsgram()
 
     root_folder = dataControl.get_root()
     files = retrieve_all_dgu_files(root_folder)
     dgu_correspondence = get_dgu_correspondence(files,terminals)
     inquirer_values = convert_to_inquirer(nonterminals)
-    production = select_simple(inquirer_values,"Select a production to gather documents")
+    production = view_select_aggregators_or_symbols(inquirer_values,"Select a production to gather documents")
     production = production.split(':')[0].strip()
     
     documents = []
@@ -230,12 +326,27 @@ def travessia_specific():
     return documents
 
 
-def select_simple(symbols,message):
+def view_select_aggregators_or_symbols(aggregators,message):
+    """
+    Prompt the user to select a symbol (either an aggregator or an entity) from a list with a "Leave" choice.
 
+    This function takes a list of aggregators and displays a user-friendly message. It uses the 'inquirer' library to present
+    the list of aggregators to the user for selection. The function also includes the option "Leave," which allows the user
+    to exit the program.
+
+    Args:
+        aggregators (list): A list of aggregators to choose from.
+        message (str): The message to display before presenting the symbol choices.
+
+    Returns:
+        str: The selected symbol from the list. Returns "Leave" if the user chooses to exit the program.
+    """
+    
+    aggregators.append('Leave')
     print(message)
     questions = [
         inquirer.List('files',
-                      choices=symbols,
+                      choices=aggregators,
                       ),
     ]
     answers = inquirer.prompt(questions)
@@ -248,23 +359,52 @@ def select_simple(symbols,message):
 
 
 
-def travessia_terminals():  
+def travessia_terminals():
+    """
+    Perform a traversal and document gathering based on selected terminal symbols.
+
+    This function prompts the user to choose a type of document from a list of terminal symbols. It then retrieves
+    .dgu files corresponding to the selected terminal and returns a list containing the selected terminal and its
+    corresponding .dgu files.
+
+    Returns:
+        list: A list containing a tuple with the selected terminal and its corresponding .dgu files.
+    """  
     _ , terminals = get_nonterminals_terminals_fsgram()
     root_folder = dataControl.get_root()
     files = retrieve_all_dgu_files(root_folder)
     dgu_correspondence = get_dgu_correspondence(files,terminals)
-    selected = select_simple(terminals,f"Choose one type of document to gather.") 
+    selected = view_select_aggregators_or_symbols(terminals,f"Choose one type of document to gather.") 
     lista = [(selected,dgu_correspondence[selected])]
     return lista
     
 
 
 def get_fsgram():
+    """
+    Read and retrieve the content of the 'fsgram.anb' file.
+
+    This function reads the content of the 'fsgram.anb' file located in the AncestorsNotebook using the path obtained
+    from `dataControl.find_anb()`.
+
+    Returns:
+        str: The content of the 'fsgram.anb' file.
+    """
+
     with open(dataControl.find_anb()+"/fsgram.anb") as f:
         fsgram = f.read()
     return fsgram
 
 def choose_add_option():
+    """
+    Prompt the user to choose an option for adding entities or aggregators.
+
+    This function presents the user with a list of options, including 'Add entity', 'Add aggregator', and 'Leave'. It
+    uses the 'inquirer' library to capture the user's selection.
+
+    Returns:
+        str: The selected option. Returns "Leave" if the user chooses to exit the program.
+    """
     questions = [
         inquirer.List('selected_option',
                       message='Choose an option:',
@@ -280,6 +420,21 @@ def choose_add_option():
 
 
 def add_aggregator(entitiesuniverse,terminals,nonterminals):
+    """
+    Add an aggregator to the FSGram grammar based on user input.
+
+    This function displays the existing declarations using `show_declarations()` and prompts the user to input an
+    aggregator definition. The definition should follow the format:
+    "<aggregator> : <entity> , <entity> , ... , <entity> ."
+
+    Args:
+        entitiesuniverse (dict): A dictionary containing entity information.
+        terminals (dict): A dictionary containing terminal information.
+        nonterminals (dict): A dictionary containing nonterminal information.
+
+    Returns:
+        None
+    """
     
     show_declarations()
     print(divider)
@@ -311,15 +466,40 @@ def add_aggregator(entitiesuniverse,terminals,nonterminals):
         anbtk = dataControl.find_anb()
         with open(f"{anbtk}/fsgram.anb",'w') as anbtk:
             anbtk.write(full_fsgram_string(nonterminals,terminals,entitiesuniverse))
+        print(f"{agg} successfully added as an new aggregator.\nUse dgubook -p to select it and use it.")
 
 
 
 def entity_from_view_to_fsgram_dict(entity_name,abreviature,attributes):
+    """
+    This function takes entity information in the form of entity name, abbreviation, and attributes, and converts it
+    into a dictionary format suitable for use in the FSGram dictionary.
+
+    Args:
+        entity_name (str): The name of the entity.
+        abreviature (str): The abbreviation of the entity.
+        attributes (list): A list of attributes associated with the entity.
+
+    Returns:
+        dict: A dictionary containing the entity name as the key and a tuple of abbreviation and attributes as the value.
+    """
     return {entity_name:(abreviature,attributes)}
 
 
 
 def entity_view(entity):
+    """
+    Display an interactive view for managing entity attributes and alternative symbols.
+
+    This function provides the interactive menu and underlying logic for managing an entity's attributes and alternative symbols. Users can
+    add, edit, or remove attributes, add or edit an alternative symbol, and save the entity to the FSGram.
+
+    Args:
+        entity (str): The name of the entity.
+
+    Returns:
+        None
+    """
     attributes = []
     abreviature = ''
     os.system('clear')
@@ -371,7 +551,7 @@ def entity_view(entity):
                     break
         
         elif selected_option == 'Add or edit alternative symbol':
-            print("The use of an alternative symbol aims to help to associate an entity with a more intuitive way to represent the an entity in the anb fsgram.\nFor example, if you were to write a alternative symbol for Biography you would write 'Bio'.")
+            print("The use of an alternative symbol aims to help to associate an entity with a more intuitive way to represent the entity in the anb fsgram.\nFor example, if you were to write a alternative symbol for Biography you would write 'Bio'.")
             while True:
                 alternative_symbol = input("Choose an alternative symbol (leave it empty to cancel and leave):\n > ")
                 if alternative_symbol == '':
@@ -413,10 +593,19 @@ def entity_view(entity):
             os.system('clear')
             selected_attribute = answers['selected_option']
             index = attributes.index(selected_attribute)
-            attributes[index] = input(f"Edit attribute '{selected_attribute}':\n > ")
+            while True:
+                edited_attribute = input(f"Edit attribute '{selected_attribute}':\n > ")
+                if edited_attribute == '':
+                    print("No alternative symbol given.\n")
+                elif not edited_attribute.isalpha():
+                    print("Only alphabetical characters are allowed.\n")
+                else:
+                    attributes[index] = edited_attribute
+                    break
+           
             
         elif selected_option == 'Save and exit':
-            print("To identify an pinpoint the compatible documents the DGU prefix has to be provided")
+            print("To identify and pinpoint the compatible documents the DGU prefix has to be provided.\nFor example the prefix for Biography is b, so a recognized file would be 'b[1]-document_name.dgu'\n")
             prefix = ''
             while True:
                 prefix = input("Please give a DGU prefix:\n > ")
@@ -429,8 +618,15 @@ def entity_view(entity):
             entityuniverse = get_entities_fsgram()
             entityuniverse.update(new_addition)
             anbtk = dataControl.find_anb()
+
+            g = genealogia.read_onto_file(f"{anbtk}/anbsafeonto.rdf")
+            ousia.new_dgu_object(entity,attributes,g)
+            genealogia.gen_onto_file(g, dataControl.find_anb() + '/anbsafeonto')
+
             with open(f"{anbtk}/fsgram.anb",'w') as anbtk:
                 anbtk.write(full_fsgram_string(nonterminals,terminals,entityuniverse))
+             
+            
             print("Entity saved and added to fsgram.\n")
             exit()
 
@@ -441,15 +637,33 @@ def entity_view(entity):
 
 
 def add_entity():
+    """
+    Start the process of adding a new entity to the FSGram.
+
+    This function displays existing aggregators, entities and terminals and prompts the user to input the name of the new entity. It then
+    initiates the entity view using the provided entity name to manage attributes and alternative symbols.
+
+    Returns:
+        None
+    """
     show_declarations()
     entity_name = input("Entity name:\n > ")
     entity_view(entity_name)
          
-    # inquirer module a while true that ineterruptly allows to ask to add attribute or to save and exit
 
 
 
 def add_to_fsgram():
+    """
+    Start the process of adding new entities or aggregators to the FSGram.
+
+    This function retrieves existing nonterminals, terminals, and entity information using helper functions, and prompts
+    the user to choose between adding an aggregator or an entity. It then directs the user to the respective function for
+    adding the selected option.
+
+    Returns:
+        None
+    """
 
     nonterminals , terminals = get_nonterminals_terminals_fsgram()
     entitiesuniverse = get_entities_fsgram()
@@ -462,6 +676,20 @@ def add_to_fsgram():
 
 
 def full_fsgram_string(nonterminals,terminals,entityuniverse):
+    """
+    Generate a complete FSGram string based on provided nonterminals, terminals, and entity information.
+
+    This function takes dictionaries containing nonterminals, terminals, and entity information, and generates a
+    formatted FSGram string combining these elements.
+
+    Args:
+        nonterminals (dict): A dictionary containing nonterminal information.
+        terminals (dict): A dictionary containing terminal information.
+        entityuniverse (dict): A dictionary containing entity information.
+
+    Returns:
+        str: The complete FSGram string.
+    """
     string = ''
     string += entities_universe_to_string(entityuniverse)
     string +='\n>UNIVERSE<\n'
@@ -470,6 +698,18 @@ def full_fsgram_string(nonterminals,terminals,entityuniverse):
     return string
 
 def entities_universe_to_string(entitiesuniverse):
+    """
+    Convert entity universe information to a formatted string.
+
+    This function takes a dictionary containing entity universe information and converts it into a formatted string
+    representation, ready to be included in the FSGram.
+
+    Args:
+        entitiesuniverse (dict): A dictionary containing entity universe information.
+
+    Returns:
+        str: The formatted string representation of the entity universe.
+    """
     string = ''
     for aggregator,(abreviature,symbols) in entitiesuniverse.items():
     

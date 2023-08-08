@@ -14,7 +14,6 @@ from ..auxiliar import argsConfig
 from ..auxiliar import calls
 
 from ..DSL.entities import gramLogic
-import inquirer
 
 
 #args = ['pandoc','-s','AncestorsNotebook.tex', '-o', 'AncestorsNotebook.pdf']

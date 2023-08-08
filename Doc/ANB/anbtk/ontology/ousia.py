@@ -1,5 +1,6 @@
 from rdflib import Graph, Namespace, Literal
 from rdflib.namespace import RDF, RDFS, OWL, XSD
+from .. import dataControl  
 
 '''
 
@@ -131,7 +132,7 @@ def dgu_ontology(g):
     
     person_class = FAMILY['Person']
 
-    file_class = DGU['hasPath']
+    file_class = DGU['DGU']
     g.add((file_class, RDF.type, OWL.Class))
     g.add((file_class, RDFS.label, Literal('File')))
     g.add((file_class, RDFS.domain, person_class))
@@ -172,9 +173,9 @@ def dgu_ontology(g):
 
 def dgu_base(entities,g):
 
-    file_class = DGU['hasPath']
+    file_class = DGU['DGU']
     for key, value in entities.items():
-        main_class = DGU[f'has{key}']
+        main_class = DGU[f'is{key}']
         g.add((main_class, RDF.type, OWL.Class))
         g.add((main_class, RDFS.label, Literal(key)))
         g.add((main_class, RDFS.subClassOf, file_class))   
@@ -186,7 +187,6 @@ def dgu_base(entities,g):
             g.add((temp_property, RDFS.domain, main_class))
             g.add((temp_property, RDFS.range, XSD.string))
     
-from .. import dataControl  
 
 def add_dgu_file(attributes,graph):
     path = dataControl.relative_to_anbtk(attributes['path'])
@@ -197,10 +197,25 @@ def add_dgu_file(attributes,graph):
             graph.add((dgu,DGU[f'has{onto_name}'],Literal(value,datatype=XSD.string)))
 
 
-def add_dgu(params,graph):
-    dgu = DGU[params['path']]
-    for key,value in params.items():
-        graph.add(dgu,DGU[f'has{key}'], Literal(value, datatype=XSD.string))
+def new_dgu_object(name,attributes,g):
+    file_class = DGU['DGU']
+    main_class = DGU[f'is{name}']
+    g.add((main_class, RDF.type, OWL.Class))
+    g.add((main_class, RDFS.label, Literal(name)))
+    g.add((main_class, RDFS.subClassOf, file_class)) 
+    for elem in attributes:  
+        elem = elem.capitalize()
+        temp_property = DGU[f'has{elem}']
+        g.add((temp_property, RDF.type, OWL.DatatypeProperty))
+        g.add((temp_property, RDFS.label, Literal(f'has_{elem}')))
+        g.add((temp_property, RDFS.domain, main_class))
+        g.add((temp_property, RDFS.range, XSD.string))
+
+
+# def add_dgu(params,graph):
+#     dgu = DGU[params['path']]
+#     for key,value in params.items():
+#         graph.add(dgu,DGU[f'has{key}'], Literal(value, datatype=XSD.string))
 
 
 # def add_fileBio(name,db,dd,path,about,graph):

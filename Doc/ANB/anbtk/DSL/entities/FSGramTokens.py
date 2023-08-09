@@ -10,8 +10,7 @@ t_PF = r'\.'
 t_VIR = r'\,'
 t_LP = r'\('
 t_RP = r'\)'
-t_NAME = r'\w+'
-t_UNIVERSE = r'>UNIVERSE<'
+t_UNIVERSE = r'>UNIVERSE<' # maybe change this flag lol
 t_ARROW = r"\-\>"
 t_PV = r'\;'
 

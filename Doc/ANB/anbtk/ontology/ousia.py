@@ -104,7 +104,7 @@ def relationships_ontology(g):
     # file path
     has_file_path_property = FAMILY['hasFilePath']
     g.add((has_file_path_property, RDF.type, OWL.DatatypeProperty))
-    g.add((has_file_path_property, RDFS.label, Literal('has file path')))
+    g.add((has_file_path_property, RDFS.label, Literal('has_file_path')))
     g.add((has_file_path_property, RDFS.domain, person_class))
     g.add((has_file_path_property, RDFS.range, XSD.string))
 
@@ -117,7 +117,7 @@ def relationships_ontology(g):
 
     has_subfolder_property = FAMILY['hasSubfolder']
     g.add((has_subfolder_property, RDF.type, OWL.ObjectProperty))
-    g.add((has_subfolder_property, RDFS.label, Literal('has subfolder')))
+    g.add((has_subfolder_property, RDFS.label, Literal('has_subfolder')))
     g.add((has_subfolder_property, RDFS.domain, subfolder_class))
     g.add((has_subfolder_property, RDFS.range, subfolder_class))
 
@@ -134,29 +134,29 @@ def dgu_ontology(g):
 
     file_class = DGU['DGU']
     g.add((file_class, RDF.type, OWL.Class))
-    g.add((file_class, RDFS.label, Literal('File')))
+    g.add((file_class, RDFS.label, Literal('dgufile')))
     g.add((file_class, RDFS.domain, person_class))
     g.add((file_class, RDFS.range, XSD.string)) # this is the path, since it might be unique
 
-    has_name = DGU['hasName']
+    has_name = DGU['has_dgu_Name']
     g.add((has_name, RDF.type, OWL.DatatypeProperty))
     g.add((has_name, RDFS.label, Literal('has_name')))
     g.add((has_name, RDFS.domain, file_class))
     g.add((has_name, RDFS.range, XSD.string))
 
-    has_format_property = DGU['hasFormat']
+    has_format_property = DGU['has_dgu_Format']
     g.add((has_format_property, RDF.type, OWL.DatatypeProperty))
     g.add((has_format_property, RDFS.label, Literal('has_format')))
     g.add((has_format_property, RDFS.domain, file_class))
     g.add((has_format_property, RDFS.range, XSD.string))
 
-    has_type_property = DGU['hasType']
+    has_type_property = DGU['has_dgu_Type']
     g.add((has_type_property, RDF.type, OWL.DatatypeProperty))
     g.add((has_type_property, RDFS.label, Literal('has_type')))
     g.add((has_type_property, RDFS.domain, file_class))
     g.add((has_type_property, RDFS.range, XSD.string))
 
-    has_about_property = DGU['hasAbout']
+    has_about_property = DGU['has_dgu_About']
     g.add((has_about_property, RDF.type, OWL.DatatypeProperty))
     g.add((has_about_property, RDFS.label, Literal('has_about')))
     g.add((has_about_property, RDFS.domain, file_class))
@@ -195,6 +195,18 @@ def add_dgu_file(attributes,graph):
         onto_name = key.capitalize()
         if key != 'path':
             graph.add((dgu,DGU[f'has{onto_name}'],Literal(value,datatype=XSD.string)))
+
+
+# def add_dgu_file(attributes,graph):
+#     attributes['path'] = dataControl.relative_to_anbtk(attributes['path'])
+#     dgu = DGU['dgufile']
+#     for key,value in attributes.items():
+#         onto_name = key.capitalize()
+#         graph.add((dgu,DGU[f'has{onto_name}'],Literal(value,datatype=XSD.string)))
+
+def get_dgu_attributes(dgu_path,g):
+    for s, p, o in g.triples((DGU[dgu_path], None, None)):
+        print(s,p,o)
 
 
 def new_dgu_object(name,attributes,g):

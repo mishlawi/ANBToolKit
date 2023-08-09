@@ -726,6 +726,18 @@ def entities_universe_to_string(entitiesuniverse):
 
 
 def nonterminals_dict_to_string(nonterminals):
+    """
+    Convert nonterminals dictionary to a formatted string.
+
+    This function takes a dictionary containing nonterminal information and converts it into a formatted string
+    representation, ready to be included in the FSGram.
+
+    Args:
+        nonterminals (dict): A dictionary containing nonterminal information.
+
+    Returns:
+        str: The formatted string representation of the nonterminals.
+    """
     string = ''
     for production, terminals in nonterminals.items():
         string += f'{production} : '
@@ -738,6 +750,18 @@ def nonterminals_dict_to_string(nonterminals):
     return string
 
 def terminals_to_string(terminals):
+    """
+    Convert terminals dictionary to a formatted string.
+
+    This function takes a dictionary containing terminal information and converts it into a formatted string
+    representation, ready to be included in the FSGram.
+
+    Args:
+        terminals (dict): A dictionary containing terminal information.
+
+    Returns:
+        str: The formatted string representation of the terminals.
+    """
     string = ''
     for terminal,abv in terminals.items():
         string += f'{terminal} : {abv}\n'
@@ -746,6 +770,18 @@ def terminals_to_string(terminals):
 
 
 def count_occurrences(lst, target):
+    """
+    Count occurrences of a specific element in a list.
+
+    This function counts the number of times a specific element appears in a list and returns the count.
+
+    Args:
+        lst (list): The list to search for occurrences.
+        target: The element to count occurrences of.
+
+    Returns:
+        int: The number of occurrences of the target element in the list.
+    """
     count_dict = {}
     for item in lst:
         count_dict[item] = count_dict.get(item, 0) + 1
@@ -754,6 +790,20 @@ def count_occurrences(lst, target):
 
 # add terminals and non terminals as argument
 def verifyGrammar(entityuniverse,terminals,nonterminals):
+    """
+    Verify the consistency of the grammar based on provided entity universe, terminals, and nonterminals.
+
+    This function checks the consistency of the grammar by verifying aggregators, symbols, and their presence in the
+    entity and terminals correspondent dictionaries.
+
+    Args:
+        entityuniverse (dict): A dictionary containing entity universe information.
+        terminals (dict): A dictionary containing terminal information.
+        nonterminals (dict): A dictionary containing nonterminal information.
+
+    Returns:
+        None
+    """
     entityuniverse = get_entities_abbreviations(entityuniverse)
     print("*",entityuniverse)
     # terminals,nonterminals = read_fsgram_file()
@@ -783,28 +833,88 @@ def verifyGrammar(entityuniverse,terminals,nonterminals):
 
 
 def get_entities_abbreviations(entityuniverse):
+    """
+    Extract entity abbreviations from the entity universe dictionary.
+
+    This function takes a dictionary containing entity universe information and extracts entity abbreviations.
+
+    Args:
+        entityuniverse (dict): A dictionary containing entity universe information.
+
+    Returns:
+        dict: A dictionary containing entity names as keys and their corresponding abbreviations as values.
+    """
     return {k:v[0] for k,v in entityuniverse.items()}
 
 
 def get_entites_attributes(entityuniverse):
+    """
+    Extract entity attributes from the entity universe dictionary.
+
+    This function takes a dictionary containing entity universe information and extracts entity attributes.
+
+    Args:
+        entityuniverse (dict): A dictionary containing entity universe information.
+
+    Returns:
+        dict: A dictionary containing entity names as keys and their corresponding attributes as values.
+    """
     return {k:v[1] for k,v in entityuniverse.items()}
 
 
 def get_entity_name_by_abv(value,abv_entities):
+    """
+    Retrieve the entity name using its abbreviation.
+
+    This function searches for an entity name based on its abbreviation.
+
+    Args:
+        value: The abbreviation of the entity.
+        abv_entities (dict): A dictionary containing entity names as keys and their abbreviations as values.
+
+    Returns:
+        str or None: The corresponding entity name. Returns None if no match is found.
+    """
+
     for key, val in abv_entities.items():
         if val == value:
             return key
     return None
+
+
 def get_abbreviature_by_name(name,anb_entities):
+    """
+    Retrieve the abbreviation using the entity name.
+
+    This function searches for an abbreviation based on the entity name.
+
+    Args:
+        name (str): The name of the entity.
+        anb_entities (dict): A dictionary containing entity names as keys and their abbreviations as values.
+
+    Returns:
+        str or None: The corresponding abbreviation. Returns None if no match is found.
+    """
     for key, val in anb_entities.items():
         if key == name:
             return val
     return None
 
 def process_fsgram(entityuniverse,universe,terminals,nonterminals):
-
     """
-    This function serves as an handler that pin-points all the information that needs to be processed to their corresponding functions.
+    Process FSGram information for verification and handling.
+
+    This function acts as a handler, directing the provided FSGram information to the relevant functions for verification
+    and further processing.
+
+    Args:
+        entityuniverse (dict): A dictionary containing entity universe information.
+        universe: The 'universe' object.
+        terminals (dict): A dictionary containing terminal information.
+        nonterminals (dict): A dictionary containing nonterminal information.
+
+    Returns:
+        None
     """
     verifyGrammar(entityuniverse,terminals,nonterminals)
     # interpreter(terminals,nonterminals)

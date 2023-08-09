@@ -37,19 +37,15 @@ from .DSL.entities import gramLogic
 
 #*TODO
 
-# ! FIX TEX2DGU regarding the UTF8
 # * maybe add specs to dont do anything if there are no differences in the sync command
 #!  update the onto file so that new entities can be added
 # * show commands : show entities, etc
 # * erro de ja estar numa pasta  já inicializada como anb, quando na realidade apenas se está um nivel acima de uma pasta inicializada
 # * tex2dgu puts author false
 # * refactor dgubook individual and generic functions
-# * ontology for dgus and ontology for relations
 # * be careful with new couples for the same individual (ex spouse)
 # * revise the command for dgu generation for generic dgus
 # * gedcom
-# * add two ontologies
-# * gen filesystem structure through ontology
 # * template html
 # * verificar a existencia de erros 1o, e só depois executar efetivamente as coisas, senao pastas sao geradas mesmo quando é dado um mau input
 # * "anb individuo" e aparecerem elementos relativos ao individuo 
@@ -197,8 +193,6 @@ def anb():
                 print(abv_entities.values())
                 if args.entity[0] in abv_entities.values():
                     args.entity[0] = gramLogic.get_entity_name_by_abv(args.entity[0],abv_entities)
-                    print(args.entity[0])
-                    print("!!!!")
                 if args.entity[0] in entities.keys():     
                     genDgu(args.entity[0], att_entities[args.entity[0]], args.filename[0],currentdir)
                 else:

@@ -22,8 +22,6 @@ def select_names(names):
     return selected_name
 
 
-
-
 def select_path(paths):
     folder_names = [os.path.basename(path) for path in paths]
     folder_names.append("Leave")

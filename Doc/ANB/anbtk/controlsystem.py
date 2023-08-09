@@ -3,7 +3,8 @@ import json
 import yaml
 import re
 from .ontology import ousia
-from .auxiliar import dgu_helper
+
+
 
 
 #todo:
@@ -114,6 +115,23 @@ def compare_file_structure(path,graph):
 
     return new_dict
 
+from .DSL.entities import gramLogic
+from .auxiliar import dgu_helper
+
+
+def update_headers(path,graph):
+    path = os.path.dirname(dataControl.find_anb())
+    files = gramLogic.retrieve_all_dgu_files(path)
+    for file in files:
+        adgu = dgu_helper.parseAbstractDgu(file)
+        adgu['path']= dataControl.relative_to_anbtk(adgu['path'])
+        print(adgu['path'])
+        ousia.get_dgu_attributes(adgu['path'],graph)
+        
+
+
+
+
 def compare_files_directories(dir1, dir2, base_dir=''):
     """Compares two directories and returns the added files, removed files, added directories, and removed directories.
 
@@ -164,8 +182,9 @@ def compare_files_directories(dir1, dir2, base_dir=''):
     
 def version_control(path,graph):
     if os.path.isfile(os.path.join(path,'.anbtk/anbvc.json')):
-        print(" ✓ Version Control file reviewed.")
         new_dict = compare_file_structure(path,graph)
+        update_headers(path,graph)
+        print(" ✓ Version Control file reviewed.")
 
     else:
         print(" ✓ Version Control file created.")

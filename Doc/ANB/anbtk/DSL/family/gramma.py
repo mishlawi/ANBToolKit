@@ -22,7 +22,6 @@ tokens = (
 )
 
 
-
 # Token regex
 t_POINT = r'\.'
 t_PLUS = r'\+'

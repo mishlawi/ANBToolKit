@@ -1,20 +1,13 @@
-import os
-import sys
 import datetime
+import os
 import subprocess
+import sys
 
 from jinja2 import Environment, FileSystemLoader
 
-
-
 from .. import dataControl
-
-from ..auxiliar import dgu_helper
-from ..auxiliar import argsConfig
-from ..auxiliar import calls
-
+from ..auxiliar import argsConfig, calls, dgu_helper
 from ..DSL.entities import gramLogic
-
 
 #args = ['pandoc','-s','AncestorsNotebook.tex', '-o', 'AncestorsNotebook.pdf']
 
@@ -77,7 +70,7 @@ def dgubook_productions(arguments):
         
         subprocess.check_call(calls.rm_latex_unecessary)
 
-
+from ..DSL.entities import gramLogic
 
 
 def classic_dgubook(arguments):
@@ -105,6 +98,7 @@ def classic_dgubook(arguments):
 
         if arguments.file:
             for elem in arguments.file:
+                
                 dgu_helper.parse_individual_dgu(elem, dates, docs, imgs, cronology)           
             os.chdir(cwd)
 

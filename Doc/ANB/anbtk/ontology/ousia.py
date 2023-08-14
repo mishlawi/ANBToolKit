@@ -1,6 +1,7 @@
-from rdflib import Graph, Namespace, Literal
-from rdflib.namespace import RDF, RDFS, OWL, XSD
-from .. import dataControl  
+from rdflib import Graph, Literal, Namespace
+from rdflib.namespace import OWL, RDF, RDFS, XSD
+
+from .. import dataControl
 
 '''
 
@@ -188,13 +189,14 @@ def dgu_base(entities,g):
             g.add((temp_property, RDFS.range, XSD.string))
     
 
-def add_dgu_file(attributes,graph):
-    path = dataControl.relative_to_anbtk(attributes['path'])
-    dgu = DGU[path]
+def add_dgu_file(adgu_path,attributes,graph):
+    adgu_path = dataControl.relative_to_anbtk(adgu_path)
+    dgu = DGU[adgu_path]
+    print(attributes)
     for key,value in attributes.items():
+        
         onto_name = key.capitalize()
-        if key != 'path':
-            graph.add((dgu,DGU[f'has{onto_name}'],Literal(value,datatype=XSD.string)))
+        graph.add((dgu,DGU[f'has{onto_name}'],Literal(value,datatype=XSD.string)))
 
 
 # def add_dgu_file(attributes,graph):
@@ -204,10 +206,25 @@ def add_dgu_file(attributes,graph):
 #         onto_name = key.capitalize()
 #         graph.add((dgu,DGU[f'has{onto_name}'],Literal(value,datatype=XSD.string)))
 
+#comparar attributos, havendo diferenças eliminar o antigo e adicionar um novo, é mais rapido, ao usar o add_dgu_file
 def get_dgu_attributes(dgu_path,g):
-    for s, p, o in g.triples((DGU[dgu_path], None, None)):
-        print(s,p,o)
+    path = dataControl.relative_to_anbtk(dgu_path)
+    triples_with_subject  = g.triples((DGU[path], None, None))
+    subject_exists = any(triples_with_subject)
+    if not subject_exists:
+        print(f"Subject {path} does not exist in the graph.")
+        
+    else:
+        attributes = []
+        for s, p, o in g.triples((DGU[path], None, None)):
+            attributes.append(o)
+        return attributes
 
+
+def remove_dgu_file(dgu_path,g):
+    path = dataControl.relative_to_anbtk(dgu_path)
+    for s, p, o in g.triples((DGU[path], None, None)):
+        g.remove((s, p, o))
 
 def new_dgu_object(name,attributes,g):
     file_class = DGU['DGU']

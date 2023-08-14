@@ -1,6 +1,4 @@
 
-#? This module represents all the control version of the files and entities
-
 from pathlib import Path
 import json
 import os

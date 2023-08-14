@@ -5,8 +5,6 @@ import re
 from .ontology import ousia
 
 
-
-
 #todo:
 # about is being passed as none in the yaml, that should be changed
 
@@ -103,7 +101,7 @@ def compare_file_structure(path,graph):
                 x = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",file.read()).group()
                 yaml_header = yaml.full_load(x)
 
-            ousia.add_dgu_file(yaml_header,graph)
+            ousia.add_dgu_file(yaml_header['path'],yaml_header,graph)
             print(f"    * {added_file} was added.")
             
 
@@ -118,16 +116,34 @@ def compare_file_structure(path,graph):
 from .DSL.entities import gramLogic
 from .auxiliar import dgu_helper
 
+from rdflib.term import Literal, URIRef
 
 def update_headers(path,graph):
     path = os.path.dirname(dataControl.find_anb())
     files = gramLogic.retrieve_all_dgu_files(path)
     for file in files:
         adgu = dgu_helper.parseAbstractDgu(file)
-        adgu['path']= dataControl.relative_to_anbtk(adgu['path'])
-        print(adgu['path'])
-        ousia.get_dgu_attributes(adgu['path'],graph)
-        
+        att = ousia.get_dgu_attributes(adgu['path'],graph)
+        att = [str(item) for item in att if isinstance(item, Literal)]
+        if dataControl.relative_to_anbtk(adgu['path']) != file:
+            adgu['path'] = file
+            body = adgu['body']
+            del(adgu['body'])
+            with open(file, 'w') as f:
+                f.write("---\n")
+                yaml.dump(adgu, f, default_flow_style=False, sort_keys=False)
+                f.write("---\n")
+                f.write(body)
+        if 'body' in adgu.keys():
+            del(adgu['body'])
+        adu_path = adgu['path']
+        del adgu['path']
+        if list(adgu.values()) != att:
+            print(list(adgu.values()))
+            print(att)
+            ousia.remove_dgu_file(adu_path,graph)
+            ousia.add_dgu_file(adu_path,adgu,graph) 
+            print(f"✓ Yaml header changes in {file} verified.\nOntology updated.")
 
 
 

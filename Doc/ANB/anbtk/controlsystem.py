@@ -125,7 +125,7 @@ def update_headers(path,graph):
         adgu = dgu_helper.parseAbstractDgu(file)
         att = ousia.get_dgu_attributes(adgu['path'],graph)
         att = [str(item) for item in att if isinstance(item, Literal)]
-        if dataControl.relative_to_anbtk(adgu['path']) != file:
+        if dataControl.relative_to_anbtk(adgu['path']) != file and not dgu_helper.isDguImage(adgu['path']):
             adgu['path'] = file
             body = adgu['body']
             del(adgu['body'])
@@ -138,8 +138,14 @@ def update_headers(path,graph):
             del(adgu['body'])
         adu_path = adgu['path']
         del adgu['path']
-        if list(adgu.values()) != att:
-            print(list(adgu.values()))
+        adgu_attributes = list(adgu.values())
+        for i in range(len(adgu_attributes)):
+            elem = adgu_attributes[i]
+            if isinstance(elem, list):
+                adgu_attributes[i] = ousia.format_names(elem)
+
+        if adgu_attributes != att:
+            print(adgu_attributes)
             print(att)
             ousia.remove_dgu_file(adu_path,graph)
             ousia.add_dgu_file(adu_path,adgu,graph) 

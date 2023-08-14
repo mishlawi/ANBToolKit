@@ -189,12 +189,34 @@ def dgu_base(entities,g):
             g.add((temp_property, RDFS.range, XSD.string))
     
 
+
+def parse_names(input_string):
+    if isinstance(input_string, str):
+        return [name.strip() for name in input_string.split(',')]
+    elif isinstance(input_string, list):
+        return input_string
+    else:
+        return None
+    
+    
+def format_names(input_list):
+    if isinstance(input_list, str):
+        return input_list
+    elif isinstance(input_list, list):
+        if len(input_list) == 1:
+            return input_list[0]
+        else:
+            return ', '.join(input_list)
+    else:
+        return None
+
 def add_dgu_file(adgu_path,attributes,graph):
     adgu_path = dataControl.relative_to_anbtk(adgu_path)
     dgu = DGU[adgu_path]
     print(attributes)
     for key,value in attributes.items():
-        
+        if isinstance(value,list):
+            value = format_names(value)
         onto_name = key.capitalize()
         graph.add((dgu,DGU[f'has{onto_name}'],Literal(value,datatype=XSD.string)))
 
@@ -207,6 +229,9 @@ def add_dgu_file(adgu_path,attributes,graph):
 #         graph.add((dgu,DGU[f'has{onto_name}'],Literal(value,datatype=XSD.string)))
 
 #comparar attributos, havendo diferenças eliminar o antigo e adicionar um novo, é mais rapido, ao usar o add_dgu_file
+
+
+
 def get_dgu_attributes(dgu_path,g):
     path = dataControl.relative_to_anbtk(dgu_path)
     triples_with_subject  = g.triples((DGU[path], None, None))

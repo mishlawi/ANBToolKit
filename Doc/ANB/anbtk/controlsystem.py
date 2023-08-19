@@ -145,11 +145,9 @@ def update_headers(path,graph):
                 adgu_attributes[i] = ousia.format_names(elem)
 
         if adgu_attributes != att:
-            print(adgu_attributes)
-            print(att)
             ousia.remove_dgu_file(adu_path,graph)
             ousia.add_dgu_file(adu_path,adgu,graph) 
-            print(f"✓ Yaml header changes in {file} verified.\nOntology updated.")
+            print(f"✓ Yaml header changes in {os.path.basename(file)} verified.\nOntology updated.")
 
 
 

@@ -1,12 +1,9 @@
-
-from pathlib import Path
 import json
 import os
+from pathlib import Path
 
-from .DSL.entities import FSGram
 from .auxiliar import constants
-from .auxiliar import dgu_helper
-from .DSL.entities import gramLogic
+from .DSL.entities import FSGram, gramLogic
 
 
 def find_anb():
@@ -55,6 +52,16 @@ def search_anbtk():
 
 
 def initanb(grampath="",folderpath=""):
+    """
+    Initializes an Ancestors Notebook (ANB) project in the current working directory.
+    
+    Parameters:
+        grampath (str, optional): Path to a grammar file. If provided, initializes ANB with the specified grammar.
+        folderpath (str, optional): Path to the folder where ANB should be initialized.
+    
+    This function creates the necessary directory structure for an Ancestors Notebook project,
+    processes the grammar, and generates default template data.
+    """
     cwd = os.getcwd()
     if not os.path.exists(cwd + "/.anbtk/anbtemp.txt"):
         if os.path.exists(cwd + '/.anbtk'):
@@ -88,12 +95,32 @@ def initanb(grampath="",folderpath=""):
 
 
 def get_root():
+    """
+    Retrieves the root path of the current Ancestors Notebook project.
+    
+    Returns:
+        str: The path to the root directory of the Ancestors Notebook project.
+        
+    This function returns the path to the root directory where the ANB project is located.
+    """
     if (anbtk_path:=find_anb())!=None:
         return os.path.dirname(anbtk_path)
 
 
 
 def relative_to_anbtk(path):
+    """
+    Converts an absolute path to a path relative to the Ancestors Notebook project root.
+    
+    Parameters:
+        path (str): The absolute path to be converted.
+        
+    Returns:
+        str: The converted relative path.
+        
+    This function takes an absolute path and converts it into a relative path with respect to the
+    root directory of the Ancestors Notebook project.
+    """
     if (anbtk_path := find_anb()) != None:
         seed_folder = os.path.dirname(anbtk_path)
         relative_path = Path(path).relative_to(seed_folder)

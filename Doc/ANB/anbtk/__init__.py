@@ -53,7 +53,9 @@ from .DSL.entities import gramLogic
 # * testar projection editor (check individual function annotations)
 # * use default editor
 
-#delete production function
+
+
+# definiçao do argparse e outras bibliotecas deve ser feito no state of the art, na sua 1a referencia ou numa seccao a parte referente a view?
 
 # ! individual dgubook not working
 # ! todo : gedcom; show family tree
@@ -68,6 +70,8 @@ from .DSL.entities import gramLogic
 # adicionar notas caso relevante para enriquecer os textos
 
 
+
+# alterado dgu hand and dguobject
 
 
 #? Done, but re check:

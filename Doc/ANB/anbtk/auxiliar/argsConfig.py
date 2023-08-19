@@ -37,7 +37,7 @@ def a_dgubook():
 def a_notes():
     parser = argparse.ArgumentParser(
         prog = 'genNote',
-        description = 'Generates a note for a specific Ancestors Notebook Element',
+        description = 'Generates a note for a specific Ancestors Notebook Element.',
         epilog = 'Composes a note to be filled by the user.')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
@@ -47,7 +47,7 @@ def a_notes():
 def a_genStory():
     parser = argparse.ArgumentParser(
         prog = 'genStory',
-        description = 'Generates a Story in the accepted format for Ancestors Notebook',
+        description = 'Generates a Story in the accepted format for Ancestors Notebook.',
         epilog = 'Composes a story to be filled by the user.')
 
     # Optional flags '-t', '-a', '-d'

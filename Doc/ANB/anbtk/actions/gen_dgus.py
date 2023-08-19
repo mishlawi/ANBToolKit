@@ -108,8 +108,9 @@ def genStory():
         filename = dataControl.dataUpdate('Story',denomination)
     
     if args.dgu:
+        path  = os.path.join(os.getcwd(),f'{filename}.dgu')
         with open(f'{filename}.dgu','w') as dgufo:
-            dgufo.write(skeletons.dguStory(title,author,date,denomination))
+            dgufo.write(skeletons.dguStory(title,author,date,denomination,path))
     else:
         with open(f'{filename}.tex','w') as texfo:
             texfo.write(skeletons.story(title,author,date))
@@ -132,7 +133,7 @@ def genBio():
         filename = f"bx-{denomination}"
     else:
         filename = dataControl.dataUpdate('Biography',simplify(name))
-    with open(f'{filename}.md','w') as mdfileobject:
+    with open(f'{filename}.dgu','w') as mdfileobject:
         mdfileobject.write(skeletons.biography(name,birth,death,bp,o))
     controlsystem.auto_sync()
 

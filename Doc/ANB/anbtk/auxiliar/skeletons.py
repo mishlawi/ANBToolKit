@@ -23,15 +23,14 @@ def story(title,author,date):
 """
     return skeleton
 
-def dguStory(title,author,date,id):
+def dguStory(title,author,date,id,path):
     skeleton = rf"""---
 id: {id}
 format: latex
 type: Story
-about:
-- 
-author:
-- {author}
+about: ''
+path: {path} 
+author: {author}
 date: {date} 
 title: {title}
 ---
@@ -57,6 +56,24 @@ date: {date}
 #""" + """{}"""
     return skeleton
 
+
+
+
+def dguBio(title,author,date,id):
+    skeleton = rf"""---
+id: {id}
+format: latex
+type: Biography
+about:
+- 
+author:
+- {author}
+date: {date} 
+title: {title}
+---
+%Add the Biography info here
+"""
+    return skeleton
 
 def biography(name,birth="Month Day, Year",death="Month Day, Year",bp="City, Country",occupation="Field of work"):
     skeleton=rf"""# {name}

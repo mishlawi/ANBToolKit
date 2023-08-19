@@ -10,4 +10,3 @@ def dgu_subclass(name, attributes, base_class=dgu):
         for attribute, value in zip(attributes, args):
             setattr(self, attribute, value)
     return type(name, (base_class,), {'__init__': __init__})
-

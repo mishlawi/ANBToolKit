@@ -1,5 +1,6 @@
-import shutil
 import os
+import shutil
+
 from .. import dataControl
 
 # def list_and_num_families(dictionary):

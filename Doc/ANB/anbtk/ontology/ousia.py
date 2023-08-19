@@ -190,14 +190,6 @@ def dgu_base(entities,g):
     
 
 
-def parse_names(input_string):
-    if isinstance(input_string, str):
-        return [name.strip() for name in input_string.split(',')]
-    elif isinstance(input_string, list):
-        return input_string
-    else:
-        return None
-    
     
 def format_names(input_list):
     if isinstance(input_list, str):

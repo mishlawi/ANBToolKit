@@ -805,7 +805,6 @@ def verifyGrammar(entityuniverse,terminals,nonterminals):
         None
     """
     entityuniverse = get_entities_abbreviations(entityuniverse)
-    print("*",entityuniverse)
     # terminals,nonterminals = read_fsgram_file()
     # _,_,_,terminals,nonterminals = FSGram.parse_grammar(grammar)
     for aggregator in nonterminals.keys():

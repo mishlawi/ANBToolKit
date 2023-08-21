@@ -59,7 +59,7 @@ date: {date}
 
 
 
-def dguBio(title,author,date,id):
+def dguBio(name,birth="Month Day, Year",death="Month Day, Year",bp="City, Country",occupation="Field of work"):
     skeleton = rf"""---
 id: {id}
 format: latex

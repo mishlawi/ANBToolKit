@@ -3,10 +3,9 @@ import json
 import yaml
 import re
 from .ontology import ousia
+from . import genealogia
+from . import dataControl
 
-
-#todo:
-# about is being passed as none in the yaml, that should be changed
 
 def check_file_structure(path):
     dirs = []
@@ -53,7 +52,7 @@ def populate_onto(dict_graph,graph):
                 
 
 def create_vc_file(path,dir_dicts): 
-        
+    
     json_str = json.dumps(dir_dicts,indent=4)
 
     os.chdir(path)
@@ -69,6 +68,7 @@ def compare_file_structure(path,graph):
 
     new_dict = check_file_structure(path)
     diff = compare_files_directories(old_dict,new_dict,path)
+    
 
     for added_dir in diff['added_dirs']:
 
@@ -89,12 +89,9 @@ def compare_file_structure(path,graph):
         if " " in os.path.basename(added_file):
             print(f"Filenames with spaces are not accepted, please rename it.\nInfo: {os.path.basename(added_file)}")
             exit()
-            
-        
-        # add correspondence between the folder and the file
-    
+             
         ousia.add_file(parent_folder,added_file,graph)
-        # it is only adding dgus
+
     
         if added_file.endswith(".dgu"):
             with open(added_file, 'r') as file:
@@ -116,7 +113,7 @@ def compare_file_structure(path,graph):
 from .DSL.entities import gramLogic
 from .auxiliar import dgu_helper
 
-from rdflib.term import Literal, URIRef
+from rdflib.term import Literal
 
 def update_headers(path,graph):
     path = os.path.dirname(dataControl.find_anb())
@@ -125,7 +122,7 @@ def update_headers(path,graph):
         adgu = dgu_helper.parseAbstractDgu(file)
         att = ousia.get_dgu_attributes(adgu['path'],graph)
         att = [str(item) for item in att if isinstance(item, Literal)]
-        if dataControl.relative_to_anbtk(adgu['path']) != file and not dgu_helper.isDguImage(adgu['path']):
+        if dataControl.relative_to_anbtk(adgu['path']) != file and not dgu_helper.isDguImage(file):
             adgu['path'] = file
             body = adgu['body']
             del(adgu['body'])
@@ -143,7 +140,6 @@ def update_headers(path,graph):
             elem = adgu_attributes[i]
             if isinstance(elem, list):
                 adgu_attributes[i] = ousia.format_names(elem)
-
         if adgu_attributes != att:
             ousia.remove_dgu_file(adu_path,graph)
             ousia.add_dgu_file(adu_path,adgu,graph) 
@@ -201,6 +197,7 @@ def compare_files_directories(dir1, dir2, base_dir=''):
 
     
 def version_control(path,graph):
+    print("AnbTk status: Checking version control file...\n")
     if os.path.isfile(os.path.join(path,'.anbtk/anbvc.json')):
         new_dict = compare_file_structure(path,graph)
         update_headers(path,graph)
@@ -211,9 +208,9 @@ def version_control(path,graph):
         new_dict = check_file_structure(path)
     
     create_vc_file(f'{path}/.anbtk', new_dict)
+    print(" ✓ Version Control file updated.")
 
-from . import genealogia
-from . import dataControl
+
 
 
 def auto_sync():

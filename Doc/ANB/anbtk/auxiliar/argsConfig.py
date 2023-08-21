@@ -90,7 +90,7 @@ def a_image():
         prog = 'dguImage',
         description = 'Generates DGU files for image files.')
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",nargs='+')
+    group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",action='store_true')
     group.add_argument('-t','--tree',help="Iterates through the entire tree of documents of the present directory.",action='store_true',default=False)
     return parser.parse_args()
 

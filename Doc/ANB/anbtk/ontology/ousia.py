@@ -205,7 +205,6 @@ def format_names(input_list):
 def add_dgu_file(adgu_path,attributes,graph):
     adgu_path = dataControl.relative_to_anbtk(adgu_path)
     dgu = DGU[adgu_path]
-    print(attributes)
     for key,value in attributes.items():
         if isinstance(value,list):
             value = format_names(value)

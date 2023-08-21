@@ -146,7 +146,7 @@ def edit_fsgram():
 
 
 def teste():
-    pass
+    gen_dgus.view_files()
     # gramLogic.add_to_fsgram()
     
 ############################## .anb ################################
@@ -194,7 +194,6 @@ def anb():
                 entities = gramLogic.get_entities_fsgram()
                 att_entities = gramLogic.get_entites_attributes(entities)
                 abv_entities = gramLogic.get_entities_abbreviations(entities)
-                print(abv_entities.values())
                 if args.entity[0] in abv_entities.values():
                     args.entity[0] = gramLogic.get_entity_name_by_abv(args.entity[0],abv_entities)
                 if args.entity[0] in entities.keys():     
@@ -203,13 +202,6 @@ def anb():
                     print("✗ No entity exists with that name.")
                     exit()
 
-                # with open('universe.dgu') as universe:
-                #     entities = dgu_helper.parse_text(universe.read())
-                #     if args.entity[0] in entities.keys():
-                #         genDgu(args.entity[0], entities[args.entity[0]], args.filename[0],currentdir)
-                #     else:
-                #         print("✗ No entity exists with that name")
-                #         exit()
             if not args.entity:
                 os.chdir(currentdir)
                 empty_dgu = dgu.DGU()

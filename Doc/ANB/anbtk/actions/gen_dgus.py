@@ -38,7 +38,7 @@ def view_files():
 
     questions = [
         inquirer.Checkbox('items',
-                          message='Select one or more Pictures to generate its DGU file (use spacebar to select, enter to confirm the selection)',
+                          message='elect one or more Pictures to generate its DGU file (use SPACEBAR key to select and ENTER key to confirm the selection)',
                           choices=relative_paths,
                           ),
     ]
@@ -147,11 +147,11 @@ def genDguImage_tree(cwd):
                         with open(os.path.join(dirpath, usedname + '.dgu'), 'w') as dgufile:
                             dgu_helper.dguheadercomposer(newDgu, dgufile)
                         count+=1
-                        controlsystem.auto_sync()
-                        print("A total of " + str(count) + " 'Picture' dgu files were created\n")
-                    
+                        controlsystem.auto_sync()    
                     else:
-                       exit()
+                           exit()
+                print("A total of " + str(count) + " 'Picture' dgu files were created\n")        
+                
 
 
 def simplify(title):
@@ -178,7 +178,7 @@ def genStory():
 
     if dataControl.find_anb is None:
         print("No guarantee of a unique name\n")
-        filename = "hx-{denomination}"
+        filename = f"hx-{denomination}"
     else:
         
         filename = dataControl.dataUpdate('Story',denomination)
@@ -211,7 +211,7 @@ def genBio():
         filename = dataControl.dataUpdate('Biography',simplify(name))
     path  = os.path.join(os.getcwd(),f'{filename}.dgu')
     with open(f'{filename}.dgu','w') as mdfileobject:
-        mdfileobject.write(skeletons.dguBio(name,birth,death,bp,o,path) )
+        mdfileobject.write(skeletons.dguBio(name,path,birth,death,bp,o) )
     controlsystem.auto_sync()
 
 

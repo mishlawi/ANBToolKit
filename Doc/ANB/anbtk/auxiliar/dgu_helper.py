@@ -11,7 +11,7 @@ from .. import dataControl
 def heading2Latex(temp,tempdgu):
 
     """
-    Converts a Markdown header and text into LaTeX format and writes it to a file.
+    Converts the header and text into LaTeX format and writes it to a file.
     
     Arguments:
     - temp: a string containing the Markdown header and text to be converted.

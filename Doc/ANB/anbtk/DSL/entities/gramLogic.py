@@ -217,7 +217,7 @@ def get_dgu_correspondence(all_files,terminals):
     """
 
     dgu_correspondence = {
-        terminal: [
+        convertid(terminal): [
             file
             for file in all_files
             if (os.path.basename(file)).startswith(terminals[terminal][:-1])
@@ -249,6 +249,17 @@ def convert_to_inquirer(nonterminals):
     return values
 
 
+
+def convertid(id):
+    entity_universe = get_entities_fsgram()
+    ent_abv = get_entities_abbreviations(entity_universe)
+    if id in ent_abv.values():
+        for key,value in ent_abv.items():
+            if value == id:
+                id = key
+                return id
+    return id    
+
 def travessia_specific():
     """
     Perform a specific traversal and document gathering based on selected productions.
@@ -261,7 +272,7 @@ def travessia_specific():
         list: A list of tuples containing symbols and corresponding lists of document paths.
     """
     nonterminals, terminals = get_nonterminals_terminals_fsgram()
-
+    
     root_folder = dataControl.get_root()
     files = retrieve_all_dgu_files(root_folder)
     dgu_correspondence = get_dgu_correspondence(files,terminals)
@@ -275,7 +286,8 @@ def travessia_specific():
             id = sym[:-1]
         else:
             id = sym
-        
+        id = convertid(id)
+        print(id)
         if sym.endswith("*"):
             if len(dgu_correspondence[id])==0:
                 continue

@@ -75,14 +75,14 @@ def compare_file_structure(path,graph):
         parent_folder = os.path.basename(os.path.abspath(os.path.join(added_dir, os.pardir)))
         current_folder = os.path.basename(added_dir)
         ousia.add_subfolder(parent_folder,current_folder,added_dir,graph)
-        print(f"    * A new folder {added_dir} was recognized.")
+        print(f"* A new folder {added_dir} was recognized.")
     
     for removed_dir in diff['removed_dirs']:
         
         parent_folder = os.path.basename(os.path.abspath(os.path.join(removed_dir, os.pardir)))
         current_folder = os.path.basename(removed_dir)
         ousia.remove_subfolder(parent_folder,current_folder,graph)
-        print(f"    * {removed_dir} was removed.")
+        print(f"* {removed_dir} was removed.")
 
     for added_file in diff['added_files']:
         parent_folder = os.path.basename(os.path.dirname(added_file))
@@ -99,14 +99,14 @@ def compare_file_structure(path,graph):
                 yaml_header = yaml.full_load(x)
 
             ousia.add_dgu_file(yaml_header['path'],yaml_header,graph)
-            print(f"    * {added_file} was added.")
+            print(f"* {added_file} was added.")
             
 
     for removed_file in diff['removed_files']:
         parent_folder = os.path.basename(os.path.dirname(removed_file))                  
         ousia.remove_file(parent_folder,removed_file,graph)
         ousia.remove_file_special(removed_file,graph)
-        print(f"    * {removed_file} was removed.")
+        print(f"* {removed_file} was removed.")
 
     return new_dict
 
@@ -201,14 +201,14 @@ def version_control(path,graph):
     if os.path.isfile(os.path.join(path,'.anbtk/anbvc.json')):
         new_dict = compare_file_structure(path,graph)
         update_headers(path,graph)
-        print(" ✓ Version Control file reviewed.")
+        print("✓ Version Control file reviewed.")
 
     else:
-        print(" ✓ Version Control file created.")
+        print("✓ Version Control file created.")
         new_dict = check_file_structure(path)
     
     create_vc_file(f'{path}/.anbtk', new_dict)
-    print(" ✓ Version Control file updated.")
+    print("✓ Version Control file updated.")
 
 
 

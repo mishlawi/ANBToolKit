@@ -59,19 +59,21 @@ date: {date}
 
 
 
-def dguBio(name,birth="Month Day, Year",death="Month Day, Year",bp="City, Country",occupation="Field of work"):
+def dguBio(name,path,birth="Month Day, Year",death="Month Day, Year",bp="City, Country",occupation="Field of work"):
     skeleton = rf"""---
 id: {id}
 format: latex
 type: Biography
 about:
 - 
-author:
-- {author}
-date: {date} 
-title: {title}
+path: {path}
+name: {name}
+birth: {birth} 
+death: {death}
+birthplace: {bp}
+occupation: {occupation}
 ---
-%Add the Biography info here
+%Add more Biography info here
 """
     return skeleton
 

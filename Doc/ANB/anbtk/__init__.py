@@ -39,10 +39,9 @@ from .DSL.entities import gramLogic
 
 # * maybe add specs to dont do anything if there are no differences in the sync command
 #!  update the onto file so that new entities can be added
-# * show commands : show entities, etc
+
 # * erro de ja estar numa pasta  já inicializada como anb, quando na realidade apenas se está um nivel acima de uma pasta inicializada
 # * tex2dgu puts author false
-# * refactor dgubook individual and generic functions
 # * be careful with new couples for the same individual (ex spouse)
 # * revise the command for dgu generation for generic dgus
 # * gedcom
@@ -55,17 +54,27 @@ from .DSL.entities import gramLogic
 
 
 
-# definiçao do argparse e outras bibliotecas deve ser feito no state of the art, na sua 1a referencia ou numa seccao a parte referente a view?
+
 
 # ! individual dgubook not working
 # ! todo : gedcom; show family tree
 
 
 #! manter estado apos erro de processamento da gramatica de criaçao/edicao de casais
-#! proteger dados de serem perdidos, deteçao de eleminiações
+#! proteger dados de serem perdidos, deteçao de eliminações
 
-# add tese: como reagir aos erros, e qual o approach
-# usar o editor predefinido do user para editar
+#### TESE ESCRITA:
+## DUVIDAS
+
+# definiçao do argparse e outras bibliotecas deve ser feito no state of the art, na sua 1a referencia ou numa seccao a parte referente a view?
+# ponho o codigo todo? e quando tenho exemplos analogos de comandos e etc ex genStory genBio? falo de um e eununcio o outro? ponho em anexo? 
+# como funciona a anexação
+# trabalho futuro e dificuldades deve ser apresentado dentro de cada elemento/capitulo ou num capitulo a parte?
+# ## TODO
+# add tese:
+# como reagir aos erros, e qual o approach
+
+
 # ccriar noção de anotação extra as gramaticas para lidar com gestao de erros
 # adicionar notas caso relevante para enriquecer os textos
 
@@ -79,6 +88,9 @@ from .DSL.entities import gramLogic
 # * i want it so that story and bio (and others) are default formats but the users can create their ones x
 # * auto sync when creating dgus x
 # * data updates and nickname updates should be presented in the anbtemplate when two references exist -> if i add a nickname to jose in the child position, it should appear in the parent position 
+# * show commands : show entities, etc
+# * refactor dgubook individual and generic functions
+
 
 ##############################################################################################################
 ##############################################################################################################

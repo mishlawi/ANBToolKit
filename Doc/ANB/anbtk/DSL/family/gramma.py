@@ -46,18 +46,6 @@ def p_family(p):
     p[0] = p[1]
 
 
-def p_names(p):
-    '''
-    Names : Names NAME
-          | NAME
-          | empty
-    '''
-    if len(p) == 3 :
-        p[0] = f"{p[1]} {p[2]}"
-    else:
-        p[0] = p[1]
-
-
 
 def p_couples(p):
     '''
@@ -89,13 +77,6 @@ def p_couple_error_plus(p):
     print(f"\nMissing PLUS token between {p[1]} and {p[3]}")
 
 
-# def p_couple_error_newline_1(p):
-#     '''
-#     Couple : Person PLUS Person NEWLINE Children error
-#     '''
-#     print(f"\nMissing NEWLINE token after {p[5]}")
-
-
 def p_couple_error_newline_2(p):
     '''
     Couple : Person PLUS Person error Children NEWLINE
@@ -103,7 +84,6 @@ def p_couple_error_newline_2(p):
     print(f"\nMissing NEWLINE token between {p[3]} and {p[5]}")
 
 
-# Names Nickname Dates
 def p_person(p):
     '''
     Person : Names Nickname Dates
@@ -147,6 +127,21 @@ def p_person(p):
     
     meta['total'] += 1
   
+
+
+
+def p_names(p):
+    '''
+    Names : Names NAME
+          | NAME
+          | empty
+    '''
+    if len(p) == 3 :
+        p[0] = f"{p[1]} {p[2]}"
+    else:
+        p[0] = p[1]
+
+
 
 
 def p_dates(p):

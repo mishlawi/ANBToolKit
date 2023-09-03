@@ -74,7 +74,7 @@ from .DSL.entities import gramLogic
 # add tese:
 # como reagir aos erros, e qual o approach
 
-
+\
 # ccriar noção de anotação extra as gramaticas para lidar com gestao de erros
 # adicionar notas caso relevante para enriquecer os textos
 
@@ -237,6 +237,9 @@ def anb():
         
         if args.source:
             fsgram = args.source[0]
+            if not os.path.exists(fsgram):
+                print("✗ The specified file does not exist.")
+                exit()
         else:
             fsgram = ""
         

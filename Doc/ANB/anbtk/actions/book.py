@@ -9,6 +9,7 @@ from .. import dataControl
 from ..auxiliar import argsConfig, calls, dgu_helper
 from ..DSL.entities import gramLogic
 
+
 #args = ['pandoc','-s','AncestorsNotebook.tex', '-o', 'AncestorsNotebook.pdf']
 
 
@@ -35,9 +36,9 @@ def dgubook_productions(arguments):
     dates['year'] = datetime.date.today().year
     dates['oldest'] = dates['year']
 
-   
+    
     files_data = gramLogic.travessia_specific()
-
+    print(files_data)
     for (sym, files) in files_data:
         for file in files:
                 dgu_helper.parse_individual_dgu_productions(file,dates,docs,imgs,cronology,sym)
@@ -59,7 +60,7 @@ def dgubook_productions(arguments):
 
     if arguments.timeframe:
                 dates['chronology'] = cronology
-    
+    print(docs)
     with open('AncestorsNotebook.tex', 'w') as tempdgu:
         args =  calls.pdflatex('AncestorsNotebook.tex')
         tempdgu.write(dgus2tex.render(tit="Ancestors Notebook", docs=docs, imgs=imgs, dates=dates))
@@ -70,7 +71,6 @@ def dgubook_productions(arguments):
         
         subprocess.check_call(calls.rm_latex_unecessary)
 
-from ..DSL.entities import gramLogic
 
 
 def classic_dgubook(arguments):

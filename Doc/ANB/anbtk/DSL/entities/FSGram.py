@@ -18,9 +18,7 @@ def p_FSGram(p):
     "FSGram : Entities UNIVERSE Prods"
     universe =  re.sub('UNIVERSE','',p[2]).strip()
 
-    # gramLogic.process_fsgram(top,grammar,universe,terminals,nonterminals)
     p[0] = entityuniverse,universe,terminals,nonterminals
-    # return ignoredFiles,grammar
    
 def p_Entities(p):
     """Entities : Entities Entity
@@ -76,7 +74,7 @@ def p_Prods(p):
     "Prods : Prod Prods"
 
 def p_Prodsingle(p):
-    """Prods : Prod"""
+    "Prods : Prod"
 
 # basically non terminal
 def p_Prod(p):
@@ -91,7 +89,7 @@ def p_Prod(p):
 
 # basically terminal
 def p_ProdSimple(p):
-    "Prod : ID PP REGEX"
+    "Prod : ID PP PREFIX"
     try:
         re.compile(p[3])
         terminals[p[1]] = p[3]

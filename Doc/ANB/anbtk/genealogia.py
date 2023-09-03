@@ -3,8 +3,7 @@ from .DSL.family import gramma
 from .ontology import ousia
 from . import controlsystem
 from . import dataControl
-from .auxiliar import dgu_helper
-
+from .DSL.entities import FSGram
 import os
 from rdflib import Graph
 
@@ -145,6 +144,7 @@ def raw_initialization(file,family):
 
 def onto_folders_correspondence(file, family, entities=""):
     family_structure, ages = gramma.parsing(file)
+    eu,u,term,nonterminals = FSGram.parse_grammar(entities)
     
     if family_structure is None:
         print("✗ Failed to parse the family structure. Some errors might exist in the anbtemplate")
@@ -156,7 +156,7 @@ def onto_folders_correspondence(file, family, entities=""):
 
     if not os.path.exists(family):
         os.mkdir(family)
-    else: # this 2 lines were recently added so any future problems should be solved if you remove them
+    else:
         print(f"✗ There already exists a {family} folder")
         exit()
 

@@ -5,6 +5,10 @@ import re
 from .ontology import ousia
 from . import genealogia
 from . import dataControl
+from .DSL.entities import gramLogic
+from .auxiliar import dgu_helper
+
+
 
 
 def check_file_structure(path):
@@ -110,8 +114,6 @@ def compare_file_structure(path,graph):
 
     return new_dict
 
-from .DSL.entities import gramLogic
-from .auxiliar import dgu_helper
 
 from rdflib.term import Literal
 

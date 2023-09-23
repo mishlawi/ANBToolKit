@@ -148,22 +148,12 @@ def folder_cd():
 def folder_ls():
     filters.anb_ls()
 
-
-def get_about():
-    #not finished
-    filters.search_by_about_files()
-
-
 def show_fsgram():
     gramLogic.show_declarations()
 
 def edit_fsgram():
     gramLogic.add_to_fsgram()
 
-
-# def teste():
-#     gen_dgus.view_files()
-#     # gramLogic.add_to_fsgram()
     
 ############################## .anb ################################
 
@@ -275,132 +265,4 @@ def anb_sync():
         exit()
 
 
-
-
-
-# def anb():
-    
-#     parser = argparse.ArgumentParser(prog='ancestors notebook')
-#     subparsers = parser.add_subparsers(dest='subcommand',required=True,help='List of subcommands accepted')
-#     init_parser = subparsers.add_parser('init')
-#     init_parser.add_argument('-s','--source',help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)
-#     dguCommands_parser = subparsers.add_parser('dgu',help='Creates a default dgu or a entity based dgu')
-#     dguCommands_parser.add_argument('-e','--entity',help='Specify an entity as described in your FSGram file or the default file',nargs=1)
-#     dguCommands_parser.add_argument('-f','--filename',help='Name of the dgu',type=str,dest='filename',required=True,nargs=1)
-
-#     genSync = subparsers.add_parser('sync')
-
-#     genFolderStructure = subparsers.add_parser('genFolders',help="gen folder structure from seed file.")
-#     genFolderStructure.add_argument('--seed','-s',required=True, help="path to seed file to be converted.",nargs=1)
-#     genFolderStructure.add_argument('--source','-src',help = "path to source fsgram file to generat ancestors notebook entities")
-#     genFolderStructure.add_argument('--family','-fam',help = "name of the family to be created!",nargs=1)
-#     genFolderStructure.add_argument('--filename','-fn', help= "give a custom name to the ontology file. If not used, only a safe hidden file will be generated.",nargs='?')
-#     genFolderStructure.add_argument('--out','-o',help="output the ontology file to a certain directory.",nargs='?')
-
-#     args = parser.parse_args()
-#     currentdir = os.getcwd()
-
-#     if args.subcommand == 'init':
-    
-#         if args.source:
-#             file = args.source[0]
-#             dataControl.initanb(os.path.abspath(file))
-    
-#         else:
-#             dataControl.initanb()
-    
-#     elif args.subcommand == 'dgu':
-#         if dataControl.search_anbtk():
-
-#             if args.entity:
-#                 entities = gramLogic.get_entities_fsgram()
-#                 att_entities = gramLogic.get_entites_attributes(entities)
-#                 abv_entities = gramLogic.get_entities_abbreviations(entities)
-#                 if args.entity[0] in abv_entities.values():
-#                     args.entity[0] = gramLogic.get_entity_name_by_abv(args.entity[0],abv_entities)
-#                 if args.entity[0] in entities.keys():     
-#                     genDgu(args.entity[0], att_entities[args.entity[0]], args.filename[0],currentdir)
-#                 else:
-#                     print("✗ No entity exists with that name.")
-#                     exit()
-
-#             if not args.entity:
-#                 os.chdir(currentdir)
-#                 empty_dgu = dgu.DGU()
-#                 with open(args.filename[0]+'.dgu',"w") as f:
-#                     dgu_helper.dguheadercomposer(empty_dgu,f)
-
-#         else:
-#             print("✗ You need to initialize an ancestors notebook")
-#             exit()
-
-
-#     elif args.subcommand == 'genFolders':
-
-#         header= "ANbTk PROCESSING STATUS:".center(terminal_width)
-        
-        
-#         print(divider)
-#         print(header)
-#         print(divider)
-
-        
-#         if args.source:
-#             fsgram = args.source[0]
-#             if not os.path.exists(fsgram):
-#                 print("✗ The specified file does not exist.")
-#                 exit()
-#         else:
-#             fsgram = ""
-        
-
-#         if args.seed:
-
-#             seed = args.seed[0]
-        
-#             if not os.path.exists(seed):
-#                 print("✗ The specified file does not exist.")
-#                 exit()
-        
-#             else:
-#                 if args.family:
-#                     family = args.family[0]
-#                 else:
-#                     family= "anb-family"
-#                 g ,(fam_structure,fam_ids) = genealogia.onto_folders_correspondence(seed,family=family,entities=fsgram)
-#                 #! error handling needed here for errors in the seed file
-            
-#                 file_structure = blocks.dict_to_file(fam_structure,fam_ids)
-                
-#                 with open(os.path.join(dataControl.find_anb(),'anbtemp.txt'),'w') as anbtemp:             
-#                     anbtemp.write(file_structure)
-
-            
-#             if args.filename:
-#                 genealogia.gen_onto_file(g,args.filename[0])
-                
-#                 if args.out:
-#                     shutil.move(f"{args.filename[0]}.n3", args.out[0])
-#                     shutil.move(f"{args.filename[0]}.rdf", args.out[0])
-
-#             genealogia.gen_onto_file(g,"anbsafeonto")
-
-
-#     elif args.subcommand == 'sync':
-        
-#         path = dataControl.find_anb()
-       
-#         if path != None:
-#             path = os.path.dirname(path)
-#             ontofile = os.path.join(path,".anbtk/anbsafeonto.rdf")
-#             g = genealogia.read_onto_file(ontofile)
-#             controlsystem.version_control(path,g)
-#             genealogia.gen_onto_file(g,'anbsafeonto')
-#         else:
-#             print("✗ Not in any initialized ANB folder.")
-#             exit()
-
-        
-#     else:
-#         args.func(args.name, args.attributes, args)
 

@@ -181,7 +181,7 @@ def a_genFolders():
     return parser.parse_args()
 
 def a_anbinit():
-    parser = argparse.ArgumentParser(description="Initialize a non structurized ")
+    parser = argparse.ArgumentParser(description="Initializes a non structurized structurized Ancestors Notebook.")
 
     parser.add_argument('-s', '--source', help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)
 
@@ -191,11 +191,9 @@ def a_anbinit():
 def a_anbdgu():
     parser = argparse.ArgumentParser(description="Creates a default dgu or a entity based dgu")
 
-# Add arguments directly to the main parser (no need for subparsers)
     parser.add_argument('-e', '--entity', help='Specify an entity as described in your FSGram file or the default file', nargs=1)
     parser.add_argument('-f', '--filename', help='Name of the dgu', type=str, required=True, nargs=1)
 
-    # Now you can add more arguments if needed.
 
     return parser.parse_args()
 

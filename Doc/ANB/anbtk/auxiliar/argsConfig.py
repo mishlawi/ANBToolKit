@@ -169,6 +169,41 @@ def a_ls():
     return parser.parse_args()
 
 
+def a_genFolders():
+    parser = argparse.ArgumentParser(description="Ancestors Notebook generate folder structure")
+
+    parser.add_argument('--seed', '-s', required=True, help="Path to the anbtemp file to be converted.", nargs=1)
+    parser.add_argument('--source', '-src', help="Path to source fsgram file to generate ancestor's notebook entities")
+    parser.add_argument('--family', '-fam', help="Name of the family to be created!", nargs=1)
+    parser.add_argument('--filename', '-fn', help="Give a custom name to the ontology file. If not used, only a safe hidden file will be generated.", nargs='?')
+    parser.add_argument('--out', '-o', help="Output the ontology file to a certain directory.", nargs='?')
+
+    return parser.parse_args()
+
+def a_anbinit():
+    parser = argparse.ArgumentParser(description="Initialize a non structurized ")
+
+    parser.add_argument('-s', '--source', help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)
+
+
+    return parser.parse_args()
+
+def a_anbdgu():
+    parser = argparse.ArgumentParser(description="Creates a default dgu or a entity based dgu")
+
+# Add arguments directly to the main parser (no need for subparsers)
+    parser.add_argument('-e', '--entity', help='Specify an entity as described in your FSGram file or the default file', nargs=1)
+    parser.add_argument('-f', '--filename', help='Name of the dgu', type=str, required=True, nargs=1)
+
+    # Now you can add more arguments if needed.
+
+    return parser.parse_args()
+
+
+def a_anbsync():
+    parser = argparse.ArgumentParser(description="Used to force the syncronization of the different elements of the Ancestors Notebook.")
+
+    return parser.parse_args()
 
 
 def input_with_completion(prompt):

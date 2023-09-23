@@ -139,7 +139,7 @@ def raw_initialization(file,family):
 
 def onto_folders_correspondence(file, family, entities=""):
     family_structure, ages = gramma.parsing(file)
-    eu,u,term,nonterminals = FSGram.parse_grammar(entities)
+    # eu,u,term,nonterminals = FSGram.parse_grammar(entities)
     
     if family_structure is None:
         print("✗ Failed to parse the family structure. Some errors might exist in the anbtemplate")

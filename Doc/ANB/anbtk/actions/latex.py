@@ -12,6 +12,35 @@ from ..dgu import dguObject as dgu
 
 
 def dgu2texbook():
+    """
+    Converts DGU (Document Generation Utility) files to a LaTeX document.
+    
+    This function reads DGU files (typically containing YAML frontmatter and
+    Markdown-formatted content) and generates a LaTeX document based on the
+    content of these files. The resulting LaTeX document is written to a file
+    named 'texbook.tex' in the current working directory.
+
+    The function can be configured to process individual DGU files or an entire
+    directory tree of DGU files. Each DGU file is expected to have YAML frontmatter
+    enclosed within '---' delimiters and Markdown-formatted content.
+
+    Args:
+        None (Arguments are parsed internally using `argsConfig.a_dgu2texbook()`).
+
+    Raises:
+        Exception: If a file provided as input does not have a '.dgu' extension.
+
+    Example Usage:
+        To convert a single DGU file:
+        >>> dgu2texbook()
+
+        To convert all DGU files in the current directory and its subdirectories:
+        >>> dgu2texbook(tree=True)
+
+    Note:
+        The function relies on external modules and functions such as `argsConfig.a_dgu2texbook()`,
+        `os`, `re`, `yaml`, and functions from `dgu_helper` for file parsing and LaTeX generation.
+    """
     
     arguments = argsConfig.a_dgu2texbook()
     
@@ -64,6 +93,33 @@ def dgu2texbook():
 
 
 def tex2dgu(dirout=""):
+    """
+    Converts LaTeX files to DGU (Document Generation Utility) format.
+
+    This function takes LaTeX files as input, converts them to Markdown using Pandoc,
+    extracts metadata from the LaTeX document, and generates a DGU file with YAML
+    frontmatter and Markdown content. The resulting DGU files are stored in the
+    specified 'dirout' directory or the current working directory.
+
+    Args:
+        dirout (str, optional): The directory where the generated DGU files will be saved.
+            If not provided, the DGU files will be saved in the current working directory.
+
+    Raises:
+        subprocess.CalledProcessError: If the Pandoc conversion or file removal fails.
+        Exception: If a file provided as input does not have a '.tex' extension.
+
+    Example Usage:
+        To convert a single LaTeX file to DGU format in the current directory:
+        >>> tex2dgu()
+
+        To convert a LaTeX file and save the resulting DGU file in a specific directory:
+        >>> tex2dgu(dirout="output_directory/")
+
+    Note:
+        This function relies on external modules and functions such as `argsConfig.a_tex2dgu()`,
+        `os`, `subprocess`, `re`, `yaml`, functions from `dgu_helper`, and Pandoc for file conversion.
+    """
     arguments = argsConfig.a_tex2dgu()
     if arguments.file:
         for elem in arguments.file:

@@ -8,11 +8,6 @@ import os
 from rdflib import Graph
 
 
-#! check tests 
-#! relacao entre pastas dentro de individuos (se pasta esta pedurada no elemento, ha um about entre a pasta e o elemento) ; estas pastas terem um ficheiro metadados com info que contemple a relacao
-#! add pai e filho relacoes automatica na geracao das pastas 
-#! convert to gedcom
-
 
 '''
 genealogia == γενεαλογία 

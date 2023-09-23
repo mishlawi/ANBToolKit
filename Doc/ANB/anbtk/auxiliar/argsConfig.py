@@ -8,7 +8,7 @@ from .. import dataControl
 
 def a_tex2dgu():
     parser = argparse.ArgumentParser(
-        prog='dgubook',
+        prog='tex2dgu',
         description='Converts tex file to dgu.',
         epilog='')
     group = parser.add_mutually_exclusive_group()

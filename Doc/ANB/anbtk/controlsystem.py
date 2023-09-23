@@ -7,11 +7,26 @@ from . import genealogia
 from . import dataControl
 from .DSL.entities import gramLogic
 from .auxiliar import dgu_helper
-
+from rdflib.term import Literal
 
 
 
 def check_file_structure(path):
+    """
+    Analyze the directory structure and contents at the specified path.
+
+    This function explores the directory structure at the given 'path' and collects
+    information about directories and their contents. It creates a dictionary
+    representing the directory structure with directory names as keys and lists of
+    contained files or subdirectories as values.
+
+    Args:
+        path (str): The path to the directory whose structure you want to analyze.
+
+    Returns:
+        dict: A dictionary representing the directory structure, with directory names
+              as keys and lists of files or subdirectories as values.
+    """
     dirs = []
     dir_dicts = {}  # create a new list to store directory dictionaries
     for item in os.listdir(path):
@@ -32,6 +47,20 @@ def check_file_structure(path):
     return dir_dicts
 
 def get_folder_info(path):
+    """
+    Retrieve information about the contents of a folder recursively.
+
+    This function explores the contents of a folder specified by 'path' and
+    recursively collects information about files and subdirectories. It returns
+    a dictionary where the keys are file or directory paths, and the values are
+    lists containing further information about the contents of subdirectories.
+
+    Args:
+        path (str): The path to the folder whose contents you want to retrieve.
+
+    Returns:
+        dict: A dictionary representing the folder's contents and subdirectory structures.
+    """
     info = []
     for elem in os.listdir(path):
         if os.path.isdir(os.path.join(path,elem)):
@@ -42,6 +71,26 @@ def get_folder_info(path):
 
 
 def populate_onto(dict_graph,graph):
+    """
+    Populate an ontology graph with directory structure information.
+
+    This function populates an ontology graph with information from a directory structure
+    represented by 'dict_graph'. It traverses the dictionary, adding subfolders and files
+    to the ontology graph. For files, it also adds ontology-related information, such as
+    DGU (Data Generation Unit) metadata.
+
+    Args:
+        dict_graph (dict): A dictionary representing the directory structure.
+        graph: The ontology graph to which directory structure information will be added.
+
+    Note:
+        This function assumes the existence of a global 'ousia' object for ontology-related
+        operations.
+
+    Returns:
+        None
+    """
+
     for individual,files in dict_graph.items():
         for file in files:
             if isinstance(file,dict):
@@ -55,7 +104,21 @@ def populate_onto(dict_graph,graph):
                 ousia.add_file(os.path.basename(individual),file,graph)
                 
 
-def create_vc_file(path,dir_dicts): 
+def create_vc_file(path,dir_dicts):
+    """
+    Create a version control file to store directory structure information.
+
+    This function writes the directory structure information, provided in 'dir_dicts',
+    to a JSON file named 'anbvc.json'. The JSON file can serve as a version control
+    record of the directory structure.
+
+    Args:
+        path (str): The path where the 'anbvc.json' file will be created.
+        dir_dicts (dict): A dictionary representing the directory structure.
+
+    Returns:
+        None
+    """
     
     json_str = json.dumps(dir_dicts,indent=4)
 
@@ -65,6 +128,20 @@ def create_vc_file(path,dir_dicts):
 
 
 def compare_file_structure(path,graph):
+    """
+    Compare the current directory structure with a previous version and update an ontology graph.
+
+    This function performs a comparison between the current directory structure and a previously
+    recorded version (stored in 'anbvc.json'). It identifies added and removed files and directories,
+    updates the ontology graph accordingly, and prints messages about these changes.
+
+    Args:
+        path (str): The path to the directory whose structure you want to compare.
+        graph: The ontology graph to be updated with directory structure changes.
+
+    Returns:
+        dict: A dictionary representing the current directory structure after the comparison.
+    """
 
     os.chdir(path)
     with open(os.path.join(path,'.anbtk/anbvc.json'), 'r') as file:
@@ -115,9 +192,22 @@ def compare_file_structure(path,graph):
     return new_dict
 
 
-from rdflib.term import Literal
 
 def update_headers(path,graph):
+    """
+    Update YAML headers of DGU (Data Generation Unit) files and their ontology representation.
+
+    This function iterates through DGU files in the specified 'path', updates their YAML headers,
+    and synchronizes the changes with the ontology graph. It ensures that the ontology reflects
+    the updated information from the DGU files.
+
+    Args:
+        path (str): The path to the directory containing DGU files to be updated.
+        graph: The ontology graph to be synchronized with the changes.
+
+    Returns:
+        None
+    """
     path = os.path.dirname(dataControl.find_anb())
     files = gramLogic.retrieve_all_dgu_files(path)
     for file in files:
@@ -199,6 +289,21 @@ def compare_files_directories(dir1, dir2, base_dir=''):
 
     
 def version_control(path,graph):
+    """
+    Manage version control for the directory structure and ontology.
+
+    This function performs version control operations for the specified 'path'. It checks
+    the current directory structure against a previously recorded version (if available),
+    updates the ontology graph and YAML headers as needed, and creates or updates the
+    'anbvc.json' version control file.
+
+    Args:
+        path (str): The path to the directory where version control will be managed.
+        graph: The ontology graph to be synchronized with the directory structure changes.
+
+    Returns:
+        None
+    """
     print("AnbTk status: Checking version control file...\n")
     if os.path.isfile(os.path.join(path,'.anbtk/anbvc.json')):
         new_dict = compare_file_structure(path,graph)
@@ -216,6 +321,20 @@ def version_control(path,graph):
 
 
 def auto_sync():
+    """
+    Automatically synchronize directory structure and ontology within an ANB folder.
+
+    This function is responsible for automatic synchronization within an ANB (presumably a project or
+    folder). It identifies the ANB folder using 'dataControl.find_anb()', reads the ontology graph
+    from 'anbsafeonto.rdf', and performs version control using 'version_control'. Finally, it generates
+    an ontology file named 'anbsafeonto' if applicable.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     path = dataControl.find_anb()
        
     if path != None:

@@ -56,9 +56,6 @@ from .DSL.entities import gramLogic
 
 
 
-# ! individual dgubook not working
-# ! todo : gedcom; show family tree
-
 
 #! manter estado apos erro de processamento da gramatica de criaçao/edicao de casais
 #! proteger dados de serem perdidos, deteçao de eliminações

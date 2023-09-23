@@ -20,6 +20,17 @@ from ..DSL.entities import gramLogic
 
 
 def retrieve_all_images():
+    """
+    Retrieve a list of all image files in the current directory not associated with DGU files.
+
+    This function scans the current directory for image files and filters out those that are not
+    associated with DGU files based on their file paths. It returns a list of tuples containing the
+    relative path to the image and its absolute path.
+
+    Returns:
+        list: A list of tuples containing the relative path and absolute path of image files not
+        associated with DGU files.
+    """
     files = []
 
     file_list = [os.path.abspath(file) for file in os.listdir(os.getcwd()) if os.path.isfile(os.path.join(os.getcwd(), file))]
@@ -31,6 +42,17 @@ def retrieve_all_images():
     return files
 
 def view_files():
+    """
+    Display a list of images for selection and return the selected image file paths.
+
+    This function retrieves a list of image files not associated with DGU files using the
+    `retrieve_all_images` function. It then displays a list of these images for selection
+    using the Inquirer library, allowing the user to choose one or more images. The selected
+    images' file paths are returned as a list.
+
+    Returns:
+        list: A list of selected image file paths.
+    """
 
     item_list = retrieve_all_images()
     relative_paths = [item[0] for item in item_list]
@@ -54,7 +76,14 @@ def view_files():
 
 
 
-def genDguImage():    
+def genDguImage():
+    """
+    Generate DGU files for selected images.
+
+    This function handles the process of generating DGU files for selected images.
+    It can be configured to generate DGU files for individual images or all images
+    in a directory tree, depending on the provided command-line arguments.
+    """  
     cwd = os.getcwd()
     arguments = argsConfig.a_image()
     if arguments.file:
@@ -65,6 +94,18 @@ def genDguImage():
 
 
 def verifyDguImage_singular(img):
+    """
+    Verify if a DGU file already exists for a given image.
+
+    This function checks if there is already a DGU file associated with the provided image.
+    It compares the normalized and lowercase paths of the image and the DGU files' paths.
+
+    Args:
+        img (str): The absolute path of the image to check.
+
+    Returns:
+        bool: True if a DGU file exists for the image; otherwise, False.
+    """
     dgu_files = gramLogic.retrieve_all_dgu_files(dataControl.get_root())
     for file in dgu_files:        
         adgu = dgu_helper.parseAbstractDgu(file)
@@ -80,6 +121,18 @@ def verifyDguImage_singular(img):
 
 
 def verifyDguImage(img):
+    """
+    Verify if a DGU file already exists for a given image.
+
+    This function checks if there is already a DGU file associated with the provided image.
+    It compares the paths of the image and the DGU files' paths.
+
+    Args:
+        img (str): The absolute path of the image to check.
+
+    Returns:
+        bool: True if a DGU file exists for the image; otherwise, False.
+    """
     dgu_files = gramLogic.retrieve_all_dgu_files(dataControl.get_root())
     for file in dgu_files:
         adgu = dgu_helper.parseAbstractDgu(file)
@@ -87,6 +140,16 @@ def verifyDguImage(img):
             return True
 
 def genDguImage_file(files):
+    """
+    Generate DGU files for a list of image files.
+
+    This function generates DGU files for a list of image files. Each image is associated with
+    a DGU file containing metadata such as format, ID, and file path. The function checks if a
+    DGU file already exists for each image before generating a new one.
+
+    Args:
+        files (list): A list of absolute paths to image files for which DGU files will be generated.
+    """
 
     cwd = os.getcwd()
 
@@ -119,6 +182,21 @@ def genDguImage_file(files):
 
                     
 def genDguImage_tree(cwd):
+    """
+    Generate DGU files for images in a directory tree.
+
+    This function traverses a directory tree starting from the specified 'cwd' (current working directory).
+    It identifies image files in the tree, generates DGU files for each image, and associates metadata
+    such as format, ID, and file path with each DGU file. The function checks if a DGU file already exists
+    for each image before generating a new one.
+
+    Args:
+        cwd (str): The path to the root directory of the directory tree to search for image files.
+
+    Note:
+        This function relies on external modules and functions such as `os`, `dgu_helper`,
+        `gramLogic`, `dataControl`, and `DGUhand` for image processing and DGU file generation.
+    """
     count = 0
     visited = set()
     for dirpath, _, filenames in os.walk(cwd):
@@ -155,6 +233,18 @@ def genDguImage_tree(cwd):
 
 
 def simplify(title):
+    """
+    Simplify a title by capitalizing words and removing special characters.
+
+    This function takes a title as input, capitalizes each word, and removes special characters
+    to create a simplified version of the title.
+
+    Args:
+        title (str): The title to be simplified.
+
+    Returns:
+        str: The simplified title.
+    """
     words = title.split()
     words = [word.capitalize() for word in words]
     simplified_title = "".join(words)
@@ -163,7 +253,21 @@ def simplify(title):
 
 
 
-def genStory():
+def genStory(): 
+    """
+    Generate a story DGU file with metadata.
+
+    This function generates a story DGU file based on the provided arguments. It accepts
+    title, author, date, and DGU options. If author is not provided, it assumes the author is
+    the current folder denomination. It also creates a unique filename based on the simplified
+    title.
+
+    Args:
+        None (Arguments are parsed internally using `argsConfig.a_genStory()`).
+
+    Returns:
+        None
+    """
     args = argsConfig.a_genStory()
     title = args.title
     date = args.date
@@ -195,7 +299,21 @@ def genStory():
 
 
 
-def genBio():    
+def genBio():
+    """
+    Generate a biography DGU file with metadata.
+
+    This function generates a biography DGU file based on the provided arguments, including the name,
+    birth date, death date, birthplace, and occupation. It creates a unique filename based on the
+    simplified name. If an Ancestors Notebook is not initialized, it warns about the absence of
+    guaranteed unique names.
+
+    Args:
+        None (Arguments are parsed internally using `argsConfig.a_genBio()`).
+
+    Returns:
+        None
+    """
     args = argsConfig.a_genBio()
     name = args.name
     birth = args.birth
@@ -218,6 +336,22 @@ def genBio():
 
 # path is missing
 def genDgu(title, attributes, nameofthefile, dir):
+    """
+    Generate a DGU file with metadata.
+
+    This function generates a DGU file based on the provided title, attributes, file name, and directory.
+    It creates a unique ID for the DGU file, creates a subclass of the specified title with the given
+    attributes, and writes the DGU file with metadata.
+
+    Args:
+        title (str): The title or type of the DGU file.
+        attributes (list): A list of attributes associated with the DGU file.
+        nameofthefile (str): The name of the DGU file without the file extension.
+        dir (str): The directory where the DGU file will be saved.
+
+    Returns:
+        None
+    """
     id = dataControl.dataUpdate(title, nameofthefile)
     subclass = DGUhand.dgu_subclass(title, attributes)
     newDgu = subclass(nameofthefile, "", title, "", f"{dir}/{id}.dgu", *["" for _ in attributes])

@@ -1,6 +1,5 @@
 import os
 import inquirer
-import inquirer
 import shutil
 
 from ... import dataControl

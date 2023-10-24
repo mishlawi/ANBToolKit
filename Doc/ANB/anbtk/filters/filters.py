@@ -113,6 +113,8 @@ def individual_processing(path,g,args):
 def anb_search():
 
     cwd = os.getcwd()
+    args = argsConfig.a_search()
+
 
     if not dataControl.search_anbtk():
         print("✗ You are not in an Ancestors Notebook." )
@@ -124,7 +126,6 @@ def anb_search():
         except FileNotFoundError:
             print("No ontology was initialized.\nWas this ancestor notebook created from scratch? There doesn't seem to exist any .rdf file that defines the familiar connections.")
             exit()
-    args = argsConfig.a_search()
     
     unique,message,header = individual_processing(cwd,g,args)
     view_sparql.show_data(unique,message,header)
@@ -132,6 +133,8 @@ def anb_search():
 
 def anb_cd():
     cwd = os.getcwd()
+    args = argsConfig.a_cd()
+
     
     if not dataControl.search_anbtk():
         print("✗ You are not in an Ancestors Notebook." )
@@ -145,10 +148,9 @@ def anb_cd():
             exit()
        
     os.chdir(dataControl.get_root())
-    args = argsConfig.a_cd()
 
     
-    unique,_,_ = individual_processing(cwd,g,args,True)
+    unique,_,_ = individual_processing(cwd,g,args)
     possibilities = queries.folder_cd_composition(unique,g)
     selected_folder = view_sparql.select_path(possibilities)
     selected_folder = selected_folder.split("/")[1]
@@ -161,6 +163,8 @@ def anb_cd():
 
 def anb_ls():
     cwd = os.getcwd()
+    args = argsConfig.a_cd()
+
     if not dataControl.search_anbtk():
         print("✗ You are not in an Ancestors Notebook." )
         exit()
@@ -173,7 +177,6 @@ def anb_ls():
             exit()
         os.chdir(dataControl.get_root())
         
-    args = argsConfig.a_cd()
     
     unique,_,_ = individual_processing(cwd,g,args)
     possibilities = queries.folder_cd_composition(unique,g)

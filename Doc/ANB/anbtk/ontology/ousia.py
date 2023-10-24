@@ -35,10 +35,6 @@ def ontology():
     g.add((ont, RDF.type, OWL.Ontology))
     g.add((ont, RDFS.label, Literal('Family Ontology')))
 
-    family_class = FAMILY['Family']
-    g.add((family_class, RDF.type, OWL.Class))
-    g.add((family_class, RDFS.label, Literal('Family')))
-
 
     relationships_ontology(g)
 
@@ -212,15 +208,6 @@ def add_dgu_file(adgu_path,attributes,graph):
         graph.add((dgu,DGU[f'has{onto_name}'],Literal(value,datatype=XSD.string)))
 
 
-# def add_dgu_file(attributes,graph):
-#     attributes['path'] = dataControl.relative_to_anbtk(attributes['path'])
-#     dgu = DGU['dgufile']
-#     for key,value in attributes.items():
-#         onto_name = key.capitalize()
-#         graph.add((dgu,DGU[f'has{onto_name}'],Literal(value,datatype=XSD.string)))
-
-#comparar attributos, havendo diferenças eliminar o antigo e adicionar um novo, é mais rapido, ao usar o add_dgu_file
-
 
 
 def get_dgu_attributes(dgu_path,g):
@@ -257,22 +244,6 @@ def new_dgu_object(name,attributes,g):
         g.add((temp_property, RDFS.range, XSD.string))
 
 
-# def add_dgu(params,graph):
-#     dgu = DGU[params['path']]
-#     for key,value in params.items():
-#         graph.add(dgu,DGU[f'has{key}'], Literal(value, datatype=XSD.string))
-
-
-# def add_fileBio(name,db,dd,path,about,graph):
-    
-#     dgu = DGU[path]
-#     graph.add((dgu, DGU['hasName'], Literal(name, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasDateOfBirth'], Literal(db, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasDateOfDeath'], Literal(dd, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasFormat'], Literal('Latex', datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasType'], Literal('Biography', datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasAbout'], Literal(about, datatype=XSD.string)))
-#     graph.add((dgu, DGU['hasFilePath'],Literal(path, datatype=XSD.string)))
 
 """
 ==========================================================================================

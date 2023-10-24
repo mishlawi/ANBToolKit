@@ -14,6 +14,19 @@ from ..DSL.entities import gramLogic
 
 
 def dgubook():
+    """
+    Generates an Ancestors Notebook PDF or Markdown document based on input arguments.
+
+    This function processes various command-line arguments and, based on the provided options, generates
+    an Ancestors Notebook document by calling the specific handler. It can produce different output formats and content depending on the options.
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+    
     arguments = argsConfig.a_dgubook()
     if not any(vars(arguments).values()):
         print("No arguments provided, please use dgubook -h for more info.")
@@ -21,11 +34,23 @@ def dgubook():
         
         if arguments.productions:
             dgubook_productions(arguments)
-        elif arguments.file or arguments.tree:
+        elif arguments.file or  arguments.tree:
             classic_dgubook(arguments)
     
 
 def dgubook_productions(arguments):
+    """
+    Generate Ancestors Notebook for productions.
+
+    This function is responsible for handling the generaton of an Ancestors Notebook document specifically for productions.
+    It collects data related to productions and the different DGU files and generates the pdf or markdown document.
+
+    Args:
+        arguments (argparse.Namespace): Parsed command-line arguments.
+
+    Returns:
+        None
+    """
 
     
     docs = {}
@@ -74,6 +99,19 @@ def dgubook_productions(arguments):
 
 
 def classic_dgubook(arguments):
+    """
+    Generate the classic Ancestors Notebook, correspondent to the dgubook.
+
+    This function generates a traditional Ancestors Notebook document, not specific to productions, gathering specific 
+    or all the dgus in the . It collects
+    data related to individuals and their information to create the document.
+
+    Args:
+        arguments (argparse.Namespace): Parsed command-line arguments.
+
+    Returns:
+        None
+    """
     
     docs = []
     imgs = []

@@ -60,7 +60,7 @@ def view_files():
 
     questions = [
         inquirer.Checkbox('items',
-                          message='elect one or more Pictures to generate its DGU file (use SPACEBAR key to select and ENTER key to confirm the selection)',
+                          message='select one or more Pictures to generate its DGU file (use SPACEBAR key to select and ENTER key to confirm the selection)',
                           choices=relative_paths,
                           ),
     ]

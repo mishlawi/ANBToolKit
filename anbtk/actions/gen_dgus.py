@@ -334,7 +334,6 @@ def genBio():
 
 
 
-# path is missing
 def genDgu(title, attributes, nameofthefile, dir):
     """
     Generate a DGU file with metadata.
@@ -355,7 +354,6 @@ def genDgu(title, attributes, nameofthefile, dir):
     id = dataControl.dataUpdate(title, nameofthefile)
     subclass = DGUhand.dgu_subclass(title, attributes)
     newDgu = subclass(nameofthefile, "", title, "", f"{dir}/{id}.dgu", *["" for _ in attributes])
-#    os.chdir(dir)
     with open(f"{dir}/{id}.dgu", "w") as f:
         dgu_helper.dguheadercomposer(newDgu, f)
     controlsystem.auto_sync()

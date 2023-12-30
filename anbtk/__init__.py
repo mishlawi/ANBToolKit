@@ -30,84 +30,11 @@ import shutil
 terminal_width = shutil.get_terminal_size().columns
 divider = "=" * terminal_width
 
-##############################################################################################################
-##############################################################################################################
-##############################################    NOTES    ###################################################
-##############################################################################################################
-##############################################################################################################
-
-#? DUVIDAS
-
-# * error handling nas gramáticas
-# * usar path para a ontologia como URI
-
-
-#*TODO
-
-# * maybe add specs to dont do anything if there are no differences in the sync command
-#!  update the onto file so that new entities can be added
-
-# * erro de ja estar numa pasta  já inicializada como anb, quando na realidade apenas se está um nivel acima de uma pasta inicializada
-# * tex2dgu puts author false
-# * be careful with new couples for the same individual (ex spouse)
-# * revise the command for dgu generation for generic dgus
-# * gedcom
-# * template html
-# * verificar a existencia de erros 1o, e só depois executar efetivamente as coisas, senao pastas sao geradas mesmo quando é dado um mau input
-# * "anb individuo" e aparecerem elementos relativos ao individuo 
-# * add comments for the seed file and entities file
-# * testar projection editor (check individual function annotations)
-# * use default editor
-
-
-
-
-
-
-#! manter estado apos erro de processamento da gramatica de criaçao/edicao de casais
-#! proteger dados de serem perdidos, deteçao de eliminações
-
-#### TESE ESCRITA:
-## DUVIDAS
-
-# definiçao do argparse e outras bibliotecas deve ser feito no state of the art, na sua 1a referencia ou numa seccao a parte referente a view?
-# ponho o codigo todo? e quando tenho exemplos analogos de comandos e etc ex genStory genBio? falo de um e eununcio o outro? ponho em anexo? 
-# como funciona a anexação
-# trabalho futuro e dificuldades deve ser apresentado dentro de cada elemento/capitulo ou num capitulo a parte?
-# ## TODO
-# add tese:
-# como reagir aos erros, e qual o approach
-
-\
-# ccriar noção de anotação extra as gramaticas para lidar com gestao de erros
-# adicionar notas caso relevante para enriquecer os textos
-
-
-
-# alterado dgu hand and dguobject
-
-
-#? Done, but re check:
-# * anbvc has the absolute path  x (let him)
-# * i want it so that story and bio (and others) are default formats but the users can create their ones x
-# * auto sync when creating dgus x
-# * data updates and nickname updates should be presented in the anbtemplate when two references exist -> if i add a nickname to jose in the child position, it should appear in the parent position 
-# * show commands : show entities, etc
-# * refactor dgubook individual and generic functions
-
-
-##############################################################################################################
-##############################################################################################################
-##############################################################################################################
-##############################################################################################################
-
-
 
 def dgu2texbook():
     latex.dgu2texbook()
 
 
-#* dont forget to add the path if needed in the future
 def tex2dgu(dirout=""):
     latex.tex2dgu(dirout)
     
@@ -120,7 +47,6 @@ def genDguImage():
     gen_dgus.genDguImage()
 
 
-# usage : -title -author? -date -dgu
 def genStory():
     gen_dgus.genStory()
 
@@ -132,7 +58,6 @@ def genBio():
 def genDgu(title, attributes, nameofthefile, dir):
     gen_dgus.genDgu(title,attributes,nameofthefile,dir)
 
-#check if .anbtk exists
 def anbedit():
     projectionEditor.action()
 

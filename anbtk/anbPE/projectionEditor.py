@@ -12,26 +12,6 @@ from . import handlers
 
 
 
-
-# NOTES:
-
-# get the family structure from the anbtemp file
-# from there dispose the couples as blocks for the user
-# enabling the user to chose a block to be changed
-# verify if the block is valid
-# get the block structure from the user modified block
-# compare the block that was changed with the original block
-# alter the anbtemp file
-# alter the ontology
-# alter the file system configuration
-
-# ontology changes:
-# necessary to update the children's ontology reference when they are removed and be careful cuz they can be parents in other instance of the anbtemp file
-# necessary to update the parents's ontology reference  when they are removed and also be careful cuz they can be child in other instance of the anbtemp file
-
-
-
-
 def unique_parent_creation(p1, p2, og_name_p1, og_name_p2, parents, children, block, ids, path, g):
     """
     Create unique parent entities in the genealogical graph and establish relationships.
@@ -193,12 +173,10 @@ def add_couple():
             exit()
 
         if not p1_is_child and not p2_is_child and not p1_is_parent and not p2_is_parent:
-            # both parents didnt exist
             unique_parent_creation(
                 p1, p2, og_name_p1, og_name_p2, parents, children, block, ids, path, g)
         else:
             if not p2_is_child and not p2_is_parent:
-                # if p1 is either a child or a parent, meaning that it exists; note : all[True,False] = False
                 if not all([p1_is_child, p1_is_parent]):
                     child_to_parent(p1, og_name_p1, p2,
                                     og_name_p2, ids, og_ids, g)
@@ -211,7 +189,6 @@ def add_couple():
                 if og_name_p2 in handlers.get_children_parent(og_family, og_name_p1) or og_name_p1 in handlers.get_children_parent(og_family, og_name_p2):
                     print("It's not possible from a child and a parent to marry!")
                     exit()
-                print("just newly created couple")
 
                 ousia.add_hasSpouse(p1, p2, g)
                 if ids[og_name_p1]['birthDate'] != og_ids[og_name_p1]['birthDate']:
@@ -325,7 +302,6 @@ def action():
         unedited_geral_block, unedited_geral_ids = blocks.remaining_blocks(
             anbtemp_path, before_block)
         updated_geral_block = blocks.new_block(unedited_geral_block, changed_block)
-        # print("***")
 
         g = genealogia.read_onto_file(onto_file_path)
         handle_changes(new_parent, removed_parent, updated_parents, added_children,

@@ -4,7 +4,7 @@ import ply.yacc as yacc
 '''
 grammar = γράμμα
 '''
-#! support of new couples
+
 
 
 # Lexer tokens
@@ -253,48 +253,16 @@ def p_error(p):
     else:
         print("Syntax error: Unexpected end of input")
 
-# def p_error(p):
-    
-#     
-#     print("==================================================================================")
-#     print("===================================== ERRORS =====================================")
-#     if p:
-#         error_message = f"Syntax error at line {p.lineno}, position {p.lexpos}: Unexpected token {p.type} ({p.value})"
-        
-#         # Additional error handling for specific cases
-#         if p.type == 'PLUS':
-#             error_message += " - Invalid use of '+' token"
-#         elif p.type == 'DATE':
-#             error_message += " - Invalid date format"
-#         elif p.type == 'UND':
-#             error_message += " - Invalid use of 'undeterminated' token"
-#         elif p.type == 'UNK':
-#             error_message += " - Invalid use of 'unknown' token"
-        
-#         print(error_message)
-        
-#         # Get the line where the error occurred
-#         lines = p.lexer.lexdata.split("\n")
-#         error_line = lines[p.lineno-1]
-        
-        
-#         print("in:    ", error_line,"\n")
-        
-
-#     else:
-#         print("Syntax error: Unexpected end of input")
-
-
 
 
 def t_error(t):
     print(f"Error: Illegal character '{t.value[0]}'")
 
 
-#! yacc.yacc(errorlog=yacc.NullLogger()) TO SURPRESS  WARNING MESSAGES
+#   yacc.yacc(errorlog=yacc.NullLogger()) // TO SURPRESS  WARNING MESSAGES
 parser = yacc.yacc()
 gramma_lexer = lex.lex()
-#lexer = lex.lex(debug=True)    
+#   lexer = lex.lex(debug=True) // TO DEBUG 
 check_lexer = lex.lex()
 meta = {'total': 0, 'undiscovered': 0}
 

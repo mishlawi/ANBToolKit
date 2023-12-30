@@ -7,24 +7,12 @@ from . import FSGram
 from ...ontology import ousia
 from ... import genealogia
 
+
 # *
 # ** Controls the way the grammar can be organized and disposed
 # * 
 
-# grammar = """Story (H) -> title,author,date;
-# Biography  -> name,birthday,birthplace,occupation,death;
-# Foto  -> note,date;
 
-# >UNIVERSE<
-
-# Pessoa : H* , Facade, Bio?, Foto.
-# Album : Foto*.
-# Luquinhas : Banana*.
-
-# H : h.
-# Bio : b.
-# Foto : p.
-# """
 
     
 terminal_width = shutil.get_terminal_size().columns
@@ -927,13 +915,7 @@ def process_fsgram(entityuniverse,universe,terminals,nonterminals):
         None
     """
     verifyGrammar(entityuniverse,terminals,nonterminals)
-    # interpreter(terminals,nonterminals)
-    # DGUhand.get_symbols(universe,terminals)
 
-    #universehand(universe)
-    # show_declarations(terminals,nonterminals)
-    #DGUhand.bigbang(universe,terminals)
-    # gen_productions_file(nonterminals)
     
 
 

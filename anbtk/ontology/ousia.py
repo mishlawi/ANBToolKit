@@ -7,7 +7,6 @@ from .. import dataControl
 
 essence == Ουσία == ousia
 
-.greek
 
 SISTEMA DE REPRESENTACAO DE CONHECIMENTO
 
@@ -17,10 +16,7 @@ SISTEMA DE REPRESENTACAO DE CONHECIMENTO
 ==========================================================================================
 ================== ONTOLOGY INITIALIZATION AND PROPERTIES DEFINITION =====================
 ==========================================================================================
-# """
-
-# For classes and individuals, camel case is used (e.g., ArtifactModel,
-# JohnDoe). For properties, each word is lowercase and joined by underscores (e.g., described_by). 
+"""
 
 FAMILY = Namespace('http://example.org/family#')
 DGU = Namespace('http://example.com/dgu#')
@@ -359,6 +355,7 @@ def delete_children_individual(individual,graph):
     else:
         graph.remove((individual, None, None))
         graph.remove((None,None,individual))
+
 
 """
 ==========================================================================================

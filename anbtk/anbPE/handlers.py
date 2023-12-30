@@ -65,7 +65,6 @@ def handler_children(removed_children,added_children,changed_block,og_block,g):
             if elem not in p_k['parents']:
                 warning(genealogia.adapt_name(elem))
                 os.rmdir(genealogia.adapt_name(elem))     
-    # é preciso encontrar os pais do filho caso nao existam filhos removidos.
     if removed_children == []:
         parents = list(changed_block.keys())[0]    
         p1,p2 = parents.split("+")

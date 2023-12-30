@@ -3,23 +3,6 @@ import shutil
 
 from .. import dataControl
 
-# def list_and_num_families(dictionary):
-#     """
-
-#     This function takes the dictionary generated after processing the seed file.
-#     It iterates over the dictionary, printing each couple and their children with its associated number.
-
-#     Args:
-#         dictionary (dict): The dictionary of families and their members.
-#     """
-    
-#     for i, key in enumerate(dictionary, start=1):
-#         print(f"{i}.     {key}")
-#         for element in dictionary[key]:
-#             print(f"        * {element}")
-#         print("\n")
-#     print("0. Leave\n")
-
 
 terminal_width = shutil.get_terminal_size().columns
 divider = "=" * terminal_width
@@ -29,7 +12,6 @@ def normalize_string(input_str):
     if not input_str:
         return ""
 
-    # Convert the first character to uppercase and the rest to lowercase
     normalized_str = input_str[0].upper() + input_str[1:].lower()
     return normalized_str
 

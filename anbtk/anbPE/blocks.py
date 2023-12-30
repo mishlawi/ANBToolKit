@@ -26,8 +26,6 @@ def edit_block(config_data):
         temp_file.write(config_data)
 
 
-    # editor_command = ["code", "--wait", temp_filename]
-    # editor_command = ["vi", temp_filename]
     default_editor = os.environ.get('EDITOR', 'vim')
     editor_command = [default_editor, temp_filename]
 
@@ -41,7 +39,6 @@ def edit_block(config_data):
 
     return modified_block
 
-# need to add error handling
 def check_errors(modified_block):
     """
     Checks for parsing errors in the modified block.
@@ -84,7 +81,6 @@ def changed(dict1,dict2):
 
         removed = [elem for elem in list(dict1.values())[0] if elem not in list(dict2.values())[0]] 
         added = [elem for elem in list(dict2.values())[0] if elem not in  list(dict1.values())[0]]
-        #changed_values = { 'added':added, 'added':removed }
     else:
         changed_key = {}
         removed = [elem for elem in list(dict1.values())[0] if elem not in list(dict2.values())[0]] 

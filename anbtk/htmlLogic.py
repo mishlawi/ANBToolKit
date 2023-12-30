@@ -13,7 +13,6 @@ def genHtml(files,dirOut,dirIn):
     if not os.path.exists(path):
         os.mkdir(path)
     
-    #? it might be important to define case by case for each format the equivalent converter, unless a more simple aproach can be pursued      
     
     indexFile = os.path.join(dirOut,'index.html') # index.html
     fo = open(indexFile,'w')

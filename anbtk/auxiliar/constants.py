@@ -32,6 +32,7 @@ Picture : p.
 # .py 
 # .out
 # .fsgram
+
 templateLatex = r"""
 \documentclass{article}
 

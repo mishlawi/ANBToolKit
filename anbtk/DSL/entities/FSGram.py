@@ -6,7 +6,6 @@ from .FSGramTokens import tokens,lexer_fsgram
 from ...auxiliar import constants
 
 
-#todo nao ir ao topo da produção
 
 
 grammar = {}
@@ -183,11 +182,3 @@ def parse_individual_entity(data):
     single_entity_parser.parse(data,lexer=lexer_fsgram)
     return entityuniverse
 
-
-
-    # lexer_fsgram.input(data)
-    # while True:
-    #     token = lexer_fsgram.token()
-    #     if not token:
-    #         break  # no more tokens
-    #     print(token)

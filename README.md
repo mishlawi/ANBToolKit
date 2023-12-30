@@ -1,50 +1,122 @@
-# ANCESTORS NOTEBOOK TOOLKIT
-## Minhas notas 
+# Ancestors Notebook Toolkit
 
-# 5/12
-neste momento existem bastantes coisas desorganizadas
-* é necessario organizá-las, a começar pelos casos de estudo
-  -> nesta vertente convinha verificar de que forma os dados devem ser inseridos e dispostos
-* seria importante adicionar forma de adicionar ficheiros
-* gostaria de ter mais variedade de documentos que nao totalmente associados com a minha familia, Uminho p.e 
-* procurar utilizar o flit e definir os metodos convenientemente para que sejam propriamente usados conforme recomendado pelo professor
-* geração de DGUs e de Abstract DGUs está feito ou num bom caminho, conforme as recomendações dadas pelo professor na ultima reuniao
-* o uso do formato YAML para os cabeçalhos está completamente integrado conforme sugerido pelo professor, encontrei tambem alguma documentação importante que JÁ me permite definir um formato base de DGUs que depois poderá servir de "superclasse" para outros formatos (user defined? ou defaults, conforme ja fomos discutindo)
-  ou seja,
-  ---> DGU tem os parametros id,formato, tipo, about ... 
-  ---> Biografia poderá herdar os atributos da DGU e ter tambem "nome", "data de nascimento", ....
-* notas a serem definidas
-* falta integrar com o flit
-* pré tese a ser iniciada..........
+The *Ancestors Notebook* is a versatile toolkit designed to streamline the management and organization of documents and information associated with family history and heritage. This toolkit operates seamlessly within the Linux file system, employing conventions, commands, and Domain Specific Languages (DSLs) to name and organize directories. Its primary focus is on documents in a specific format known as DGU, exclusively created for the Ancestors Notebook toolkit. The overarching goal is to empower users with customized organizational control, ensuring a cohesive flow of ideas interwoven with the accumulation of genealogical data.
 
+## Key Features
 
-# 12/12
-```
-flit build
-flit install -s
-```
+- **DGU Format**: The toolkit emphasizes a specific format, DGU, for document storage, facilitating a standardized and efficient approach to genealogical data.
 
-* adicionei mais comandos por via do *flit* 
-* necessario *organizar codigo*
-* necessario definir as notas e o seu respetivo parser
-* necessario entender comodiferentes tipos de entidades (biografias, albuns....) derivam relativamente às dgus (há que haver uma correlação... certo?)
-* adicionar o que recolhi ao git para ter um caso de estudo mais profundo
-* argparse e flit
+- **Customized Organization**: Utilizing DSLs and conventions, the toolkit enables users to tailor their data organization, defining representative entities for different elements.
 
-# 28/12
+- **Template Generation**: Ancestors Notebook generates customizable templates in PDF format, offering a visually appealing and familiar view of genealogical information, organized by entities.
 
-* estive a rever a forma de processamento da DSL, essa parte mantém-se funcional mas ainda nao consegui encontrar um use case convincente para poder fazer o processamento de entidades em documentos. De que forma poderia isto ser feito? Algo como `comando Pessoa Album ` ?  leva à geração de algum tipo de ficheiro (conforme tinhamos feito ao inicio com html). Mas como verifico entidades?
-* Como dar uso à gramatica ? 
-  * Definicao de nomenclatura de ficheiros
-  * definicao de formatos aglutinadores (Pessoa por exemplo)
-* Como verificar se a gramatica está correta? 
-* Algum caminho para tornar a gramatica user friendly? Parece me demasiado formal
-* Integração flit com argparse está decente, abre caminho para muita coisa
-* De que me servem os formatos aceites? Informativo só?
+- **Version Control System**: The toolkit incorporates a version control system, leveraging a knowledge representation system in the form of an ontology. A projection editor allows users to view and manipulate the genealogical structure within the file system.
 
-### TODO
-1. Ja deu para perceber a forma como valores da gramatica tem que ir como default, mas é preciso ter controlo sobre as entidades, não só instanciá-las.
-2. *Beautificar* os geradores de livros
-3. Pensar em adicionar geracao html
-  1. Que esta geracao possa ser feita com dgus e com entidades
-4.  
+- **Python Implementation**: Developed in the Python programming language, the toolkit provides file system commands and utilizes Python modules for defining user views. Template creation is facilitated by the Jinja2 template generation engine.
+
+- **Installation via pip**: Download and install the pyproject.toml using pip
+
+## List of commands
+
+- **anbsearch**
+  - Command to retrieve information related to different family members within the Ancestors Notebook. Various flags allow querying specific relationships.
+    ```bash
+    anbsearch [-h] [-s] [-p] [-ua] [-gp] [-c] -i INDIVIDUAL [INDIVIDUAL ...]
+    ```
+
+- **anbcd**
+  - Command to navigate between different directories within the Ancestors Notebook, considering familial connections. Flags represent different relationships.
+    ```bash
+    anbcd [-h] [-s] [-p] [-ua] [-gp] [-c] -i INDIVIDUAL [INDIVIDUAL ...]
+    ```
+
+- **anbdgu**
+  - Command to generate a universal document with a generic structure or associated with a created entity.
+    ```bash
+    anbdgu [-h] [-e ENTITY] -f FILENAME
+    ```
+
+- **anbfolders**
+  - Command to force synchronization of the different elements within the Ancestors Notebook.
+    ```bash
+    anbsync [-h]
+    ```
+
+- **anbls**
+  - Command to quickly view content between different directories within the Ancestors Notebook, considering familial connections.
+    ```bash
+    anbls [-h] [-s] [-p] [-ua] [-gp] [-c] -i INDIVIDUAL [INDIVIDUAL ...]
+    ```
+
+- **anbsync**
+  - Command to force synchronization of the different elements within the Ancestors Notebook.
+    ```bash
+    anbsync [-h]
+    ```
+
+- **dgubook**
+  - Command to aggregate a number of .dgu files into a PDF book.
+    ```bash
+    dgubook [-h] [-f FILE [FILE ...] | -t | -p] [-md] [-all] [-tf] [-o OUTPUT]
+    ```
+
+- **dgu2texbook**
+  - Command to aggregate a number of .dgu files into a LaTeX book.
+    ```bash
+    dgu2texbook [-h] [-f FILE [FILE ...] | -t]
+    ```
+
+- **genBio**
+  - Command to generate a DGU with the structure of the Biography entity.
+    ```bash
+    genBio [-h] -n NAME -b BIRTH -d DEATH -bp BIRTHPLACE -o OCCUPATION
+    ```
+
+- **genDguImage**
+  - Command to generate DGU files for image files.
+    ```bash
+    genDguImage [-h] [-f | -t]
+    ```
+
+- **genStory**
+  - Command to generate a DGU with the structure of the Story entity.
+    ```bash
+    genStory [-h] -t TITLE [-a AUTHOR [AUTHOR ...]] [-d DATE] [-dgu]
+    ```
+
+- **tex2dgu**
+  - Command to convert one or more DGUs into their equivalent LaTeX format.
+    ```bash
+    tex2dgu [-h] [-f FILE [FILE ...]]
+    ```
+
+- **anbinit**
+  - Command to initialize an Ancestors Notebook without any genealogical structure.
+    ```bash
+    anbinit [-h] [-s SOURCE]
+    ```
+
+- **anbgrammar**
+  - Command to edit and adapt different entities and aggregators to the FSGram grammar defining an Ancestors Notebook.
+    ```bash
+    anbgrammar
+    ```
+
+- **anbfsgram**
+  - Command to display the different entities defined in the Ancestors Notebook FSGram.
+    ```bash
+    anbfsgram
+    ```
+
+- **anbedit**
+  - Command to initialize the Projection Editor for family editing.
+    ```bash
+    anbedit
+    ```
+
+- **anbadd**
+  - Command to initialize the Projection Editor for adding a new couple.
+    ```bash
+    anbadd
+    ```
+

@@ -1,6 +1,10 @@
-# Ancestors Notebook Toolkit
+#Ancestors Notebook Toolkit
 
-The *Ancestors Notebook* is a versatile toolkit designed to streamline the management and organization of documents and information associated with family history and heritage. This toolkit operates seamlessly within the Linux file system, employing conventions, commands, and Domain Specific Languages (DSLs) to name and organize directories. Its primary focus is on documents in a specific format known as DGU, exclusively created for the Ancestors Notebook toolkit. The overarching goal is to empower users with customized organizational control, ensuring a cohesive flow of ideas interwoven with the accumulation of genealogical data.
+The *Ancestors Notebook* is a versatile toolkit designed to streamline the management and organization of documents and information associated with family history and heritage.
+This toolkit operates seamlessly within the Linux file system, employing conventions, commands, and Domain Specific Languages (DSLs) to name and organize directories.
+ Its primary focus is on documents in a specific format known as DGU, exclusively created for the Ancestors Notebook toolkit. 
+
+The overarching goal is to empower users with customized organizational control, ensuring a cohesive flow of ideas interwoven with the accumulation of genealogical data.
 
 ## Key Features
 

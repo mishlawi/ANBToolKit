@@ -99,12 +99,14 @@ The overarching goal is to empower users with customized organizational control,
     ```bash
     anbinit [-h] [-s SOURCE]
     ```
+![anbinit_full](https://github.com/mishlawi/ANBToolKit/assets/48862635/703d7593-3eab-4aaa-8817-38fd97cd7a33)
 
 - **anbgrammar**
   - Command to edit and adapt different entities and aggregators to the FSGram grammar defining an Ancestors Notebook.
     ```bash
     anbgrammar
     ```
+![anbgrammar](https://github.com/mishlawi/ANBToolKit/assets/48862635/b6b84120-1f02-440e-b771-05e50b8fc1b7)
 
 - **anbfsgram**
   - Command to display the different entities defined in the Ancestors Notebook FSGram.
@@ -117,10 +119,12 @@ The overarching goal is to empower users with customized organizational control,
     ```bash
     anbedit
     ```
+![anbedit](https://github.com/mishlawi/ANBToolKit/assets/48862635/6d8c371e-dace-46f5-bd8f-eb4e64266fe8)
 
 - **anbadd**
   - Command to initialize the Projection Editor for adding a new couple.
     ```bash
     anbadd
     ```
+![anbadd](https://github.com/mishlawi/ANBToolKit/assets/48862635/b921136d-e168-4783-b184-310e2c0bc559)
 

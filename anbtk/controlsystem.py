@@ -122,8 +122,7 @@ def create_vc_file(path,dir_dicts):
     
     json_str = json.dumps(dir_dicts,indent=4)
 
-    os.chdir(path)
-    with open('anbvc.json', 'w') as file:
+    with open(os.path.join(path, 'anbvc.json'), 'w') as file:
         file.write(json_str)
 
 
@@ -143,7 +142,6 @@ def compare_file_structure(path,graph):
         dict: A dictionary representing the current directory structure after the comparison.
     """
 
-    os.chdir(path)
     with open(os.path.join(path,'.anbtk/anbvc.json'), 'r') as file:
         old_dict = json.load(file)
 
@@ -208,8 +206,8 @@ def update_headers(path,graph):
     Returns:
         None
     """
-    path = os.path.dirname(dataControl.find_anb())
-    files = gramLogic.retrieve_all_dgu_files(path)
+    notebook = dataControl.require_notebook_paths(path)
+    files = gramLogic.retrieve_all_dgu_files(str(notebook.root))
     for file in files:
         adgu = dgu_helper.parseAbstractDgu(file)
         att = ousia.get_dgu_attributes(adgu['path'],graph)
@@ -335,13 +333,11 @@ def auto_sync():
     Returns:
         None
     """
-    path = dataControl.find_anb()
-       
-    if path != None:
-        path = os.path.dirname(path)
-        ontofile = os.path.join(path,".anbtk/anbsafeonto.rdf")
-        g = genealogia.read_onto_file(ontofile)
-        version_control(path,g)
-        genealogia.gen_onto_file(g,'anbsafeonto')
+    notebook = dataControl.get_notebook_paths()
+
+    if notebook is not None:
+        g = genealogia.read_onto_file(str(notebook.ontology_rdf))
+        version_control(str(notebook.root),g)
+        genealogia.gen_onto_file(g, str(notebook.ontology_base))
     else:
         print("✗ Not in any initialized ANB folder.")

@@ -1,9 +1,65 @@
 import json
 import os
+from dataclasses import dataclass
 from pathlib import Path
 
 from .auxiliar import constants
 from .DSL.entities import FSGram, gramLogic
+
+
+@dataclass(frozen=True)
+class NotebookPaths:
+    root: Path
+    anbtk: Path
+
+    @property
+    def fsgram(self) -> Path:
+        return self.anbtk / "fsgram.anb"
+
+    @property
+    def data_index(self) -> Path:
+        return self.anbtk / "anbtk.json"
+
+    @property
+    def version_control(self) -> Path:
+        return self.anbtk / "anbvc.json"
+
+    @property
+    def ontology_rdf(self) -> Path:
+        return self.anbtk / "anbsafeonto.rdf"
+
+    @property
+    def ontology_base(self) -> Path:
+        return self.anbtk / "anbsafeonto"
+
+    @property
+    def anbtemp(self) -> Path:
+        return self.anbtk / "anbtemp.txt"
+
+    @property
+    def templates_dir(self) -> Path:
+        return self.anbtk / "templates"
+
+
+def get_notebook_paths(start_dir=None):
+    """
+    Resolve notebook paths from the current directory or a provided starting directory.
+    """
+    current_dir = Path(start_dir or os.getcwd()).resolve()
+    while True:
+        anbtk_dir = current_dir / ".anbtk"
+        if anbtk_dir.is_dir():
+            return NotebookPaths(root=current_dir, anbtk=anbtk_dir)
+        if current_dir.parent == current_dir:
+            return None
+        current_dir = current_dir.parent
+
+
+def require_notebook_paths(start_dir=None):
+    paths = get_notebook_paths(start_dir)
+    if paths is None:
+        raise FileNotFoundError("Not inside an initialized Ancestors Notebook.")
+    return paths
 
 
 def find_anb():
@@ -17,16 +73,10 @@ def find_anb():
     
     """
     
-    current_dir = os.getcwd()
-    while True:
-        if os.path.isdir(os.path.join(current_dir, '.anbtk')):
-            # .anb folder found
-            return os.path.abspath(os.path.join(current_dir, '.anbtk'))
-        new_dir = os.path.dirname(current_dir)
-        if new_dir == current_dir:
-            # reached root directory without finding .anb folder
-            return None
-        current_dir = new_dir
+    paths = get_notebook_paths()
+    if paths is None:
+        return None
+    return str(paths.anbtk)
 
 
 
@@ -62,32 +112,29 @@ def initanb(grampath="",folderpath=""):
     This function creates the necessary directory structure for an Ancestors Notebook project,
     processes the grammar, and generates default template data.
     """
-    cwd = os.getcwd()
-    if not os.path.exists(cwd + "/.anbtk/anbtemp.txt"):
-        if os.path.exists(cwd + '/.anbtk'):
+    cwd = Path(os.getcwd()).resolve()
+    anbtk_dir = cwd / ".anbtk"
+    if not (anbtk_dir / "anbtemp.txt").exists():
+        if anbtk_dir.exists():
             print("✗ This folder was already initialized as an Ancestors Notebook or there might be an existing anb with the default name.")
             exit()
         elif find_anb() is not None:
             print("✗ You are already in an Ancestors Notebook")  
             exit()
         else:
-            os.mkdir(filepath := (cwd + '/.anbtk'))
-            os.chdir(filepath)
+            anbtk_dir.mkdir()
+            os.chdir(anbtk_dir)
             
             if grampath=="":
                 grammar,universe,terminals,nonterminals = FSGram.initializer()
                 gramLogic.process_fsgram(grammar,universe,terminals,nonterminals)
-                with open('fsgram.anb','w') as fsgram:
+                with open(anbtk_dir / 'fsgram.anb','w') as fsgram:
                     fsgram.write(constants.defaultFsgram)
             else:
-                if os.path.dirname(grampath)!='':
-                    os.chdir(os.path.dirname(os.path.abspath(grampath)))
-                temp = open(grampath,'r').read()
-                os.chdir(filepath)
+                temp = Path(grampath).read_text()
                 grammar,universe,terminals,nonterminals = FSGram.initializer(temp)
                 gramLogic.process_fsgram(grammar,universe,terminals,nonterminals)
-                # this file creation and such might cause some stress
-                with open('fsgram.anb','w') as fsgram:
+                with open(anbtk_dir / 'fsgram.anb','w') as fsgram:
                     fsgram.write(temp)
             initData()
             templateGen()
@@ -103,8 +150,8 @@ def get_root():
         
     This function returns the path to the root directory where the ANB project is located.
     """
-    if (anbtk_path:=find_anb())!=None:
-        return os.path.dirname(anbtk_path)
+    if (paths := get_notebook_paths()) is not None:
+        return str(paths.root)
 
 
 
@@ -121,12 +168,9 @@ def relative_to_anbtk(path):
     This function takes an absolute path and converts it into a relative path with respect to the
     root directory of the Ancestors Notebook project.
     """
-    if (anbtk_path := find_anb()) != None:
-        seed_folder = os.path.dirname(anbtk_path)
-        relative_path = Path(path).relative_to(seed_folder)
-        relative_path = os.path.join(os.path.basename(seed_folder),relative_path)
-        relative_path =   "/".join(relative_path.split("/")[1:])
-        return relative_path
+    if (paths := get_notebook_paths()) is not None:
+        relative_path = Path(path).resolve().relative_to(paths.root)
+        return str(relative_path)
 
 
 
@@ -165,8 +209,8 @@ def dataUpdate(file_type, name):
     Returns:
     - id (str): The ID of the new file, which is generated based on the type and count of files of that type.
     """
-    anbtk = find_anb()
-    with open(f'{anbtk}/anbtk.json', 'r') as f:
+    notebook = require_notebook_paths()
+    with open(notebook.data_index, 'r') as f:
         data = json.load(f)
     
     
@@ -191,7 +235,7 @@ def dataUpdate(file_type, name):
     id = f"{const}[{data[file_type]}]-{name}"
     # > more formats tba
 
-    with open(f'{anbtk}/anbtk.json', 'w') as f:
+    with open(notebook.data_index, 'w') as f:
         json.dump(data, f)
 
     return id
@@ -216,7 +260,6 @@ def templateGen():
         f.write(constants.templateLatex)
     with open('templates/anb2.j2','w') as f:
         f.write(constants.template_productions)
-
 
 
 

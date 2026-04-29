@@ -179,15 +179,12 @@ def anb_dgu():
 
 def anb_sync():
     args = argsConfig.a_anbsync()
-    path = dataControl.find_anb()  
-    if path != None:
-        path = os.path.dirname(path)
-        ontofile = os.path.join(path,".anbtk/anbsafeonto.rdf")
-        g = genealogia.read_onto_file(ontofile)
-        controlsystem.version_control(path,g)
-        genealogia.gen_onto_file(g,'anbsafeonto')
+    notebook = dataControl.get_notebook_paths()
+    if notebook is not None:
+        g = genealogia.read_onto_file(str(notebook.ontology_rdf))
+        controlsystem.version_control(str(notebook.root),g)
+        genealogia.gen_onto_file(g, str(notebook.ontology_base))
     else:
         print("✗ Not in any initialized ANB folder.")
         exit()
-
 

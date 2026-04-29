@@ -182,9 +182,9 @@ def anb_sync():
     notebook = dataControl.get_notebook_paths()
     if notebook is not None:
         g = genealogia.read_onto_file(str(notebook.ontology_rdf))
-        controlsystem.version_control(str(notebook.root),g)
-        genealogia.gen_onto_file(g, str(notebook.ontology_base))
+        controlsystem.version_control(str(notebook.root), g, dry_run=args.dry_run)
+        if not args.dry_run:
+            genealogia.gen_onto_file(g, str(notebook.ontology_base))
     else:
         print("✗ Not in any initialized ANB folder.")
         exit()
-

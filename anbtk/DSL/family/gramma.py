@@ -32,8 +32,12 @@ t_DATE = r'\d{4}'
 t_NDY = r'\-'                   # reads 'not dead yet'
 t_UNK = r'\?'                   # reads 'unknown'
 t_NEWLINE = r'\n'
-t_NAME = r'\w+'
 t_ignore = r' '
+
+
+def t_NAME(t):
+    r"[^\W\d_]+(?:[-'][^\W\d_]+)*"
+    return t
 
 
 
@@ -312,4 +316,3 @@ def check_parsing(data):
     #     if not token:
     #         break  # no more tokens
     #     print(token)
-

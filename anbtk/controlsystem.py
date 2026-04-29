@@ -236,6 +236,41 @@ def update_headers(path,graph):
             print(f"✓ Yaml header changes in {os.path.basename(file)} verified.\nOntology updated.")
 
 
+def find_header_updates(path, graph):
+    """
+    Inspect DGU files and return the ones whose normalized headers differ from ontology state.
+    """
+    notebook = dataControl.require_notebook_paths(path)
+    files = gramLogic.retrieve_all_dgu_files(str(notebook.root))
+    changed_files = []
+
+    for file in files:
+        adgu = dgu_helper.parseAbstractDgu(file)
+        att = ousia.get_dgu_attributes(adgu['path'],graph)
+        att = [str(item) for item in att if isinstance(item, Literal)] if att else []
+
+        path_needs_update = (
+            dataControl.relative_to_anbtk(adgu['path']) != file and not dgu_helper.isDguImage(file)
+        )
+
+        if 'body' in adgu:
+            del adgu['body']
+
+        adu_path = adgu['path']
+        del adgu['path']
+        adgu_attributes = list(adgu.values())
+        for i, elem in enumerate(adgu_attributes):
+            if isinstance(elem, list):
+                adgu_attributes[i] = ousia.format_names(elem)
+
+        ontology_needs_update = adgu_attributes != att
+
+        if path_needs_update or ontology_needs_update:
+            changed_files.append((file, adu_path))
+
+    return changed_files
+
+
 
 
 def compare_files_directories(dir1, dir2, base_dir=''):
@@ -286,7 +321,7 @@ def compare_files_directories(dir1, dir2, base_dir=''):
             'added_dirs': added_dirs, 'removed_dirs': removed_dirs}
 
     
-def version_control(path,graph):
+def version_control(path,graph,dry_run=False):
     """
     Manage version control for the directory structure and ontology.
 
@@ -304,11 +339,39 @@ def version_control(path,graph):
     """
     print("AnbTk status: Checking version control file...\n")
     if os.path.isfile(os.path.join(path,'.anbtk/anbvc.json')):
+        if dry_run:
+            with open(os.path.join(path,'.anbtk/anbvc.json'), 'r') as file:
+                old_dict = json.load(file)
+            new_dict = check_file_structure(path)
+            diff = compare_files_directories(old_dict,new_dict,path)
+
+            for added_dir in diff['added_dirs']:
+                print(f"* Would recognize new folder: {added_dir}")
+            for removed_dir in diff['removed_dirs']:
+                print(f"* Would remove folder: {removed_dir}")
+            for added_file in diff['added_files']:
+                print(f"* Would recognize new file: {added_file}")
+            for removed_file in diff['removed_files']:
+                print(f"* Would remove file: {removed_file}")
+
+            for file, _ in find_header_updates(path, graph):
+                print(f"* Would refresh DGU header metadata: {os.path.basename(file)}")
+
+            print("✓ Dry run completed. No ontology or version-control files were modified.")
+            return
+
         new_dict = compare_file_structure(path,graph)
         update_headers(path,graph)
         print("✓ Version Control file reviewed.")
 
     else:
+        if dry_run:
+            print("✓ Version Control file would be created.")
+            current_dict = check_file_structure(path)
+            for folder in current_dict.keys():
+                print(f"* Would register folder tree: {folder}")
+            print("✓ Dry run completed. No ontology or version-control files were modified.")
+            return
         print("✓ Version Control file created.")
         new_dict = check_file_structure(path)
     

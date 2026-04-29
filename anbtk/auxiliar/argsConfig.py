@@ -212,6 +212,11 @@ def a_anbsync():
         prog='anbsync',
         description="Force synchronization of filesystem changes into the Ancestors Notebook ontology.",
     )
+    parser.add_argument(
+        '--dry-run',
+        action='store_true',
+        help='Preview filesystem and header changes without writing ontology or version-control files.',
+    )
 
     return parser.parse_args()
 

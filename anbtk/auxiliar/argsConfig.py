@@ -87,7 +87,7 @@ def a_dgu2texbook():
 
 def a_image():
     parser = argparse.ArgumentParser(
-        prog = 'dguImage',
+        prog = 'genDguImage',
         description = 'Generates DGU files for image files.')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-f','--file',help="Takes 1 or more files defined by the user.",action='store_true')
@@ -107,8 +107,8 @@ def a_search():
 
     parser = argparse.ArgumentParser(
         prog = 'anbsearch',
-        description = 'Allows to query informations regarding the different familiar connections of the current ancestors notebook.',
-        epilog = 'By chosing an individual A you can filter the different family members that have a specific (either direct or composed) connection - for visual purpouses only.')
+        description = 'Query family relationships inside the current Ancestors Notebook.',
+        epilog = 'Choose an individual and one or more relationship flags to inspect matching relatives.')
     parser.add_argument('-s','--siblings',help="Individual's siblings.",nargs=0,action=CustomAction)
     parser.add_argument('-p','--parents',help="Individual's parents.",nargs=0,action=CustomAction)
     parser.add_argument('-ua','--unclesaunts',help="Individual's uncles and aunts.",nargs=0,action=CustomAction)
@@ -132,8 +132,8 @@ def a_cd():
 
     parser = argparse.ArgumentParser(
         prog = 'anbcd',
-        description = 'Allows to easily change directories inside the current Ancestors Notebook by taking into consideration the different familiar connections that exist.',
-        epilog = 'From folder A you go to folder B by specifying the familiar relation between A and B')
+        description = 'Resolve and print a related folder path inside the current Ancestors Notebook.',
+        epilog = 'Use the printed path with your shell, for example: cd "$(anbcd ...)"')
     parser.add_argument('-s','--siblings',help="Individual's siblings.",nargs=0,action=CustomAction)
     parser.add_argument('-p','--parents',help="Individual's parents.",nargs=0,action=CustomAction)
     parser.add_argument('-ua','--unclesaunts',help="Individual's uncles and aunts.",nargs=0,action=CustomAction)
@@ -156,9 +156,9 @@ def a_ls():
             setattr(namespace, 'ordered_args', previous)
 
     parser = argparse.ArgumentParser(
-        prog = 'anbcd',
-        description = 'Allows to easily list directories and files inside individuals in the current Ancestors Notebook by taking into consideration the different familiar ties.',
-        epilog = 'From folder A you go to folder B by specifying the familiar relation between A and B')
+        prog = 'anbls',
+        description = 'List files inside a related folder in the current Ancestors Notebook.',
+        epilog = 'Choose an individual and relationship flags to resolve the target folder before listing its contents.')
     parser.add_argument('-s','--siblings',help="Individual's siblings.",nargs=0,action=CustomAction)
     parser.add_argument('-p','--parents',help="Individual's parents.",nargs=0,action=CustomAction)
     parser.add_argument('-ua','--unclesaunts',help="Individual's uncles and aunts.",nargs=0,action=CustomAction)
@@ -170,7 +170,10 @@ def a_ls():
 
 
 def a_genFolders():
-    parser = argparse.ArgumentParser(description="Ancestors Notebook generate folder structure")
+    parser = argparse.ArgumentParser(
+        prog='anbfolders',
+        description="Generate an Ancestors Notebook folder structure from a family seed file.",
+    )
 
     parser.add_argument('--seed', '-s', required=True, help="Path to the anbtemp file to be converted.", nargs=1)
     parser.add_argument('--source', '-src', help="Path to source fsgram file to generate ancestor's notebook entities")
@@ -181,7 +184,10 @@ def a_genFolders():
     return parser.parse_args()
 
 def a_anbinit():
-    parser = argparse.ArgumentParser(description="Initializes a non structurized structurized Ancestors Notebook.")
+    parser = argparse.ArgumentParser(
+        prog='anbinit',
+        description="Initialize an Ancestors Notebook in the current directory.",
+    )
 
     parser.add_argument('-s', '--source', help='Specify a source fsgram file to generate an ancestors notebook', nargs=1)
 
@@ -189,7 +195,10 @@ def a_anbinit():
     return parser.parse_args()
 
 def a_anbdgu():
-    parser = argparse.ArgumentParser(description="Creates a default dgu or a entity based dgu")
+    parser = argparse.ArgumentParser(
+        prog='anbdgu',
+        description="Create a default DGU or one based on an entity from the FSGram.",
+    )
 
     parser.add_argument('-e', '--entity', help='Specify an entity as described in your FSGram file or the default file', nargs=1)
     parser.add_argument('-f', '--filename', help='Name of the dgu', type=str, required=True, nargs=1)
@@ -199,7 +208,10 @@ def a_anbdgu():
 
 
 def a_anbsync():
-    parser = argparse.ArgumentParser(description="Used to force the syncronization of the different elements of the Ancestors Notebook.")
+    parser = argparse.ArgumentParser(
+        prog='anbsync',
+        description="Force synchronization of filesystem changes into the Ancestors Notebook ontology.",
+    )
 
     return parser.parse_args()
 

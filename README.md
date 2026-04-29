@@ -1,133 +1,169 @@
 # Ancestors Notebook Toolkit
 
-The *Ancestors Notebook* is a versatile toolkit designed to streamline the management and organization of documents and information associated with family history and heritage.
-This toolkit operates seamlessly within the Linux file system, employing conventions, commands, and Domain Specific Languages (DSLs) to name and organize directories.
- Its primary focus is on documents in a specific format known as DGU, exclusively created for the Ancestors Notebook toolkit. 
+ANBToolKit is a Python CLI toolkit for organizing genealogical and family-history material inside a Linux filesystem. It combines:
 
-The overarching goal is to empower users with customized organizational control, ensuring a cohesive flow of ideas interwoven with the accumulation of genealogical data.
+- a family-structure seed DSL
+- an FSGram grammar for document/entity conventions
+- DGU files with YAML-style metadata
+- Jinja2/LaTeX-based book generation
+- ontology-backed synchronization and relationship queries
+- interactive projection editing tools
 
-## Key Features
+The project is oriented toward Linux users, researchers, and genealogists working with structured local archives.
 
-- **DGU Format**: The toolkit emphasizes a specific format, DGU, for document storage, facilitating a standardized and efficient approach to genealogical data.
+## Install
 
-- **Customized Organization**: Utilizing DSLs and conventions, the toolkit enables users to tailor their data organization, defining representative entities for different elements.
+Install the package from the repository root:
 
-- **Template Generation**: Ancestors Notebook generates customizable templates in PDF format, offering a visually appealing and familiar view of genealogical information, organized by entities.
+```bash
+pip install .
+```
 
-- **Version Control System**: The toolkit incorporates a version control system, leveraging a knowledge representation system in the form of an ontology. A projection editor allows users to view and manipulate the genealogical structure within the file system.
+Python dependencies are declared in `pyproject.toml`. Some commands also rely on external tools that are not installed by `pip`, especially:
 
-- **Python Implementation**: Developed in the Python programming language, the toolkit provides file system commands and utilizes Python modules for defining user views. Template creation is facilitated by the Jinja2 template generation engine.
+- `pandoc`
+- `pdflatex`
+- `latexmk`
 
-- **Installation via pip**: Download and install the pyproject.toml using pip
+## Command overview
 
-## List of commands
+### Notebook setup
 
-- **anbsearch**
-  - Command to retrieve information related to different family members within the Ancestors Notebook. Various flags allow querying specific relationships.
-    ```bash
-    anbsearch [-h] [-s] [-p] [-ua] [-gp] [-c] -i INDIVIDUAL [INDIVIDUAL ...]
-    ```
+- `anbinit`
+  Initialize an Ancestors Notebook in the current directory.
 
-- **anbcd**
-  - Command to navigate between different directories within the Ancestors Notebook, considering familial connections. Flags represent different relationships.
-    ```bash
-    anbcd [-h] [-s] [-p] [-ua] [-gp] [-c] -i INDIVIDUAL [INDIVIDUAL ...]
-    ```
+  ```bash
+  anbinit [-h] [-s SOURCE]
+  ```
 
-- **anbdgu**
-  - Command to generate a universal document with a generic structure or associated with a created entity.
-    ```bash
-    anbdgu [-h] [-e ENTITY] -f FILENAME
-    ```
+- `anbfolders`
+  Generate a new notebook folder structure from a family seed file.
 
-- **anbfolders**
-  - Command to force synchronization of the different elements within the Ancestors Notebook.
-    ```bash
-    anbsync [-h]
-    ```
+  ```bash
+  anbfolders [-h] -s SEED [-src SOURCE] [-fam FAMILY] [-fn [FILENAME]] [-o [OUT]]
+  ```
 
-- **anbls**
-  - Command to quickly view content between different directories within the Ancestors Notebook, considering familial connections.
-    ```bash
-    anbls [-h] [-s] [-p] [-ua] [-gp] [-c] -i INDIVIDUAL [INDIVIDUAL ...]
-    ```
+- `anbsync`
+  Force synchronization between the filesystem and the notebook ontology.
 
-- **anbsync**
-  - Command to force synchronization of the different elements within the Ancestors Notebook.
-    ```bash
-    anbsync [-h]
-    ```
+  ```bash
+  anbsync [-h]
+  ```
 
-- **dgubook**
-  - Command to aggregate a number of .dgu files into a PDF book.
-    ```bash
-    dgubook [-h] [-f FILE [FILE ...] | -t | -p] [-md] [-all] [-tf] [-o OUTPUT]
-    ```
+### Navigation and queries
 
-- **dgu2texbook**
-  - Command to aggregate a number of .dgu files into a LaTeX book.
-    ```bash
-    dgu2texbook [-h] [-f FILE [FILE ...] | -t]
-    ```
+- `anbsearch`
+  Query relatives of an individual using relationship flags.
 
-- **genBio**
-  - Command to generate a DGU with the structure of the Biography entity.
-    ```bash
-    genBio [-h] -n NAME -b BIRTH -d DEATH -bp BIRTHPLACE -o OCCUPATION
-    ```
+  ```bash
+  anbsearch [-h] [-s] [-p] [-ua] [-gp] [-c] -i INDIVIDUAL [INDIVIDUAL ...]
+  ```
 
-- **genDguImage**
-  - Command to generate DGU files for image files.
-    ```bash
-    genDguImage [-h] [-f | -t]
-    ```
+- `anbcd`
+  Resolve and print a related folder path.
 
-- **genStory**
-  - Command to generate a DGU with the structure of the Story entity.
-    ```bash
-    genStory [-h] -t TITLE [-a AUTHOR [AUTHOR ...]] [-d DATE] [-dgu]
-    ```
+  ```bash
+  anbcd [-h] [-s] [-p] [-ua] [-gp] [-c] -i INDIVIDUAL [INDIVIDUAL ...]
+  ```
 
-- **tex2dgu**
-  - Command to convert one or more DGUs into their equivalent LaTeX format.
-    ```bash
-    tex2dgu [-h] [-f FILE [FILE ...]]
-    ```
+  `anbcd` prints the target directory; it does not mutate the parent shell by itself. Use it like this:
 
-- **anbinit**
-  - Command to initialize an Ancestors Notebook without any genealogical structure.
-    ```bash
-    anbinit [-h] [-s SOURCE]
-    ```
-  - ![anbinit_full](https://github.com/mishlawi/ANBToolKit/assets/48862635/703d7593-3eab-4aaa-8817-38fd97cd7a33)
+  ```bash
+  cd "$(anbcd -p -i 'Maria Silva')"
+  ```
 
+- `anbls`
+  List the contents of a related folder.
 
-- **anbgrammar**
-  - Command to edit and adapt different entities and aggregators to the FSGram grammar defining an Ancestors Notebook.
-    ```bash
-    anbgrammar
-    ```
-  - ![anbgrammar](https://github.com/mishlawi/ANBToolKit/assets/48862635/b6b84120-1f02-440e-b771-05e50b8fc1b7)
- 
+  ```bash
+  anbls [-h] [-s] [-p] [-ua] [-gp] [-c] -i INDIVIDUAL [INDIVIDUAL ...]
+  ```
 
-- **anbfsgram**
-  - Command to display the different entities defined in the Ancestors Notebook FSGram.
-    ```bash
-    anbfsgram
-    ```
+### DGU and document generation
 
-- **anbedit**
-  - Command to initialize the Projection Editor for family editing.
-    ```bash
-    anbedit
-    ```
-  - ![anbedit](https://github.com/mishlawi/ANBToolKit/assets/48862635/6d8c371e-dace-46f5-bd8f-eb4e64266fe8)
+- `anbdgu`
+  Create an empty DGU or one based on a known FSGram entity.
 
-- **anbadd**
-  - Command to initialize the Projection Editor for adding a new couple.
-    ```bash
-    anbadd
-    ```
-  - ![anbadd](https://github.com/mishlawi/ANBToolKit/assets/48862635/b921136d-e168-4783-b184-310e2c0bc559)
- 
+  ```bash
+  anbdgu [-h] [-e ENTITY] -f FILENAME
+  ```
 
+- `genBio`
+  Generate a biography DGU.
+
+  ```bash
+  genBio [-h] -n NAME [-b BIRTH] [-d DEATH] [-bp BIRTHPLACE] [-o OCCUPATION]
+  ```
+
+- `genStory`
+  Generate a story skeleton as `.tex` or `.dgu`.
+
+  ```bash
+  genStory [-h] -t TITLE [-a AUTHOR [AUTHOR ...]] [-d DATE] [-dgu]
+  ```
+
+- `genDguImage`
+  Generate DGU files for image files.
+
+  ```bash
+  genDguImage [-h] [-f | -t]
+  ```
+
+### Conversions and books
+
+- `tex2dgu`
+  Convert one or more `.tex` files into DGU files.
+
+  ```bash
+  tex2dgu [-h] [-f FILE [FILE ...]]
+  ```
+
+- `dgu2texbook`
+  Aggregate one or more DGUs into a LaTeX book.
+
+  ```bash
+  dgu2texbook [-h] [-f FILE [FILE ...] | -t]
+  ```
+
+- `dgubook`
+  Aggregate DGU files into a PDF or Markdown notebook.
+
+  ```bash
+  dgubook [-h] [-f FILE [FILE ...] | -t | -p] [-md] [-all] [-tf] [-o OUTPUT]
+  ```
+
+### Grammar and projection editing
+
+- `anbgrammar`
+  Interactively edit entities and aggregators in the notebook FSGram.
+
+  ```bash
+  anbgrammar
+  ```
+
+- `anbfsgram`
+  Show the current notebook FSGram declarations.
+
+  ```bash
+  anbfsgram
+  ```
+
+- `anbedit`
+  Open the projection editor for family editing.
+
+  ```bash
+  anbedit
+  ```
+
+- `anbadd`
+  Add a new couple through the projection editor flow.
+
+  ```bash
+  anbadd
+  ```
+
+## Notes
+
+- The project currently assumes a Linux-style filesystem workflow.
+- Notebook commands expect to run inside an initialized notebook unless explicitly creating one.
+- Example data and sample DGUs are available under [`Data/`](/home/mishlawi/projects/ANBToolKit/Data).

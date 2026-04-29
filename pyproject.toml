@@ -7,6 +7,16 @@ name = "anbtk"
 authors = [{name = "Duarte Vilar", email = "duartevilar99@gmail.com"}]
 license = {file = "LICENSE"}
 classifiers = ["License :: OSI Approved :: MIT License"]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "inquirer",
+    "Jinja2",
+    "ply",
+    "prettytable",
+    "PyYAML",
+    "rdflib",
+]
 dynamic = ["version", "description"]
 
 [project.urls]

@@ -46,7 +46,7 @@ def individual_processing(path,g,args):
     if hasattr(args, 'ordered_args'):
         inverted_args = args.ordered_args
     else:
-        print("✗ You need to specify what flags you want. Use anbget -h for additional information.")
+        print("✗ You need to specify at least one relationship flag. Use anbsearch -h for additional information.")
         exit()
 
     if len(args.individual) == 1 and args.individual[0] == ".":

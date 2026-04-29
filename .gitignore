@@ -4,8 +4,14 @@ anb-family/
 anb-teste/
 Sobreiros/
 fams/
+.codex
+.codex/
+temp.md
+temp.tex
 *.py[cod]
 *$py.class
+parser.out
+parsetab.py
 
 # C extensions
 *.so

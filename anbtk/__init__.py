@@ -127,12 +127,13 @@ def anb_genFolders():
                 family = args.family[0]
             else:
                 family= "anb-family"
+            family_root = os.path.abspath(family)
             g ,(fam_structure,fam_ids) = genealogia.onto_folders_correspondence(seed,family=family,entities=fsgram)
             #! error handling needed here for errors in the seed file
         
             file_structure = blocks.dict_to_file(fam_structure,fam_ids)
             
-            with open(os.path.join(dataControl.find_anb(),'anbtemp.txt'),'w') as anbtemp:             
+            with open(os.path.join(family_root, '.anbtk', 'anbtemp.txt'),'w') as anbtemp:
                 anbtemp.write(file_structure)
 
         
@@ -143,7 +144,7 @@ def anb_genFolders():
                 shutil.move(f"{args.filename[0]}.n3", args.out[0])
                 shutil.move(f"{args.filename[0]}.rdf", args.out[0])
 
-        genealogia.gen_onto_file(g,"anbsafeonto")
+        genealogia.gen_onto_file(g, os.path.join(family_root, '.anbtk', "anbsafeonto"))
 
 
 def anb_dgu():
@@ -188,6 +189,5 @@ def anb_sync():
     else:
         print("✗ Not in any initialized ANB folder.")
         exit()
-
 
 

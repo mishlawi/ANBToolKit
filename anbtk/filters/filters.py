@@ -1,6 +1,7 @@
 import subprocess
 import difflib
 import os
+from pathlib import Path
 
 
 from ..auxiliar import argsConfig
@@ -131,6 +132,24 @@ def anb_search():
     view_sparql.show_data(unique,message,header)
 
 
+def resolve_selected_folder(root, selected_folder):
+    """
+    Resolve an ontology folder path into an absolute filesystem path inside the notebook.
+
+    Stored ontology paths are root-relative and usually include the notebook root folder
+    name as their first path component.
+    """
+    selected_path = Path(selected_folder)
+    root_path = Path(root)
+    root_name = root_path.name
+
+    parts = selected_path.parts
+    if parts and parts[0] == root_name:
+        selected_path = Path(*parts[1:])
+
+    return root_path / selected_path
+
+
 def anb_cd():
     cwd = os.getcwd()
     args = argsConfig.a_cd()
@@ -147,23 +166,25 @@ def anb_cd():
             print("No ontology was initialized.\nWas this ancestor notebook created from scratch? There doesn't seem to exist any .rdf file that defines the familiar connections.")
             exit()
        
-    os.chdir(dataControl.get_root())
+    root = dataControl.get_root()
+    os.chdir(root)
 
     
     unique,_,_ = individual_processing(cwd,g,args)
     possibilities = queries.folder_cd_composition(unique,g)
     selected_folder = view_sparql.select_path(possibilities)
-    selected_folder = selected_folder.split("/")[1]
-    try:
-        subprocess.check_call(f"cd {selected_folder} && exec $SHELL", shell=True)
-    except subprocess.CalledProcessError:
-            print("Some problem in finding the folder. Were any manual naming changes made to the Ancestors Notebook folder?.")
-            exit()
+    target_folder = resolve_selected_folder(root, selected_folder)
+
+    if target_folder.exists():
+        print(target_folder)
+    else:
+        print("Some problem in finding the folder. Were any manual naming changes made to the Ancestors Notebook folder?.")
+        exit()
 
 
 def anb_ls():
     cwd = os.getcwd()
-    args = argsConfig.a_cd()
+    args = argsConfig.a_ls()
 
     if not dataControl.search_anbtk():
         print("✗ You are not in an Ancestors Notebook." )
@@ -175,15 +196,17 @@ def anb_ls():
         except FileNotFoundError:
             print("No ontology was initialized.\nWas this ancestor notebook created from scratch? There doesn't seem to exist any .rdf file that defines the familiar connections.")
             exit()
-        os.chdir(dataControl.get_root())
+        root = dataControl.get_root()
+        os.chdir(root)
         
     
     unique,_,_ = individual_processing(cwd,g,args)
     possibilities = queries.folder_cd_composition(unique,g)
     selected_folder = view_sparql.select_path(possibilities)
-    selected_folder = selected_folder.split("/")[1]
+    target_folder = resolve_selected_folder(root, selected_folder)
+
     try:
-        subprocess.check_call(f"ls {selected_folder} && exec $SHELL", shell=True)
+        subprocess.check_call(['ls', str(target_folder)])
     except subprocess.CalledProcessError:
             print("Some problem in finding the folder. Were any manual naming or structural changes made to the Ancestors Notebook folder?.")
             exit()

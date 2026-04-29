@@ -280,7 +280,7 @@ def genStory():
     
     denomination = simplify(title)
 
-    if dataControl.find_anb is None:
+    if dataControl.find_anb() is None:
         print("No guarantee of a unique name\n")
         filename = f"hx-{denomination}"
     else:

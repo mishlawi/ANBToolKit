@@ -19,7 +19,7 @@ def heading2Latex(temp,tempdgu):
     """
 
     headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",temp).group()
-    adgu = yaml.full_load(headers)
+    adgu = yaml.safe_load(headers)
     for elem in adgu['about']:
         tempdgu.write(f"\\footnote{{{elem}}}")
     if adgu['type'] == 'Story':
@@ -48,7 +48,7 @@ def heading2markdown(temp,tempdgu):
     """    
 
     headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",temp).group()
-    adgu = yaml.full_load(headers)
+    adgu = yaml.safe_load(headers)
     
     if adgu['type'] == 'Story':
         tempdgu.write(f"# {{{adgu['title']}}}\n")
@@ -144,7 +144,7 @@ def parseAbstractDgu(filename):
         with open(os.path.abspath(filename)) as f:
             data = f.read()
         headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)", data).group()
-        adgu = yaml.full_load(headers)
+        adgu = yaml.safe_load(headers)
         text = re.split(r'\-\-\-', data)[2]
         adgu['body'] = text
         return adgu
@@ -364,7 +364,7 @@ def parse_individual_dgu_productions(dgu_path, dates, docs, imgs, cronology,sym)
         adgu['path'] = os.path.relpath(parseAbstractDgu(dgu_path)['path'], os.getcwd()) # gets relative path
         imgs.append(adgu)
     else:
-        docs[sym] = []
+        docs.setdefault(sym, [])
         # elem_path = os.path.abspath(dgu_path)
         meta = parseAbstractDgu(dgu_path)
       

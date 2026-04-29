@@ -295,11 +295,11 @@ def add_complete_individual(name,og_name,bd,dd,graph):
 def add_nickname(name,nickname,graph):
     individual = FAMILY[name]
 
-    graph.add((individual, FAMILY['nickname'], Literal(nickname, datatype=XSD.string)))
+    graph.add((individual, FAMILY['hasNickname'], Literal(nickname, datatype=XSD.string)))
 
 def update_nickname(name,nickname,graph):
     individual = FAMILY[name]
-    graph.remove((individual,FAMILY['nickname'],None))
+    graph.remove((individual,FAMILY['hasNickname'],None))
     add_nickname(name,nickname,graph)
 
 def add_birthdate(name,date,graph):
@@ -420,7 +420,7 @@ def add_file(folder,path,graph):
     graph.add((FAMILY[folder], FAMILY['hasFile'], DGU[path]))
 
 def remove_file(folder, path, graph):
-    graph.remove((FAMILY[folder], FAMILY['hasFile'], Literal(path, datatype=XSD.string)))
+    graph.remove((FAMILY[folder], FAMILY['hasFile'], DGU[path]))
 
 
 def remove_file_special(path, graph):

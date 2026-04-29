@@ -58,7 +58,7 @@ def dgu2texbook():
                         os.chdir(os.path.dirname(os.path.abspath(file)))
                 temp = open(file,'r').read()
                 headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",temp).group()
-                adgu = yaml.full_load(headers)
+                adgu = yaml.safe_load(headers)
                 text = re.split(r'\-\-\-',temp)[2] 
                 temptext = dgu_helper.defaultConversion(text)
                 adgu['body'] = temptext
@@ -78,7 +78,7 @@ def dgu2texbook():
                 if filename.endswith('.dgu'):
                     temp = open(dirpath+'/'+filename,'r').read()
                     headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",temp).group()
-                    adgu = yaml.full_load(headers)
+                    adgu = yaml.safe_load(headers)
                     text = re.split(r'\-\-\-',temp)[2]
                     temptext = dgu_helper.defaultConversion(text)
                     adgu['body'] = temptext
@@ -132,7 +132,7 @@ def tex2dgu(dirout=""):
                 subprocess.check_call(args)
                 fo = open(filename[:-4] + '.md').read()
                 headers = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",fo).group()
-                adgu = yaml.full_load(headers)
+                adgu = yaml.safe_load(headers)
                 dgufile = open(filename[:-4]+'.dgu','w')
                 id = re.search(r'(?<=\-).+(?=\.)',filename).group()
                 text = re.split(r'\-\-\-',fo)[2]

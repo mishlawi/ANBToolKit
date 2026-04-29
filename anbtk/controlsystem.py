@@ -177,7 +177,7 @@ def compare_file_structure(path,graph):
         if added_file.endswith(".dgu"):
             with open(added_file, 'r') as file:
                 x = re.search(r"(?<=\-\-\-)(.+|\n)+?(?=\-\-\-)",file.read()).group()
-                yaml_header = yaml.full_load(x)
+                yaml_header = yaml.safe_load(x)
 
             ousia.add_dgu_file(yaml_header['path'],yaml_header,graph)
             print(f"* {added_file} was added.")

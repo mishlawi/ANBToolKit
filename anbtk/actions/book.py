@@ -63,7 +63,6 @@ def dgubook_productions(arguments):
 
     
     files_data = gramLogic.travessia_specific()
-    print(files_data)
     for (sym, files) in files_data:
         for file in files:
                 dgu_helper.parse_individual_dgu_productions(file,dates,docs,imgs,cronology,sym)
@@ -75,17 +74,9 @@ def dgubook_productions(arguments):
 
     
 
-    if arguments.output:
-        calls.move_to_output('AncestorsNotebook.pdf',arguments.output[0])
-
-    if arguments.markdown:
-
-        subprocess.check_call(calls.pandoc_latex_to_markdown('AncestorsNotebook.tex','AncestorsNotebook.md'))
-        os.remove("AncestorsNotebook.tex")
-
     if arguments.timeframe:
-                dates['chronology'] = cronology
-    print(docs)
+        dates['chronology'] = cronology
+
     with open('AncestorsNotebook.tex', 'w') as tempdgu:
         args =  calls.pdflatex('AncestorsNotebook.tex')
         tempdgu.write(dgus2tex.render(tit="Ancestors Notebook", docs=docs, imgs=imgs, dates=dates))
@@ -95,6 +86,14 @@ def dgubook_productions(arguments):
     if not arguments.all:
         
         subprocess.check_call(calls.rm_latex_unecessary)
+
+    if arguments.output:
+        calls.move_to_output('AncestorsNotebook.pdf',arguments.output[0])
+
+    if arguments.markdown:
+
+        subprocess.check_call(calls.pandoc_latex_to_markdown('AncestorsNotebook.tex','AncestorsNotebook.md'))
+        os.remove("AncestorsNotebook.tex")
 
 
 
@@ -173,4 +172,3 @@ def classic_dgubook(arguments):
         except subprocess.CalledProcessError as e:
             print(f"Error: {e}")
             sys.exit(1)
-

@@ -37,7 +37,7 @@
 
 {% for h in doc_list %}
 \begin{center}
-\subsection{title {{-h.title-}} }
+\subsection{ {{-h.title-}} }
 \vspace{0.5cm}
 {% if h.author is defined and h.author != 'False' %}
     {% if h.author is iterable and h.author is not string and h.author is not mapping %}
@@ -75,7 +75,7 @@
 \vspace{0.85cm}
     $\ast$~$\ast$~$\ast$  
 
-{% if h.corpo is defined and h.about|length > 0%} 
+{% if h.corpo is defined %} 
     \begin{center}
         \begin{minipage}{0.9\textwidth}
             \setlength{\parskip}{0.2cm}
@@ -117,9 +117,9 @@
 			\begin{tcolorbox}[colback=white, colframe=black, boxrule=1pt]
 				\begin{itemize}
 					\item {{img.format}}
-                    {% if imgs.about|length > 0 %}
-						{% for about in imgs.about %}                 
-							\item {{img.about}}
+                    {% if img.about is defined and img.about|length > 0 %}
+						{% for about in img.about %}
+							\item {{about}}
                         {% endfor %}
                     {% endif %}
 				\end{itemize}

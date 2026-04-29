@@ -108,9 +108,9 @@
 			\begin{tcolorbox}[colback=white, colframe=black, boxrule=1pt]
 				\begin{itemize}
 					\item {{img.format}}
-                    {% if imgs.about|length > 0 %}
-						{% for about in imgs.about %}                 
-							\item {{img.about}}
+                    {% if img.about is defined and img.about|length > 0 %}
+						{% for about in img.about %}
+							\item {{about}}
                         {% endfor %}
                     {% endif %}
 				\end{itemize}
